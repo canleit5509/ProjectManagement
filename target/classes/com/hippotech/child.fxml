@@ -7,5 +7,6 @@
          prefHeight="400.0" prefWidth="600.0">
     <children>
         <Text fx:id="text" layoutX="10" layoutY="10" text="AAA"/>
+        <fx:include source="/com/hippotech/row.fxml"/>
     </children>
 </fx:root>

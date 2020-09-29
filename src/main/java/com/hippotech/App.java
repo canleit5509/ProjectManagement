@@ -18,10 +18,12 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 //        scene = new Scene(loadFXML("primary"), 640, 480);
+
         ChildPane cp = new ChildPane();
         cp.setText("ABC");
-        stage.setScene(new Scene(cp));
-//        stage.setScene(scene);
+        Row row = new Row();
+        scene = new Scene(cp);
+        stage.setScene(scene);
         stage.show();
     }
 
