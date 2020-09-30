@@ -18,7 +18,7 @@ public class ChildPane extends StackPane implements Initializable{
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/hippotech/child.fxml"));
         System.out.println(getClass().getResource("/com/hippotech/child.fxml"));
-        fxmlLoader.setRoot(ChildPane.this);
+        fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
         try {
             fxmlLoader.load();

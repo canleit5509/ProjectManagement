@@ -2,11 +2,10 @@
 
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Text?>
-<fx:root type="StackPane" xmlns="http://javafx.com/javafx"
-         xmlns:fx="http://javafx.com/fxml"
-         prefHeight="400.0" prefWidth="600.0">
+
+<fx:root  type="StackPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Text fx:id="text" layoutX="10" layoutY="10" text="AAA"/>
-        <fx:include source="/com/hippotech/row.fxml"/>
+        <Text fx:id="text" layoutX="100" layoutY="100" text="AAA" />
+        <fx:include source="row.fxml" />
     </children>
 </fx:root>
