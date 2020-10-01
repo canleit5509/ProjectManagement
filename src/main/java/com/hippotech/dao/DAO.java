@@ -7,9 +7,10 @@ public interface DAO<T> {
     String DB_URL = "jdbc:mysql://localhost:3306/projectmanager";
     String ID = "project";
     String PASS = "";
+
     ArrayList<T> getAll();
 
-   T get(String id);
+    T get(String id);
 
     void add(T t);
 
