@@ -1,8 +1,8 @@
 package com.hippotech.controller;
 
 
-import com.hippotech.controller.components.DayRow;
-import com.hippotech.controller.components.WeekTitle;
+
+import com.hippotech.controller.components.Week;
 import com.hippotech.model.Person;
 import com.hippotech.model.ProjectName;
 import com.hippotech.model.Task;
@@ -24,6 +24,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -31,9 +32,7 @@ import javafx.util.Callback;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.WeekFields;
-import java.util.Locale;
+
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -146,20 +145,20 @@ public class PrimaryViewController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
         refreshTable();
-//        DayRow row = new DayRow();
-//        row.setText(LocalDate.of(2020,10,5));
-//        rightPane.setContent(row);
-        WeekTitle week = new WeekTitle();
-        week.setText(LocalDate.of(2020,10,5));
-        rightPane.setContent(week);
+
+        Week week = new Week(1);
+        
+        Pane pane = new Pane();
+        pane.getChildren().addAll(week);
+        rightPane.setContent(pane);
 //        for (int i = 0; i < 52; i++) {
 //            detail(LocalDate.of(2020,1,1).plus(i, ChronoUnit.WEEKS));
 //        }
-//        try {
-//            eventHandler();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        try {
+            eventHandler();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -322,18 +321,18 @@ public class PrimaryViewController implements Initializable {
         return date.getDayOfMonth() + "/" + date.getMonthValue();
     }
 
-    public void detail(LocalDate date) {
-        date = date.minus(date.getDayOfWeek().getValue() - 1, ChronoUnit.DAYS);
-        WeekFields weekFields = WeekFields.of(Locale.getDefault());
-        int weekNumber = date.get(weekFields.weekOfWeekBasedYear());
-        TableColumn<String, String> tcWeek = new TableColumn(String.valueOf(weekNumber));
-        TableColumn<String, String> tcMon = new TableColumn(getDayOfMonth(date));
-        TableColumn<String, String> tcTue = new TableColumn(getDayOfMonth(date.plus(1, ChronoUnit.DAYS)));
-        TableColumn<String, String> tcWed = new TableColumn(getDayOfMonth(date.plus(2, ChronoUnit.DAYS)));
-        TableColumn<String, String> tcThu = new TableColumn(getDayOfMonth(date.plus(3, ChronoUnit.DAYS)));
-        TableColumn<String, String> tcFri = new TableColumn(getDayOfMonth(date.plus(4, ChronoUnit.DAYS)));
-        tcWeek.getColumns().addAll(tcMon, tcTue, tcWed, tcThu, tcFri);
-        tbDetail.getColumns().add(tcWeek);
-
-    }
+//    public void detail(LocalDate date) {
+//        date = date.minus(date.getDayOfWeek().getValue() - 1, ChronoUnit.DAYS);
+//        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+//        int weekNumber = date.get(weekFields.weekOfWeekBasedYear());
+//        TableColumn<String, String> tcWeek = new TableColumn(String.valueOf(weekNumber));
+//        TableColumn<String, String> tcMon = new TableColumn(getDayOfMonth(date));
+//        TableColumn<String, String> tcTue = new TableColumn(getDayOfMonth(date.plus(1, ChronoUnit.DAYS)));
+//        TableColumn<String, String> tcWed = new TableColumn(getDayOfMonth(date.plus(2, ChronoUnit.DAYS)));
+//        TableColumn<String, String> tcThu = new TableColumn(getDayOfMonth(date.plus(3, ChronoUnit.DAYS)));
+//        TableColumn<String, String> tcFri = new TableColumn(getDayOfMonth(date.plus(4, ChronoUnit.DAYS)));
+//        tcWeek.getColumns().addAll(tcMon, tcTue, tcWed, tcThu, tcFri);
+//        tbDetail.getColumns().add(tcWeek);
+//
+//    }
 }

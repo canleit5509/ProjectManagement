@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.Rectangle?>
+<fx:root type="javafx.scene.layout.HBox" xmlns:fx="http://javafx.com/fxml">
+    <Rectangle fx:id="mon" height="25" width="25"/>
+    <Rectangle fx:id="tue" height="25" width="25"/>
+    <Rectangle fx:id="wed" height="25" width="25"/>
+    <Rectangle fx:id="thu" height="25" width="25"/>
+    <Rectangle fx:id="fri" height="25" width="25"/>
+</fx:root>

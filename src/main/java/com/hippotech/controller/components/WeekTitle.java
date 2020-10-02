@@ -18,7 +18,6 @@ public class WeekTitle extends VBox {
     DayRow row;
 
     public WeekTitle() {
-//        row = new DayRow();
         FXMLLoader fxmlLoader =new FXMLLoader(getClass().getResource("/com/hippotech/components/WeekTitle.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);

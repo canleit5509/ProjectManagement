@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import com.hippotech.controller.components.WeekTitle?>
+<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml">
+    <WeekTitle fx:id="weekTitle"/>
+    <VBox fx:id="weekTask"/>
+</fx:root>
