@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<fx:root type="javafx.scene.layout.HBox" xmlns:fx="http://javafx.com/fxml">
+    <Text fx:id="mon"/>
+    <Text fx:id="tue"/>
+    <Text fx:id="wed"/>
+    <Text fx:id="thu"/>
+    <Text fx:id="fri"/>
+</fx:root>

@@ -35,7 +35,7 @@
                     </TableColumn>
                 </columns>
             </TableView>
-            <ScrollPane hbarPolicy="ALWAYS">
+            <ScrollPane fx:id="rightPane" hbarPolicy="ALWAYS">
                 <TableView fx:id="tbDetail">
 
                 </TableView>
