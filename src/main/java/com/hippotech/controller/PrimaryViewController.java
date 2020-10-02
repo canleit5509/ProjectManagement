@@ -1,7 +1,6 @@
 package com.hippotech.controller;
 
 
-
 import com.hippotech.controller.components.Week;
 import com.hippotech.model.Person;
 import com.hippotech.model.ProjectName;
@@ -24,7 +23,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -32,7 +31,6 @@ import javafx.util.Callback;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -100,7 +98,6 @@ public class PrimaryViewController implements Initializable {
         tcProcess.setEditable(true);
         tcProcess.setCellValueFactory(new PropertyValueFactory<>("processed"));
         tbData.setItems(listTask);
-        tbDetail.setFixedCellSize(30);
     }
 
     public void refreshTable() {
@@ -146,14 +143,13 @@ public class PrimaryViewController implements Initializable {
         initTable();
         refreshTable();
 
-        Week week = new Week(1);
-        
-        Pane pane = new Pane();
-        pane.getChildren().addAll(week);
+        HBox pane = new HBox();
+        int year = 2020;
+        for (int i = 0; i < 52; i++) {
+            Week week = new Week(LocalDate.of(year, 1, 1).plusWeeks(i));
+            pane.getChildren().add(week);
+        }
         rightPane.setContent(pane);
-//        for (int i = 0; i < 52; i++) {
-//            detail(LocalDate.of(2020,1,1).plus(i, ChronoUnit.WEEKS));
-//        }
         try {
             eventHandler();
         } catch (Exception e) {
@@ -315,24 +311,4 @@ public class PrimaryViewController implements Initializable {
         refreshTable();
     }
 
-
-
-    public String getDayOfMonth(LocalDate date) {
-        return date.getDayOfMonth() + "/" + date.getMonthValue();
-    }
-
-//    public void detail(LocalDate date) {
-//        date = date.minus(date.getDayOfWeek().getValue() - 1, ChronoUnit.DAYS);
-//        WeekFields weekFields = WeekFields.of(Locale.getDefault());
-//        int weekNumber = date.get(weekFields.weekOfWeekBasedYear());
-//        TableColumn<String, String> tcWeek = new TableColumn(String.valueOf(weekNumber));
-//        TableColumn<String, String> tcMon = new TableColumn(getDayOfMonth(date));
-//        TableColumn<String, String> tcTue = new TableColumn(getDayOfMonth(date.plus(1, ChronoUnit.DAYS)));
-//        TableColumn<String, String> tcWed = new TableColumn(getDayOfMonth(date.plus(2, ChronoUnit.DAYS)));
-//        TableColumn<String, String> tcThu = new TableColumn(getDayOfMonth(date.plus(3, ChronoUnit.DAYS)));
-//        TableColumn<String, String> tcFri = new TableColumn(getDayOfMonth(date.plus(4, ChronoUnit.DAYS)));
-//        tcWeek.getColumns().addAll(tcMon, tcTue, tcWed, tcThu, tcFri);
-//        tbDetail.getColumns().add(tcWeek);
-//
-//    }
 }

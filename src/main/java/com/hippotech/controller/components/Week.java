@@ -8,6 +8,7 @@ import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 public class Week extends VBox {
@@ -15,12 +16,12 @@ public class Week extends VBox {
     WeekTitle weekTitle;
     @FXML
     VBox weekTask;
-    LocalDate date;
     ArrayList<Task> tasks;
     ArrayList<TaskRow> taskRows;
     TaskService service;
 
-    public Week(int weekOfYear) {
+    public Week(LocalDate date) {
+        LocalDate monday = getMonday(date);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/hippotech/components/Week.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
@@ -29,14 +30,21 @@ public class Week extends VBox {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        date = LocalDate.parse("2020-10-01");
         service = new TaskService();
         tasks = service.getAllTask();
         taskRows = new ArrayList<>();
         for (Task task : tasks) {
-            taskRows.add(new TaskRow(task, date));
+            taskRows.add(new TaskRow(task, monday));
         }
         weekTask.getChildren().addAll(taskRows);
-        weekTitle.setText(LocalDate.of(2020, 10, 1));
+        weekTitle.setText(monday);
+
+
+    }
+
+    private LocalDate getMonday(LocalDate date) {
+        LocalDate monday;
+        monday = date.minus(date.getDayOfWeek().getValue() - 1, ChronoUnit.DAYS);
+        return monday;
     }
 }
