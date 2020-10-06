@@ -24,7 +24,7 @@ public class TaskRow extends HBox {
     Rectangle fri;
     Task task;
 
-    public TaskRow(Task task, LocalDate date) {
+    public TaskRow(Task task) {
         this.task = task;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/hippotech/components/TaskRow.fxml"));
         fxmlLoader.setRoot(this);
@@ -35,7 +35,6 @@ public class TaskRow extends HBox {
             throw new RuntimeException(e);
         }
         System.out.println(this.task.getFinishDate());
-        setFill(date);
     }
 
     public void setFill(LocalDate date) {
@@ -52,7 +51,7 @@ public class TaskRow extends HBox {
 
         LocalDate deadLine = LocalDate.parse(this.task.getDeadline());
         //TODO: Handle null finish date
-        if (!this.task.getFinishDate().equals(null)) {
+        if (this.task.getFinishDate() != null) {
             LocalDate finishDate = LocalDate.parse(this.task.getFinishDate());
             if (finishDate.isBefore(deadLine)) {
                 if (date.isBefore(finishDate)) return Constant.COLOR.SOFT_GREEN; //xanh la nhat

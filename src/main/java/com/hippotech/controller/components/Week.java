@@ -32,12 +32,12 @@ public class Week extends VBox {
         }
         service = new TaskService();
         tasks = service.getAllTask();
-        taskRows = new ArrayList<>();
-        for (Task task : tasks) {
-            taskRows.add(new TaskRow(task, monday));
-        }
-        weekTask.getChildren().addAll(taskRows);
-        weekTitle.setText(monday);
+//        taskRows = new ArrayList<>();
+//        for (Task task : tasks) {
+//            taskRows.add(new TaskRow(task, monday));
+//        }
+//        weekTask.getChildren().addAll(taskRows);
+//        weekTitle.setText(monday);
 
 
     }
