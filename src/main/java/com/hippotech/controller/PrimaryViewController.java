@@ -1,7 +1,7 @@
 package com.hippotech.controller;
 
 
-import com.hippotech.controller.components.WeekTitle;
+import com.hippotech.controller.components.Week;
 import com.hippotech.model.Person;
 import com.hippotech.model.ProjectName;
 import com.hippotech.model.Task;
@@ -144,10 +144,12 @@ public class PrimaryViewController implements Initializable {
         refreshTable();
 
         HBox pane = new HBox();
-        int year = 2019;
+        int year = 2020;
         for (int i = 0; i < 52; i++) {
-            WeekTitle weekTitle = new WeekTitle(LocalDate.of(year, 1, 1).plusWeeks(i));
-            pane.getChildren().add(weekTitle);
+//            WeekTitle weekTitle = new WeekTitle(LocalDate.of(year,1,1).plusWeeks(i));
+
+            Week week = new Week(LocalDate.of(year, 1, 1).plusWeeks(i));
+            pane.getChildren().add(week);
         }
         rightPane.setContent(pane);
         try {

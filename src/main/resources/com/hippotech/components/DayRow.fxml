@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
-<?import javafx.scene.layout.*?>
-
-<?import javafx.scene.text.Text?>
-<fx:root type="javafx.scene.layout.HBox" xmlns:fx="http://javafx.com/fxml">
-    <Text fx:id="mon"/>
-    <Text fx:id="tue"/>
-    <Text fx:id="wed"/>
-    <Text fx:id="thu"/>
-    <Text fx:id="fri"/>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.*?>
+<fx:root xmlns:fx="http://javafx.com/fxml/1" type="javafx.scene.layout.HBox" xmlns="http://javafx.com/javafx/11.0.1"
+         alignment="BASELINE_CENTER">
+    <Text fx:id="mon" textAlignment="CENTER"/>
+    <Text fx:id="tue" textAlignment="CENTER"/>
+    <Text fx:id="wed" textAlignment="CENTER"/>
+    <Text fx:id="thu" textAlignment="CENTER"/>
+    <Text fx:id="fri" textAlignment="CENTER"/>
 </fx:root>

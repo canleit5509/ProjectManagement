@@ -16,10 +16,8 @@ public class WeekTitle extends VBox {
     Text weekNum;
     @FXML
     DayRow row;
-    LocalDate date;
 
-    public WeekTitle(LocalDate date) {
-        this.date = date;
+    public WeekTitle() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/hippotech/components/WeekTitle.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
@@ -28,8 +26,6 @@ public class WeekTitle extends VBox {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        LocalDate monday = getMonday(date);
-        setText(monday);
     }
 
     public void setText(LocalDate date) {

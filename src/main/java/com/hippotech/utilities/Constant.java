@@ -15,10 +15,10 @@ public interface Constant {
 
     interface COLOR {
         String WHITE = "#FFFFFF";
-        String SOFT_GREEN = "#66d94c";
-        String DARK_GREEN = "#4fa83b";
+        String SOFT_GREEN = "#6bfc5b";
+        String DARK_GREEN = "#0d8500";
         String RED = "#d62a1e";
-        String ORANGE = "#ffe58f";
-        String YELLOW = "#f5f25b";
+        String ORANGE = "#ffe987";
+        String YELLOW = "#eaff00";
     }
 }
