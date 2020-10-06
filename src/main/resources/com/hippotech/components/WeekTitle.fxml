@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.hippotech.controller.components.DayRow?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
-<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml">
-    <Text fx:id="weekNum" textAlignment="CENTER"/>
+<fx:root xmlns:fx="http://javafx.com/fxml" type="javafx.scene.layout.VBox" alignment="CENTER">
+    <StackPane>
+        <Rectangle fill="WHITE" height="20" stroke="BLACK" strokeWidth="0.5" width="179"/>
+        <Text fx:id="weekNum" textAlignment="CENTER"/>
+    </StackPane>
     <DayRow fx:id="row"/>
 </fx:root>

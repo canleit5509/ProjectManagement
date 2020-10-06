@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 <fx:root xmlns:fx="http://javafx.com/fxml/1" type="javafx.scene.layout.HBox" xmlns="http://javafx.com/javafx/11.0.1"
-         alignment="BASELINE_CENTER">
-    <Text fx:id="mon" textAlignment="CENTER"/>
-    <Text fx:id="tue" textAlignment="CENTER"/>
-    <Text fx:id="wed" textAlignment="CENTER"/>
-    <Text fx:id="thu" textAlignment="CENTER"/>
-    <Text fx:id="fri" textAlignment="CENTER"/>
+         alignment="CENTER">
+    <StackPane>
+        <Rectangle fill="WHITE" height="20" stroke="BLACK" strokeWidth="0.5" width="35"/>
+        <Text fx:id="mon" textAlignment="CENTER" wrappingWidth="35"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="20" stroke="BLACK" strokeWidth="0.5" width="35"/>
+        <Text fx:id="tue" textAlignment="CENTER" wrappingWidth="35"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="20" stroke="BLACK" strokeWidth="0.5" width="35"/>
+        <Text fx:id="wed" textAlignment="CENTER" wrappingWidth="35"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="20" stroke="BLACK" strokeWidth="0.5" width="35"/>
+        <Text fx:id="thu" textAlignment="CENTER" wrappingWidth="35"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="20" stroke="BLACK" strokeWidth="0.5" width="35"/>
+        <Text fx:id="fri" textAlignment="CENTER" wrappingWidth="35"/>
+    </StackPane>
 </fx:root>
