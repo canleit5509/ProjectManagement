@@ -13,6 +13,12 @@ public interface Constant {
         String PROCESS = "Process%";
     }
 
+    interface DialogConstant {
+        String NOTIFICATION_TITLE = "Thông báo";
+        String SUCCESS_ADD_PERSON = "Thêm thành công";
+
+    }
+
     interface COLOR {
         String WHITE = "#FFFFFF";
         String SOFT_GREEN = "#6bfc5b";
