@@ -1,18 +1,17 @@
 package com.hippotech.controller;
 
 
+import com.hippotech.controller.components.Week;
 import com.hippotech.model.Person;
 import com.hippotech.model.ProjectName;
 import com.hippotech.model.Task;
-
 import com.hippotech.service.PersonService;
 import com.hippotech.service.ProjectNameService;
 import com.hippotech.service.TaskService;
-
+import com.hippotech.utilities.Constant;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,17 +23,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import com.hippotech.utilities.*;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.WeekFields;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -67,7 +63,8 @@ public class PrimaryViewController implements Initializable {
     TableColumn<Task, String> tcFinishTime;
     @FXML
     TableColumn<Task, String> tcProcess;
-
+    @FXML
+    ScrollPane rightPane;
     TaskService taskService;
     PersonService personService;
     ProjectNameService projectNameService;
@@ -80,7 +77,8 @@ public class PrimaryViewController implements Initializable {
         projectNameService = new ProjectNameService();
         listTask = FXCollections.observableArrayList(taskService.getAllTask());
     }
-    public void initTable(){
+
+    public void initTable() {
         tbData.setEditable(true);
         tbData.setMaxWidth(940);
         tcProjectName.setEditable(true);
@@ -100,8 +98,8 @@ public class PrimaryViewController implements Initializable {
         tcProcess.setEditable(true);
         tcProcess.setCellValueFactory(new PropertyValueFactory<>("processed"));
         tbData.setItems(listTask);
-        tbDetail.setFixedCellSize(30);
     }
+
     public void refreshTable() {
         ObservableList<Task> taskList = FXCollections.observableArrayList(taskService.getAllTask());
         tbData.setItems(taskList);
@@ -144,9 +142,16 @@ public class PrimaryViewController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
         refreshTable();
+
+        HBox pane = new HBox();
+        int year = 2020;
         for (int i = 0; i < 52; i++) {
-            detail(LocalDate.of(2020,1,1).plus(i, ChronoUnit.WEEKS));
+//            WeekTitle weekTitle = new WeekTitle(LocalDate.of(year,1,1).plusWeeks(i));
+
+            Week week = new Week(LocalDate.of(year, 1, 1).plusWeeks(i));
+            pane.getChildren().add(week);
         }
+        rightPane.setContent(pane);
         try {
             eventHandler();
         } catch (Exception e) {
@@ -154,10 +159,11 @@ public class PrimaryViewController implements Initializable {
         }
 
     }
+
     private void eventHandler() {
         btnAdd.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(MouseEvent mouseEvent){
+            public void handle(MouseEvent mouseEvent) {
                 Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
                 FXMLLoader loader = getLoader("/com/hippotech/AddTaskView.fxml");
                 Parent addTaskParent = null;
@@ -214,7 +220,7 @@ public class PrimaryViewController implements Initializable {
             public void handle(MouseEvent mouseEvent) {
                 Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
                 FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(getClass().getResource("/FXML/UpdateTaskView.fxml"));
+                loader.setLocation(getClass().getResource("/com/hippotech/UpdateTaskView.fxml"));
                 Parent updateTaskParent = null;
                 try {
                     updateTaskParent = loader.load();
@@ -243,51 +249,13 @@ public class PrimaryViewController implements Initializable {
             }
         });
     }
-    public FXMLLoader getLoader(String source){
+
+    public FXMLLoader getLoader(String source) {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource(source));
         return loader;
     }
-//    public void addTask(Event e) throws IOException {
-//        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-//        FXMLLoader loader = new FXMLLoader();
-//        loader.setLocation(getClass().getResource("/FXML/AddTaskView.fxml"));
-//        Parent addTaskParent = loader.load();
-//        Scene scene = new Scene(addTaskParent);
-//        Stage addTaskWindow = new Stage();
-//        addTaskWindow.setTitle("Thêm công việc");
-//        addTaskWindow.setScene(scene);
-//        addTaskWindow.initModality(Modality.WINDOW_MODAL);
-//        addTaskWindow.initOwner(stage);
-//        addTaskWindow.showAndWait();
-//        refreshTable();
-//    }
 
-//    public void updateTask(ActionEvent e) throws IOException {
-//        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-//        FXMLLoader loader = new FXMLLoader();
-//        loader.setLocation(getClass().getResource("/FXML/UpdateTaskView.fxml"));
-//        Parent updateTaskParent = loader.load();
-//        Scene scene = new Scene(updateTaskParent);
-//        UpdateTaskViewController controller = loader.getController();
-//        Task selected = tbData.getSelectionModel().getSelectedItem();
-//        if (selected == null) {
-//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//            alert.setTitle("Warning");
-//            alert.setHeaderText("Vui lòng chọn công việc cần chỉnh sửa");
-//            alert.show();
-//        } else {
-//            controller.setTask(selected);
-//            controller.setComboBox();
-//            Stage updateTaskWindow = new Stage();
-//            updateTaskWindow.setTitle("Chỉnh sửa công việc");
-//            updateTaskWindow.setScene(scene);
-//            updateTaskWindow.initModality(Modality.WINDOW_MODAL);
-//            updateTaskWindow.initOwner(stage);
-//            updateTaskWindow.showAndWait();
-//            refreshTable();
-//        }
-//    }
 
     public void Delete(ActionEvent e) {
         Task selected = tbData.getSelectionModel().getSelectedItem();
@@ -318,7 +286,7 @@ public class PrimaryViewController implements Initializable {
     public void btnProject(ActionEvent e) throws IOException {
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/FXML/ProjectManagement.fxml"));
+        loader.setLocation(getClass().getResource("/com/hippotech/ProjectManagement.fxml"));
         Parent addTaskParent = loader.load();
         Scene scene = new Scene(addTaskParent);
         Stage addTaskWindow = new Stage();
@@ -333,7 +301,7 @@ public class PrimaryViewController implements Initializable {
     public void btnPerson(ActionEvent e) throws IOException {
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/FXML/PersonManagement.fxml"));
+        loader.setLocation(getClass().getResource("/com/hipptech/PersonManagement.fxml"));
         Parent addTaskParent = loader.load();
         Scene scene = new Scene(addTaskParent);
         Stage addTaskWindow = new Stage();
@@ -345,29 +313,4 @@ public class PrimaryViewController implements Initializable {
         refreshTable();
     }
 
-//    public void Clicked(MouseEvent mouseEvent) throws IOException {
-//        Task selected = tbData.getSelectionModel().getSelectedItem();
-//        if (mouseEvent.getClickCount() == 2 && selected != null) {
-//            btnEdit.fire();
-//        }
-//    }
-
-    public String getDayOfMonth(LocalDate date) {
-        return date.getDayOfMonth() + "/" + date.getMonthValue();
-    }
-
-    public void detail(LocalDate date) {
-        date = date.minus(date.getDayOfWeek().getValue() - 1, ChronoUnit.DAYS);
-        WeekFields weekFields = WeekFields.of(Locale.getDefault());
-        int weekNumber = date.get(weekFields.weekOfWeekBasedYear());
-        TableColumn<String, String> tcWeek = new TableColumn(String.valueOf(weekNumber));
-        TableColumn<String, String> tcMon = new TableColumn(getDayOfMonth(date));
-        TableColumn<String, String> tcTue = new TableColumn(getDayOfMonth(date.plus(1, ChronoUnit.DAYS)));
-        TableColumn<String, String> tcWed = new TableColumn(getDayOfMonth(date.plus(2, ChronoUnit.DAYS)));
-        TableColumn<String, String> tcThu = new TableColumn(getDayOfMonth(date.plus(3, ChronoUnit.DAYS)));
-        TableColumn<String, String> tcFri = new TableColumn(getDayOfMonth(date.plus(4, ChronoUnit.DAYS)));
-        tcWeek.getColumns().addAll(tcMon, tcTue, tcWed, tcThu, tcFri);
-        tbDetail.getColumns().add(tcWeek);
-
-    }
 }
