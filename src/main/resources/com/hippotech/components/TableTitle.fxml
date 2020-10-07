@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<fx:root xmlns:fx="http://javafx.com/fxml/1" type="javafx.scene.layout.HBox" xmlns="http://javafx.com/javafx/11.0.1"
+         alignment="CENTER">
+    <StackPane>
+        <Rectangle fill="WHITE" height="20" stroke="BLACK" strokeWidth="0.5" width="35"/>
+        <Text textAlignment="CENTER" wrappingWidth="35" text="Project"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="20" stroke="BLACK" strokeWidth="0.5" width="35"/>
+        <Text textAlignment="CENTER" wrappingWidth="35" text="Task"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="20" stroke="BLACK" strokeWidth="0.5" width="35"/>
+        <Text textAlignment="CENTER" wrappingWidth="35" text="Employee"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="20" stroke="BLACK" strokeWidth="0.5" width="35"/>
+        <Text textAlignment="CENTER" wrappingWidth="35" text="Start"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="20" stroke="BLACK" strokeWidth="0.5" width="35"/>
+        <Text textAlignment="CENTER" wrappingWidth="35" text="Deadline"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="20" stroke="BLACK" strokeWidth="0.5" width="35"/>
+        <Text textAlignment="CENTER" wrappingWidth="35" text="Finish"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="20" stroke="BLACK" strokeWidth="0.5" width="35"/>
+        <Text textAlignment="CENTER" wrappingWidth="35" text="Expected"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="20" stroke="BLACK" strokeWidth="0.5" width="35"/>
+        <Text textAlignment="CENTER" wrappingWidth="35" text="Finish Time"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="20" stroke="BLACK" strokeWidth="0.5" width="35"/>
+        <Text textAlignment="CENTER" wrappingWidth="35" text="Process"/>
+    </StackPane>
+
+</fx:root>
