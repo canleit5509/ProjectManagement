@@ -34,7 +34,6 @@ public class TaskRow extends HBox {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(this.task.getFinishDate());
         setFill(date);
     }
 
