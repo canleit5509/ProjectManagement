@@ -16,6 +16,10 @@ public interface Constant {
     interface DialogConstant {
         String NOTIFICATION_TITLE = "Thông báo";
         String SUCCESS_ADD_PERSON = "Thêm thành công";
+        String SUCCESS_ADD_PROJECT = "Thêm thành công";
+        String SUCCESS_ADD_TASK = "Thêm thành công";
+        String ERROR_DEADLINE_BEFORE_START_TIME = "Ngày deadline trước ngày bắt đầu!";
+        String ERROR_FINISH_TIME_BEFORE_START_TIME = "Ngày hoàn thành trước ngày bắt đầu!";
 
     }
 

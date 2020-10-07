@@ -6,6 +6,7 @@ import com.hippotech.model.Task;
 import com.hippotech.service.PersonService;
 import com.hippotech.service.ProjectNameService;
 import com.hippotech.service.TaskService;
+import com.hippotech.utilities.Constant;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -69,51 +70,36 @@ public class AddTaskViewController implements Initializable {
 
     public boolean validate() {
         if (prName.getValue() == null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Thông báo");
-            alert.setHeaderText("Vui lòng chọn dự án!");
-            alert.showAndWait();
+            _Alert.showWaitInfoNotification("Vui lòng chọn dự án!");
             return false;
         }
         if (name.getValue() == null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Thông báo");
-            alert.setHeaderText("Vui lòng chọn nhân sự");
-            alert.showAndWait();
+            _Alert.showWaitInfoNotification("Vui lòng chọn nhân sự");
             return false;
         }
         if (title.getText().equals("")) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Thông báo");
-            alert.setHeaderText("Vui lòng chọn tên công việc");
-            alert.showAndWait();
+            _Alert.showWaitInfoNotification("Vui lòng chọn tên công việc");
             return false;
         }
         if (startDate.getValue() == null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Thông báo");
-            alert.setHeaderText("Vui lòng chọn ngày bắt đầu");
-            alert.showAndWait();
+            _Alert.showWaitInfoNotification("Vui lòng chọn ngày bắt đầu");
             return false;
         }
         if (deadline.getValue() == null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Thông báo");
-            alert.setHeaderText("Vui lòng chọn ngày deadline");
-            alert.showAndWait();
+            _Alert.showWaitInfoNotification("Vui lòng chọn ngày deadline");
             return false;
         }
         return true;
     }
 
     public Task getTask() {
+        String tempName = name.getValue();
+        if (tempName.contains("|")) tempName = tempName.substring(7);
+
         Task task = new Task();
         task.setId(id.getText());
         task.setPrName(prName.getValue());
-        if (!name.getValue().contains("|"))
-            task.setName(name.getValue());
-        else
-            task.setName(name.getValue().substring(7));
+        task.setName(tempName);
         task.setTitle(title.getText());
         task.setStartDate(String.valueOf(startDate.getValue()));
         task.setDeadline(String.valueOf(deadline.getValue()));
@@ -180,10 +166,7 @@ public class AddTaskViewController implements Initializable {
         LocalDate date1 = startDate.getValue();
         LocalDate date2 = deadline.getValue();
         if (date2.compareTo(date1) < 0) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Thông báo");
-            alert.setHeaderText("Ngày deadline trước ngày bắt đầu!");
-            alert.showAndWait();
+            _Alert.showWaitInfoNotification(Constant.DialogConstant.ERROR_DEADLINE_BEFORE_START_TIME);
         } else {
             expectedTime.setText(String.valueOf(workDays(date1, date2)));
         }
@@ -193,10 +176,7 @@ public class AddTaskViewController implements Initializable {
         LocalDate date1 = startDate.getValue();
         LocalDate date2 = finishDate.getValue();
         if (date2.compareTo(date1) < 0) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Thông báo");
-            alert.setHeaderText("Ngày hoàn thành trước ngày bắt đầu!");
-            alert.showAndWait();
+            _Alert.showWaitInfoNotification(Constant.DialogConstant.ERROR_FINISH_TIME_BEFORE_START_TIME);
         } else {
             finishTime.setText(String.valueOf(workDays(date1, date2)));
         }
@@ -243,10 +223,7 @@ public class AddTaskViewController implements Initializable {
         if (validate()) {
             Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
             taskService.addTask(getTask());
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Thông báo");
-            alert.setHeaderText("Thêm thành công");
-            alert.showAndWait();
+            _Alert.showWaitInfoNotification(Constant.DialogConstant.SUCCESS_ADD_TASK);
             stage.close();
         }
     }
