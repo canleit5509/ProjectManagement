@@ -3,41 +3,23 @@ package com.hippotech.controller;
 
 import com.hippotech.controller.components.TableTitle;
 import com.hippotech.controller.components.Week;
-import com.hippotech.dto.TaskDTO;
-import com.hippotech.model.Person;
-import com.hippotech.model.ProjectName;
 import com.hippotech.model.Task;
 import com.hippotech.service.PersonService;
 import com.hippotech.service.ProjectNameService;
 import com.hippotech.service.TaskService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.util.Callback;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
 
-import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 
@@ -52,11 +34,14 @@ public class PrimaryViewController implements Initializable {
     @FXML
     Button btnDel;
     @FXML
-    ScrollPane rightPane, leftPane;
+    ScrollPane rightPane;
+    @FXML
+    VBox leftPaneTitle;
     TaskService taskService;
     PersonService personService;
     ProjectNameService projectNameService;
     ArrayList<Task> tasks;
+
     public PrimaryViewController() {
         taskService = new TaskService();
         personService = new PersonService();
@@ -198,6 +183,7 @@ public class PrimaryViewController implements Initializable {
 //            }
 //        });
     }
+
     private void addPane(int colIndex, int rowIndex, int labelSize, String content) {
 
         int cellNum = rowIndex * 2 + colIndex + 1;
@@ -230,9 +216,9 @@ public class PrimaryViewController implements Initializable {
         rightPane.setContent(pane);
 
         TableTitle tableTitle = new TableTitle();
-        VBox left = new VBox();
-        left.getChildren().add(tableTitle);
-        leftPane.setContent(left);
+//        VBox left = new VBox();
+//        left.getChildren().add(tableTitle);
+        leftPaneTitle.getChildren().add(tableTitle);
 //        try {
 //            eventHandler();
 //        } catch (Exception e) {
