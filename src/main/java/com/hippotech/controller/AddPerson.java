@@ -44,7 +44,6 @@ public class AddPerson implements Initializable {
         alert.setHeaderText(Constant.DialogConstant.SUCCESS_ADD_PERSON);
         alert.show();
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        System.out.println("OK");
         stage.close();
     }
 

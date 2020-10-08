@@ -29,6 +29,7 @@ public class TaskDAO implements DAO<TaskDTO> {
     public ArrayList<TaskDTO> getAll() {
         ArrayList<TaskDTO> tasks = new ArrayList<>();
         try {
+            connection = getConnection();
             preparedStatement = connection.prepareStatement(FIND_ALL);
             ResultSet RS = preparedStatement.executeQuery();
             while (RS.next()) {
@@ -38,6 +39,7 @@ public class TaskDAO implements DAO<TaskDTO> {
                         RS.getInt("processed"));
                 tasks.add(task);
             }
+            connection.close();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         } finally {
@@ -91,6 +93,7 @@ public class TaskDAO implements DAO<TaskDTO> {
             preparedStatement.setInt(9, task.getFinishTime());
             preparedStatement.setInt(10, task.getProcessed());
             preparedStatement.executeUpdate();
+            connection.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         } finally {
@@ -113,6 +116,7 @@ public class TaskDAO implements DAO<TaskDTO> {
             preparedStatement.setInt(8, task.getFinishTime());
             preparedStatement.setInt(9, task.getProcessed());
             preparedStatement.executeUpdate();
+            connection.close();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         } finally {
@@ -127,6 +131,7 @@ public class TaskDAO implements DAO<TaskDTO> {
             preparedStatement = connection.prepareStatement(DELETE);
             preparedStatement.setString(1, task.getId());
             preparedStatement.executeUpdate();
+            connection.close();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         } finally {

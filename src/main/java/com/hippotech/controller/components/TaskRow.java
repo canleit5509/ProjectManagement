@@ -34,7 +34,6 @@ public class TaskRow extends HBox {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(this.task.getFinishDate());
         setFill(date);
     }
 
@@ -51,20 +50,19 @@ public class TaskRow extends HBox {
         if (date.isBefore(startDate)) return Constant.COLOR.WHITE;
 
         LocalDate deadLine = LocalDate.parse(this.task.getDeadline());
-        //TODO: Con loi to mau
         if (this.task.getFinishDate() != null) {
             LocalDate finishDate = LocalDate.parse(this.task.getFinishDate());
             if (finishDate.isBefore(deadLine)) {
-                if (date.isEqual(finishDate)) return Constant.COLOR.DARK_GREEN; // xanh dam
-                if (date.isEqual(deadLine)) return Constant.COLOR.RED;   // do
+                if (date.isEqual(finishDate)) return Constant.COLOR.DARK_GREEN;
+                if (date.isEqual(deadLine)) return Constant.COLOR.RED;
                 if (date.isBefore(finishDate) || date.isEqual(startDate))
-                    return Constant.COLOR.SOFT_GREEN; //xanh la nhat
+                    return Constant.COLOR.SOFT_GREEN;
             } else {
-                if (date.isEqual(deadLine)) return Constant.COLOR.RED;   // do
-                if (date.isEqual(finishDate)) return Constant.COLOR.YELLOW; //vang
+                if (date.isEqual(deadLine)) return Constant.COLOR.RED;
+                if (date.isEqual(finishDate)) return Constant.COLOR.YELLOW;
                 if (finishDate.isEqual(deadLine) && finishDate.isEqual(date)) return Constant.COLOR.DARK_GREEN;
-                if (date.isBefore(deadLine) || date.isEqual(startDate)) return Constant.COLOR.SOFT_GREEN; //xanh la nhat
-                if (date.isBefore(finishDate)) return Constant.COLOR.ORANGE;//cam
+                if (date.isBefore(deadLine) || date.isEqual(startDate)) return Constant.COLOR.SOFT_GREEN;
+                if (date.isBefore(finishDate)) return Constant.COLOR.ORANGE;
 
             }
         } else {

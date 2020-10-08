@@ -3,6 +3,7 @@ package com.hippotech.controller;
 
 import com.hippotech.model.ProjectName;
 import com.hippotech.service.ProjectNameService;
+import com.hippotech.utilities.Constant;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -49,7 +50,7 @@ public class ManageProject implements Initializable {
         Parent addProject = loader.load();
         Scene scene = new Scene(addProject);
         Stage addProjectWindow = new Stage();
-        addProjectWindow.setTitle("Thêm dự án");
+        addProjectWindow.setTitle(Constant.ManagerProject.NOTIFICATION_TITLE);
         addProjectWindow.setScene(scene);
         addProjectWindow.initModality(Modality.WINDOW_MODAL);
         addProjectWindow.initOwner(stage);

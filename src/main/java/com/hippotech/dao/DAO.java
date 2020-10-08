@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public interface DAO<T> {
     String DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
     String DB_URL = "jdbc:mysql://localhost:3306/projectmanager";
-    String ID = "project";
+    String ID = "root";
     String PASS = "";
 
     ArrayList<T> getAll();

@@ -3,6 +3,7 @@ package com.hippotech.controller;
 
 import com.hippotech.model.Person;
 import com.hippotech.service.PersonService;
+import com.hippotech.utilities.Constant;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -66,8 +67,8 @@ public class ManagePerson implements Initializable {
         Person person = (Person) tbData.getSelectionModel().getSelectedItem();
         if (person == null) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Warning");
-            alert.setHeaderText("Vui lòng chọn nhân viên");
+            alert.setTitle(Constant.ManagerPerson.NOTIFICATION_TITLE);
+            alert.setHeaderText(Constant.ManagerPerson.NOTIFICATION_CONTENT);
             alert.show();
         } else {
             Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
@@ -76,7 +77,7 @@ public class ManagePerson implements Initializable {
             Parent addProject = loader.load();
             Scene scene = new Scene(addProject);
             Stage addProjectWindow = new Stage();
-            addProjectWindow.setTitle("Cập nhật nhân sự");
+            addProjectWindow.setTitle(Constant.ManagerPerson.UPDATE_PERSON_WINDOW_TITLE);
             addProjectWindow.setScene(scene);
             addProjectWindow.initModality(Modality.WINDOW_MODAL);
             addProjectWindow.initOwner(stage);

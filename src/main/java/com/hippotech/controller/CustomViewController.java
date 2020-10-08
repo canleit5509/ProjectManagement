@@ -16,7 +16,7 @@ public class CustomViewController extends HBox {
 
     public CustomViewController() {
         taskService = new TaskService();
-        FXMLLoader fxmlLoader =new FXMLLoader(getClass().getResource("/com/hippotech/fxml/customview.fxml"));
+        FXMLLoader fxmlLoader =new FXMLLoader(getClass().getResource("/com/hippotech/customview.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
         try {
