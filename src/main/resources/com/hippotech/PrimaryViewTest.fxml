@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.hippotech.controller.PrimaryViewController">
+    <MenuBar VBox.vgrow="NEVER">
+        <Menu text="File">
+            <MenuItem text="Import"/>
+            <MenuItem text="Export"/>
+        </Menu>
+    </MenuBar>
+    <ScrollPane>
+        <HBox>
+            <GridPane fx:id="gridPane" gridLinesVisible="true">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="260.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="85.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="85.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="70.0" prefWidth="100.0" />
+                </columnConstraints>
+                <rowConstraints>
+
+                </rowConstraints>
+            </GridPane>
+            <!--            <TableView fx:id="tbData" editable="true" prefHeight="1000" prefWidth="1165.0">-->
+            <!--                <columns>-->
+            <!--                    <TableColumn fx:id="tcProjectName" prefWidth="100" text="Project"/>-->
+            <!--                    <TableColumn fx:id="tcTask" prefWidth="260" text="Task"/>-->
+            <!--                    <TableColumn fx:id="tcNgPTr" text="Employee"/>-->
+            <!--                    <TableColumn fx:id="tcDateStart" prefWidth="90" text="Start"/>-->
+            <!--                    <TableColumn fx:id="tcDeadline" prefWidth="90" text="Deadline"/>-->
+            <!--                    <TableColumn fx:id="tcFinishDate" prefWidth="90" text="Finish"/>-->
+            <!--                    <TableColumn fx:id="tcExpectedTime" prefWidth="85" text="Expected"/>-->
+            <!--                    <TableColumn fx:id="tcFinishTime" prefWidth="85.0" text="Finish Time"/>-->
+            <!--                    <TableColumn fx:id="tcProcess" prefWidth="70.0">-->
+            <!--                        <text>% Process</text>-->
+            <!--                    </TableColumn>-->
+            <!--                </columns>-->
+            <!--            </TableView>-->
+            <ScrollPane fx:id="rightPane">
+
+            </ScrollPane>
+        </HBox>
+    </ScrollPane>
+    <HBox alignment="CENTER" spacing="200">
+        <Button fx:id="btnAdd" layoutX="72.0" layoutY="550.0" mnemonicParsing="false"  text="Thêm" />
+        <Button fx:id="btnDel" layoutX="527.0" layoutY="550.0" mnemonicParsing="false" onAction="#Delete" text="Xoá" />
+        <Button fx:id="btnEdit" layoutX="350.0" layoutY="550.0" mnemonicParsing="false"  text="Sửa" />
+        <Button layoutX="769.0" layoutY="550.0" mnemonicParsing="false" onAction="#btnProject" text="Project" />
+        <Button layoutX="951.0" layoutY="550.0" mnemonicParsing="false" onAction="#btnPerson" text="Person" />
+    </HBox>
+</VBox>
