@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class TableTitle extends HBox {
     public TableTitle() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/hippotech/components/DayRow.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/hippotech/components/TableTitle.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
         try {

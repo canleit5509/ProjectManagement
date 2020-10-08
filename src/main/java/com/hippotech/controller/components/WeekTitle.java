@@ -29,7 +29,7 @@ public class WeekTitle extends VBox {
     }
 
     public void setText(LocalDate date) {
-        row.setText(date);
+        row.setText(getMonday(date));
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
         int weekNumber = date.get(weekFields.weekOfWeekBasedYear());
         weekNum.setText(weekNumber + "");
