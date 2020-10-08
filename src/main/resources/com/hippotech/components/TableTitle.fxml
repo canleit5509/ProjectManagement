@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<fx:root xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" type="javafx.scene.layout.HBox"
+         xmlns="http://javafx.com/javafx/11.0.1">
+    <StackPane>
+        <Rectangle fill="WHITE" height="42" stroke="BLACK" strokeWidth="0.5" width="100"/>
+        <Text text="Project" textAlignment="CENTER" wrappingWidth="100"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="42" stroke="BLACK" strokeWidth="0.5" width="260"/>
+        <Text text="Task" textAlignment="CENTER" wrappingWidth="260"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="42" stroke="BLACK" strokeWidth="0.5" width="85"/>
+        <Text text="Employee" textAlignment="CENTER" wrappingWidth="85"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="42" stroke="BLACK" strokeWidth="0.5" width="90"/>
+        <Text text="Start" textAlignment="CENTER" wrappingWidth="90"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="42" stroke="BLACK" strokeWidth="0.5" width="90"/>
+        <Text text="Deadline" textAlignment="CENTER" wrappingWidth="90"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="42" stroke="BLACK" strokeWidth="0.5" width="90"/>
+        <Text text="Finish" textAlignment="CENTER" wrappingWidth="90"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="42" stroke="BLACK" strokeWidth="0.5" width="85"/>
+        <Text text="Expected" textAlignment="CENTER" wrappingWidth="85"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="42" stroke="BLACK" strokeWidth="0.5" width="85"/>
+        <Text text="Finish Time" textAlignment="CENTER" wrappingWidth="85"/>
+    </StackPane>
+    <StackPane>
+        <Rectangle fill="WHITE" height="42" stroke="BLACK" strokeWidth="0.5" width="70"/>
+        <Text text="Process" textAlignment="CENTER" wrappingWidth="70"/>
+    </StackPane>
+
+</fx:root>

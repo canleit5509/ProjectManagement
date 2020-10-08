@@ -1,7 +1,6 @@
 package com.hippotech.controller.components;
 
 import com.hippotech.model.Task;
-import com.hippotech.service.TaskService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.VBox;
@@ -16,11 +15,9 @@ public class Week extends VBox {
     WeekTitle weekTitle;
     @FXML
     VBox weekTask;
-    ArrayList<Task> tasks;
     ArrayList<TaskRow> taskRows;
-    TaskService service;
 
-    public Week(LocalDate date) {
+    public Week(LocalDate date, ArrayList<Task> tasks) {
         LocalDate monday = getMonday(date);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/hippotech/components/Week.fxml"));
         fxmlLoader.setRoot(this);
@@ -30,8 +27,6 @@ public class Week extends VBox {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        service = new TaskService();
-        tasks = service.getAllTask();
         taskRows = new ArrayList<>();
         for (Task task : tasks) {
             taskRows.add(new TaskRow(task, monday));
