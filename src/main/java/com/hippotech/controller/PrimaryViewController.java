@@ -18,6 +18,7 @@ import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 
@@ -54,12 +55,14 @@ public class PrimaryViewController implements Initializable {
     TaskService taskService;
     PersonService personService;
     ProjectNameService projectNameService;
-
+    ArrayList<Task> tasks;
     public PrimaryViewController() {
+
         taskService = new TaskService();
         personService = new PersonService();
         projectNameService = new ProjectNameService();
         listTask = FXCollections.observableArrayList(taskService.getAllTask());
+        tasks = taskService.getAllTask();
     }
 
 //    public void initTable() {
@@ -132,7 +135,7 @@ public class PrimaryViewController implements Initializable {
         for (int i = 0; i < 52; i++) {
 //            WeekTitle weekTitle = new WeekTitle(LocalDate.of(year,1,1).plusWeeks(i));
 
-            Week week = new Week(LocalDate.of(year, 1, 1).plusWeeks(i));
+            Week week = new Week(LocalDate.of(year, 1, 1).plusWeeks(i), tasks);
             pane.getChildren().add(week);
         }
         rightPane.setContent(pane);
