@@ -1,5 +1,7 @@
 package com.hippotech.controller;
 
+import com.hippotech.interfaces.IAddContentToWindow;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -9,25 +11,28 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
-public class ModalWindowController {
+public class ModalWindowController{
     Class _class;
 
     public ModalWindowController(Class<?> aClass) {
         this._class = aClass;
     }
-
-    public void showWindowModal(MouseEvent mouseEvent, String viewSource, String title) {
-        Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+    public void showWindowModal(MouseEvent e, String viewSource, String title) {
+        Node node = ((Node) e.getSource());
+        showWindowModal(node, viewSource, title);
+    }
+    public void showWindowModal(Node node, String viewSource, String title) {
         FXMLLoader loader = getLoader(viewSource);
-        Parent view = null;
-        try {
-            view = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Parent parent = load(loader);
+//        addContentToWindow(parent);
+        showWindowModal(node, parent, title);
+    }
 
-        Scene scene = new Scene(view);
+    public void showWindowModal(Node node, Parent parent, String title) {
+        Stage stage = (Stage) node.getScene().getWindow();
+        Scene scene = new Scene(parent);
         Stage newWindow = new Stage();
         newWindow.setTitle(title);
         newWindow.setScene(scene);
@@ -39,7 +44,19 @@ public class ModalWindowController {
     public FXMLLoader getLoader(String source) {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(_class.getResource(source));
+        System.out.println(loader);
+
         return loader;
+    }
+
+    public Parent load(FXMLLoader loader) {
+        Parent parent = null;
+        try {
+            parent = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return parent;
     }
 
 }

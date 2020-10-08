@@ -2,6 +2,7 @@ package com.hippotech.controller;
 
 
 import com.hippotech.controller.components.Week;
+import com.hippotech.interfaces.IAddContentToWindow;
 import com.hippotech.model.Person;
 import com.hippotech.model.ProjectName;
 import com.hippotech.model.Task;
@@ -171,10 +172,10 @@ public class PrimaryViewController implements Initializable {
         btnAdd.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                modalWindowController.showWindowModal(mouseEvent,
+                Node node = (Node) mouseEvent.getSource();
+                modalWindowController.showWindowModal(node,
                         "/com/hippotech/AddTaskView.fxml",
-                        "Thêm công việc");
+                        Constant.WindowTitleConstant.ADD_TASK_TITLE);
                 refreshTable();
             }
         });
@@ -183,25 +184,17 @@ public class PrimaryViewController implements Initializable {
             public void handle(MouseEvent mouseEvent) {
                 Task selected = tbData.getSelectionModel().getSelectedItem();
                 if (selected == null) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Warning");
-                    alert.setHeaderText("Vui lòng chọn công việc cần xóa");
-                    alert.show();
+                    _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_DELETE);
                 } else {
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("Xóa công việc");
-                    alert.setHeaderText("Bạn có chắc chắn muốn xóa công việc này?");
-                    Optional<ButtonType> option = alert.showAndWait();
-                    if (option.get() == null) {
-                    } else if (option.get() == ButtonType.OK) {
+                    Optional<ButtonType> option = _Alert.showWaitConfirmation(
+                            Constant.WindowTitleConstant.DELETE_TASK_TITLE,
+                            Constant.DialogConstant.CONFIRM_DELETE_TASK
+                    );
+                    if (option.get() == ButtonType.OK) {
                         tbData.getItems().remove(selected);
                         taskService.deleteTask(selected);
-                        Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
-                        alert2.setTitle("Thông báo");
-                        alert2.setHeaderText("Đã xóa");
-                        alert2.show();
+                        _Alert.showInfoNotification(Constant.WindowTitleConstant.DELETE_TASK_TITLE);
                         refreshTable();
-                    } else if (option.get() == ButtonType.CANCEL) {
                     }
                 }
             }
@@ -210,34 +203,22 @@ public class PrimaryViewController implements Initializable {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 Task selected = tbData.getSelectionModel().getSelectedItem();
-
-                Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(getClass().getResource("/com/hippotech/UpdateTaskView.fxml"));
-                Parent updateTaskParent = null;
-                try {
-                    updateTaskParent = loader.load();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Scene scene = new Scene(updateTaskParent);
-                UpdateTaskViewController controller = loader.getController();
-
-
                 if (selected == null) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Warning");
-                    alert.setHeaderText("Vui lòng chọn công việc cần chỉnh sửa");
-                    alert.show();
-                } else {
-                    controller.setTask(selected);
-                    controller.setComboBox();
-                    Stage updateTaskWindow = new Stage();
-                    updateTaskWindow.setTitle("Chỉnh sửa công việc");
-                    updateTaskWindow.setScene(scene);
-                    updateTaskWindow.initModality(Modality.WINDOW_MODAL);
-                    updateTaskWindow.initOwner(stage);
-                    updateTaskWindow.showAndWait();
+                    _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_UPDATE);
+                }else {
+                FXMLLoader loader = modalWindowController.getLoader("/com/hippotech/UpdateTaskView.fxml");
+                Parent parent = modalWindowController.load(loader);
+                Node node = (Node) mouseEvent.getSource();
+
+                UpdateTaskViewController controller = loader.getController();
+                controller.setTask(selected);
+                controller.setComboBox();
+
+                modalWindowController.showWindowModal(
+                        node,
+                        parent,
+                        Constant.WindowTitleConstant.UPDATE_TASK_TITLE
+                        );
                     refreshTable();
                 }
             }
@@ -248,7 +229,7 @@ public class PrimaryViewController implements Initializable {
             public void handle(MouseEvent mouseEvent) {
                 modalWindowController.showWindowModal(mouseEvent,
                         "/com/hippotech/PersonManagement.fxml",
-                        "Quản lý nhân sự");
+                        Constant.WindowTitleConstant.PERSON_MANAGEMENT_TITLE);
                 refreshTable();
             }
         });
@@ -258,7 +239,7 @@ public class PrimaryViewController implements Initializable {
             public void handle(MouseEvent e) {
                 modalWindowController.showWindowModal(e,
                         "/com/hippotech/ProjectManagement.fxml",
-                        "Quản lý Task");
+                        Constant.WindowTitleConstant.PROJECT_MANAGEMENT_TITLE);
                 refreshTable();
             }
         });

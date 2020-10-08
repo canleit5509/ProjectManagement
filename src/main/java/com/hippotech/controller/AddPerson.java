@@ -3,18 +3,18 @@ package com.hippotech.controller;
 
 import com.hippotech.model.Person;
 import com.hippotech.service.PersonService;
+import com.hippotech.utilities.Constant;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.net.URL;
-import java.util.Random;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 public class AddPerson implements Initializable {
@@ -27,8 +27,10 @@ public class AddPerson implements Initializable {
     private ColorPicker color;
 
     public void setID() {
-        Random random = new Random();
-        int id = random.nextInt(899999) + 100000;
+//        Random random = new Random();
+//        int id = random.nextInt(899999) + 100000;
+        long time = new Date().getTime();
+        String id = Long.toString(time).substring(0, 9);
         txtID.setText(id + "");
         service = new PersonService();
     }
@@ -36,10 +38,9 @@ public class AddPerson implements Initializable {
     public void okBtn(ActionEvent e) {
         Person person = new Person(txtID.getText(), psName.getText(), color.getValue().toString(), 0);
         service.addPerson(person);
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Thông báo");
-        alert.setHeaderText("Thêm thành công");
-        alert.show();
+        _Alert.showInfoNotification(
+                Constant.DialogConstant.SUCCESS_ADD_PERSON
+        );
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         System.out.println("OK");
         stage.close();

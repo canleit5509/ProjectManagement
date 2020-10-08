@@ -3,6 +3,7 @@ package com.hippotech.controller;
 
 import com.hippotech.model.Person;
 import com.hippotech.service.PersonService;
+import com.hippotech.utilities.Constant;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -61,10 +62,7 @@ public class UpdatePerson implements Initializable {
 
         Person person = new Person(id, name, txtColor, retired);
         service.updatePerson(person);
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Thông báo");
-        alert.setHeaderText("Cập nhật thành công");
-        alert.show();
+        _Alert.showInfoNotification(Constant.DialogConstant.SUCCESS_ADD_PERSON);
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.close();
     }

@@ -116,6 +116,7 @@ public class PersonDAO implements DAO<PersonDTO> {
     @Override
     public void add(PersonDTO person) {
         try {
+            System.out.println(person.getId());
             preparedStatement = connection.prepareStatement(INSERT);
             preparedStatement.setString(1, person.getId());
             preparedStatement.setString(2, person.getName());
