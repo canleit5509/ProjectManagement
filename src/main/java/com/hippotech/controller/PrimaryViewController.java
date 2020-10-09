@@ -3,6 +3,8 @@ package com.hippotech.controller;
 
 import com.hippotech.controller.components.Week;
 import com.hippotech.controller.components.WeekTitle;
+import com.hippotech.model.Person;
+import com.hippotech.model.ProjectName;
 import com.hippotech.model.Task;
 import com.hippotech.service.PersonService;
 import com.hippotech.service.ProjectNameService;
@@ -13,11 +15,13 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -48,6 +52,8 @@ public class PrimaryViewController implements Initializable {
     ArrayList<Task> tasks;
     @FXML
     GridPane rowT;
+    ArrayList<Double> heightestHeightPerRow = new ArrayList<>();
+    ArrayList<Double> heightListAllTable = new ArrayList<>();
 
     public PrimaryViewController() {
         taskService = new TaskService();
@@ -61,75 +67,74 @@ public class PrimaryViewController implements Initializable {
         ArrayList<Task> listTask2 = taskService.getAllTask();
         int numCols = 9;
         int numRows = listTask.size();
-//        for (int i = 0; i < numCols; i++) {
-//            ColumnConstraints colConstraints = new ColumnConstraints(200);
-//            colConstraints.setHgrow(Priority.ALWAYS);
-//            Pane pane = new Pane();
-//            Rectangle rectangle = new Rectangle();
-//            gridPane.getColumnConstraints().add(colConstraints);
-//        }
+
 
         for (int i = 0; i < numRows; i++) {
-            RowConstraints rowConstraints = new RowConstraints(35);
-            rowConstraints.setMaxHeight(50);
-            rowConstraints.setMinHeight(100);
+            RowConstraints rowConstraints = new RowConstraints();
+            rowConstraints.setMinHeight(35);
             rowConstraints.setVgrow(Priority.ALWAYS);
             gridPane.getRowConstraints().add(rowConstraints);
         }
 
-//        for (int i = 0; i < num; i++) {
-//            for (int j = 0; j < numRows; j++) {
-//                TaskDTO taskDTO = listTask.get(j);
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numCols; j++) {
                 Task task = listTask2.get(i);
-//                addPane(i, j , i*10 + j + 10, i*numCols+j+"");
-//                addPane(i, j , 50, i*numCols+j+"");
                 switch (j) {
-//                    case 0: {
-//                        addPane(i, j, 50, taskDTO.getId());
-//                        break;
-//                    }
                     case 0: {
-                        addPane(i, j, 20, task.getPrName());
+                        ProjectName projectName = projectNameService.getProjectName(task.getPrName());
+                        addPane(i, j, 20, task.getPrName(), projectName.getProjectColor());
                         break;
                     }
                     case 1: {
-                        addPane(i, j, 20, task.getTitle());
+                        addPane(i, j, 20, task.getTitle(), "");
                         break;
                     }
                     case 2: {
-                        addPane(i, j, 20, task.getName());
+                        Person person = personService.getPersonByName(task.getName());
+                        addPane(i, j, 20, task.getName(), person.getColor());
                         break;
                     }
                     case 3: {
-                        addPane(i, j, 20, task.getStartDate());
+                        addPane(i, j, 20, task.getStartDate(), "");
                         break;
                     }
                     case 4: {
-                        addPane(i, j, 20, task.getDeadline());
+                        addPane(i, j, 20, task.getDeadline(), "");
                         break;
                     }
                     case 5: {
-                        addPane(i, j, 20, task.getFinishDate());
+                        addPane(i, j, 20, task.getFinishDate(), "");
                         break;
                     }
                     case 6: {
-                        addPane(i, j, 20, task.getExpectedTime() + "");
+                        addPane(i, j, 20, task.getExpectedTime() + "", "");
                         break;
                     }
                     case 7: {
-                        addPane(i, j, 20, task.getFinishTime() + "");
+                        addPane(i, j, 20, task.getFinishTime() + "", "");
                         break;
                     }
                     case 8: {
-                        addPane(i, j, 20, task.getProcessed() + "%");
+                        addPane(i, j, 20, task.getProcessed() + "%", "");
                         break;
                     }
 
                 }
 
             }
+        }
+        for (int h = 0; h < numRows; h++) {
+            double tempMaxHeight = 0;
+            for (int j = 0; j < numCols; j++) {
+                if (tempMaxHeight < heightListAllTable.get(h * numCols + j)) {
+                    tempMaxHeight = heightListAllTable.get(h * numCols + j);
+                }
+            }
+            heightestHeightPerRow.add(tempMaxHeight);
+        }
+        System.out.println("size: " + heightestHeightPerRow.size());
+        for (Double i : heightestHeightPerRow) {
+            System.out.println("height: " + i);
         }
     }
 
@@ -204,16 +209,26 @@ public class PrimaryViewController implements Initializable {
         }
     }
 
-    private void addPane(int colIndex, int rowIndex, int labelSize, String content) {
 
-        int cellNum = rowIndex * 2 + colIndex + 1;
+    private void addPane(int colIndex, int rowIndex, int labelSize, String content, String colorCode) {
         Label label = new Label("  " + content);
-        TextField tf = new TextField();
-        tf.setLayoutX(10);
-        tf.setLayoutY(20);
-        Pane pane = new Pane();
-        pane.getChildren().add(label);
+        label.setWrapText(true);
+        Text text = new Text("  " + content);
+        text.setFont(new Font(15));
+        text.setWrappingWidth(250);
+        StackPane pane = new StackPane();
+        pane.getChildren().add(text);
+        pane.setPrefWidth(10);
+        pane.setMaxWidth(10);
+
+        if (rowIndex == 0 || rowIndex == 2) {
+            pane.setStyle("-fx-background-color: #" + colorCode.substring(2) + ";");
+        }
         gridPane.add(pane, rowIndex, colIndex);
+        ObservableList<Node> nodeList = pane.getChildren();
+        for (Node i : nodeList) {
+            heightListAllTable.add(i.getLayoutBounds().getHeight());
+        }
     }
 
 
