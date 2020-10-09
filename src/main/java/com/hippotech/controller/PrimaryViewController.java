@@ -2,8 +2,6 @@ package com.hippotech.controller;
 
 
 import com.hippotech.controller.components.WeekTitle;
-import com.hippotech.controller.components.Week;
-import com.hippotech.interfaces.IAddContentToWindow;
 import com.hippotech.model.Person;
 import com.hippotech.model.ProjectName;
 import com.hippotech.model.Task;
@@ -12,6 +10,7 @@ import com.hippotech.service.ProjectNameService;
 import com.hippotech.service.TaskService;
 import com.hippotech.utilities.Constant;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -19,6 +18,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -257,6 +257,7 @@ public class PrimaryViewController implements Initializable {
         initTable();
         try {
             addTimeline();
+            eventHandler();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -274,12 +275,6 @@ public class PrimaryViewController implements Initializable {
 //            }
 //        });
     }
-            eventHandler();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
 
     private void eventHandler() {
         btnAdd.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -289,44 +284,75 @@ public class PrimaryViewController implements Initializable {
                 modalWindowController.showWindowModal(node,
                         "/com/hippotech/AddTaskView.fxml",
                         Constant.WindowTitleConstant.ADD_TASK_TITLE);
-                refreshTable();
             }
         });
-        btnDel.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                Task selected = tbData.getSelectionModel().getSelectedItem();
-                if (selected == null) {
-                    _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_DELETE);
-                } else {
-                    Optional<ButtonType> option = _Alert.showWaitConfirmation(
-                            Constant.WindowTitleConstant.DELETE_TASK_TITLE,
-                            Constant.DialogConstant.CONFIRM_DELETE_TASK
-                    );
-                    if (option.get() == ButtonType.OK) {
-                        tbData.getItems().remove(selected);
-                        taskService.deleteTask(selected);
-                        _Alert.showInfoNotification(Constant.WindowTitleConstant.DELETE_TASK_TITLE);
-                        refreshTable();
-                    }
-                }
-            }
-        });
-        btnEdit.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                Task selected = tbData.getSelectionModel().getSelectedItem();
-                if (selected == null) {
-                    _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_UPDATE);
-                }else {
-                    // TODO : Add controller in a function
-                FXMLLoader loader = modalWindowController.getLoader("/com/hippotech/UpdateTaskView.fxml");
-                Parent parent = modalWindowController.load(loader);
-                Node node = (Node) mouseEvent.getSource();
-
-                UpdateTaskViewController controller = loader.getController();
-                controller.setTask(selected);
-                controller.setComboBox();
+//        btnDel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent mouseEvent) {
+//                Task selected = tbData.getSelectionModel().getSelectedItem();
+//                if (selected == null) {
+//                    _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_DELETE);
+//                } else {
+//                    Optional<ButtonType> option = _Alert.showWaitConfirmation(
+//                            Constant.WindowTitleConstant.DELETE_TASK_TITLE,
+//                            Constant.DialogConstant.CONFIRM_DELETE_TASK
+//                    );
+//                    if (option.get() == ButtonType.OK) {
+//                        tbData.getItems().remove(selected);
+//                        taskService.deleteTask(selected);
+//                        _Alert.showInfoNotification(Constant.WindowTitleConstant.DELETE_TASK_TITLE);
+//                        refreshTable();
+//                    }
+//                }
+//            }
+//        });
+//        btnEdit.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent mouseEvent) {
+//                Task selected = tbData.getSelectionModel().getSelectedItem();
+//                if (selected == null) {
+//                    _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_UPDATE);
+//                }else {
+//                    // TODO : Add controller in a function
+//                FXMLLoader loader = modalWindowController.getLoader("/com/hippotech/UpdateTaskView.fxml");
+//                Parent parent = modalWindowController.load(loader);
+//                Node node = (Node) mouseEvent.getSource();
+//
+//                UpdateTaskViewController controller = loader.getController();
+//                controller.setTask(selected);
+//                controller.setComboBox();
+//
+//
+//                modalWindowController.showWindowModal(
+//                        node,
+//                        parent,
+//                        Constant.WindowTitleConstant.UPDATE_TASK_TITLE
+//                        );
+//                }
+//            }
+//        });
+//
+//        btnPerson.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent mouseEvent) {
+//                modalWindowController.showWindowModal(mouseEvent,
+//                        "/com/hippotech/PersonManagement.fxml",
+//                        Constant.WindowTitleConstant.PERSON_MANAGEMENT_TITLE);
+//                refreshTable();
+//            }
+//        });
+//
+//        btnProject.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent e) {
+//                modalWindowController.showWindowModal(e,
+//                        "/com/hippotech/ProjectManagement.fxml",
+//                        Constant.WindowTitleConstant.PROJECT_MANAGEMENT_TITLE);
+//                refreshTable();
+//            }
+//        });
+//    }
+    }
 
     public void initTimelineTitle() {
 //        HBox pane = new HBox();
@@ -339,35 +365,5 @@ public class PrimaryViewController implements Initializable {
             timeline.getChildren().add(weekTitle);
         }
         timeLineTitle.getChildren().add(timeline);
-    }
-                modalWindowController.showWindowModal(
-                        node,
-                        parent,
-                        Constant.WindowTitleConstant.UPDATE_TASK_TITLE
-                        );
-                    refreshTable();
-                }
-            }
-        });
-
-        btnPerson.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                modalWindowController.showWindowModal(mouseEvent,
-                        "/com/hippotech/PersonManagement.fxml",
-                        Constant.WindowTitleConstant.PERSON_MANAGEMENT_TITLE);
-                refreshTable();
-            }
-        });
-
-        btnProject.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                modalWindowController.showWindowModal(e,
-                        "/com/hippotech/ProjectManagement.fxml",
-                        Constant.WindowTitleConstant.PROJECT_MANAGEMENT_TITLE);
-                refreshTable();
-            }
-        });
     }
 }

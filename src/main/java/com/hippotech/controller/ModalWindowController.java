@@ -1,6 +1,5 @@
 package com.hippotech.controller;
 
-import com.hippotech.interfaces.IAddContentToWindow;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -11,7 +10,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.concurrent.Callable;
 
 public class ModalWindowController{
     Class _class;

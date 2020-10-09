@@ -52,17 +52,6 @@ public interface Constant {
         String PROJECT_MANAGEMENT_TITLE = "Quản lý dự án";
     }
 
-    interface ManagerPerson{
-        String NOTIFICATION_TITLE = "Thông báo";
-        String NOTIFICATION_CONTENT = "Vui lòng chọn nhân viên";
-        String UPDATE_PERSON_WINDOW_TITLE = "Cập nhật nhân sự";
-    }
-
-    interface ManagerProject{
-
-        String NOTIFICATION_TITLE = "Thêm dự án";
-//        String
-    }
 
     interface COLOR {
         String WHITE = "#FFFFFF";
