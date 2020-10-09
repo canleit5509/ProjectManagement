@@ -71,23 +71,23 @@ public class AddTaskViewController implements Initializable {
 
     public boolean validate() {
         if (prName.getValue() == null) {
-            _Alert.showWaitInfoNotification("Vui lòng chọn dự án!");
+            _Alert.showWaitInfoNotification(Constant.DialogConstant.CHOOSE_A_PROJECT);
             return false;
         }
         if (name.getValue() == null) {
-            _Alert.showWaitInfoNotification("Vui lòng chọn nhân sự");
+            _Alert.showWaitInfoNotification(Constant.DialogConstant.CHOOSE_A_PERSON);
             return false;
         }
         if (title.getText().equals("")) {
-            _Alert.showWaitInfoNotification("Vui lòng chọn tên công việc");
+            _Alert.showWaitInfoNotification(Constant.DialogConstant.CHOOSE_TASK_TITLE);
             return false;
         }
         if (startDate.getValue() == null) {
-            _Alert.showWaitInfoNotification("Vui lòng chọn ngày bắt đầu");
+            _Alert.showWaitInfoNotification(Constant.DialogConstant.CHOOSE_START_DATE);
             return false;
         }
         if (deadline.getValue() == null) {
-            _Alert.showWaitInfoNotification("Vui lòng chọn ngày deadline");
+            _Alert.showWaitInfoNotification(Constant.DialogConstant.CHOOSE_DEADLINE);
             return false;
         }
         return true;
