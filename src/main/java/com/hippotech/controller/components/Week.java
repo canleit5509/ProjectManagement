@@ -12,8 +12,6 @@ import java.util.ArrayList;
 
 public class Week extends VBox {
     @FXML
-    WeekTitle weekTitle;
-    @FXML
     VBox weekTask;
     ArrayList<TaskRow> taskRows;
 
@@ -32,9 +30,6 @@ public class Week extends VBox {
             taskRows.add(new TaskRow(task, monday));
         }
         weekTask.getChildren().addAll(taskRows);
-        weekTitle.setText(monday);
-
-
     }
 
     private LocalDate getMonday(LocalDate date) {

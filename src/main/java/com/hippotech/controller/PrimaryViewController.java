@@ -1,24 +1,27 @@
 package com.hippotech.controller;
 
 
-import com.hippotech.controller.components.TableTitle;
 import com.hippotech.controller.components.Week;
+import com.hippotech.controller.components.WeekTitle;
 import com.hippotech.model.Task;
 import com.hippotech.service.PersonService;
 import com.hippotech.service.ProjectNameService;
 import com.hippotech.service.TaskService;
+import com.hippotech.utilities.Constant;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -34,13 +37,17 @@ public class PrimaryViewController implements Initializable {
     @FXML
     Button btnDel;
     @FXML
-    ScrollPane rightPane;
+    VBox rightPane;
     @FXML
-    VBox leftPaneTitle;
+    VBox timeLineTitle;
+    @FXML
+    HBox titleBox;
     TaskService taskService;
     PersonService personService;
     ProjectNameService projectNameService;
     ArrayList<Task> tasks;
+    @FXML
+    GridPane rowT;
 
     public PrimaryViewController() {
         taskService = new TaskService();
@@ -124,64 +131,77 @@ public class PrimaryViewController implements Initializable {
 
             }
         }
-//        addResizeListeners();
-//        makeResizable(50);
-//        tbData.setEditable(true);
-//        tbData.setMaxWidth(940);
-//        tcProjectName.setEditable(true);
-//        tcProjectName.setText(Constant.PrimaryConstant.PROJECT_NAME);
-//        tcProjectName.setCellValueFactory(new PropertyValueFactory<>("prName"));
-//        tcProjectName.setCellFactory(TextFieldTableCell.forTableColumn());
-//        tcTask.setEditable(true);
-//        tcTask.setCellValueFactory(new PropertyValueFactory<>("title"));
-//        tcTask.setCellFactory(TextFieldTableCell.forTableColumn());
-//        tcNgPTr.setEditable(true);
-//        tcNgPTr.setCellValueFactory(new PropertyValueFactory<>("name"));
-//        tcDateStart.setCellValueFactory(new PropertyValueFactory<>("startDate"));
-//        tcDeadline.setCellValueFactory(new PropertyValueFactory<>("deadline"));
-//        tcFinishDate.setCellValueFactory(new PropertyValueFactory<>("finishDate"));
-//        tcExpectedTime.setCellValueFactory(new PropertyValueFactory<>("expectedTime"));
-//        tcFinishTime.setCellValueFactory(new PropertyValueFactory<>("finishTime"));
-//        tcProcess.setEditable(true);
-//        tcProcess.setCellValueFactory(new PropertyValueFactory<>("processed"));
-//        tbData.setItems(listTask);
     }
 
-    public void refreshTable() {
-        ObservableList<Task> taskList = FXCollections.observableArrayList(taskService.getAllTask());
-//        tbData.setItems(taskList);
-//        tcProjectName.setCellFactory(new Callback<>() {
-//            @Override
-//            public TableCell<Task, String> call(TableColumn<Task, String> taskStringTableColumn) {
-//                return new TableCell<>() {
-//                    @Override
-//                    public void updateItem(String item, boolean empty) {
-//                        super.updateItem(item, empty);
-//                        if (!isEmpty()) {
-//                            ProjectName name = projectNameService.getProjectName(item);
-//                            this.setStyle("-fx-background-color: #" + name.getProjectColor().substring(2) + ";");
-//                            setText(item);
-//                        }
-//                    }
-//                };
-//            }
-//        });
-//        tcNgPTr.setCellFactory(new Callback<TableColumn<Task, String>, TableCell<Task, String>>() {
-//            @Override
-//            public TableCell<Task, String> call(TableColumn<Task, String> taskStringTableColumn) {
-//                return new TableCell<>() {
-//                    @Override
-//                    public void updateItem(String item, boolean empty) {
-//                        super.updateItem(item, empty);
-//                        if (!isEmpty()) {
-//                            Person person = personService.getPersonByName(item);
-//                            this.setStyle("-fx-background-color: #" + person.getColor().substring(2) + ";");
-//                            setText(item);
-//                        }
-//                    }
-//                };
-//            }
-//        });
+
+    public String getColor(LocalDate date, Task task) {
+        LocalDate startDate = LocalDate.parse(task.getStartDate());
+        if (date.isBefore(startDate)) return Constant.COLOR.WHITE;
+
+        LocalDate deadLine = LocalDate.parse(task.getDeadline());
+        if (task.getFinishDate() != null) {
+            LocalDate finishDate = LocalDate.parse(task.getFinishDate());
+            if (finishDate.isBefore(deadLine)) {
+                if (date.isEqual(finishDate)) return Constant.COLOR.DARK_GREEN;
+                if (date.isEqual(deadLine)) return Constant.COLOR.RED;
+                if (date.isBefore(finishDate) || date.isEqual(startDate))
+                    return Constant.COLOR.SOFT_GREEN;
+            } else {
+                if (date.isEqual(deadLine)) return Constant.COLOR.RED;
+                if (date.isEqual(finishDate)) return Constant.COLOR.YELLOW;
+                if (finishDate.isEqual(deadLine) && finishDate.isEqual(date)) return Constant.COLOR.DARK_GREEN;
+                if (date.isBefore(deadLine) || date.isEqual(startDate)) return Constant.COLOR.SOFT_GREEN;
+                if (date.isBefore(finishDate)) return Constant.COLOR.ORANGE;
+
+            }
+        } else {
+            LocalDate now = LocalDate.now();
+            if (now.isBefore(deadLine)) {
+                if (date.isEqual(deadLine)) return Constant.COLOR.RED;
+                if (date.isBefore(now) || date.isEqual(startDate)) return Constant.COLOR.SOFT_GREEN;
+                if (date.isBefore(deadLine)) return Constant.COLOR.WHITE;
+
+            } else {
+                if (date.isEqual(deadLine)) return Constant.COLOR.RED;
+                if (date.isBefore(now) || date.isEqual(startDate)) return Constant.COLOR.SOFT_GREEN;
+                if (date.isBefore(deadLine)) return Constant.COLOR.YELLOW;
+            }
+        }
+        return Constant.COLOR.WHITE;
+    }
+
+    private LocalDate getMonday(LocalDate date) {
+        LocalDate monday;
+        monday = date.minus(date.getDayOfWeek().getValue() - 1, ChronoUnit.DAYS);
+        return monday;
+    }
+
+    private void addTimelineRow(Task task) {
+        rowT.getColumnConstraints().clear();
+        rowT.getChildren().clear();
+        int colsNum = 52 * 5;
+        ColumnConstraints columnConstraints = new ColumnConstraints();
+        columnConstraints.setPercentWidth(35);
+        for (int i = 0; i < colsNum; i++) {
+            rowT.getColumnConstraints().add(columnConstraints);
+        }
+
+        //cell.setBackground(new Background(new BackgroundFill(Color.valueOf())));
+        LocalDate first = getMonday(LocalDate.of(2020, 1, 1));
+        LocalDate last = getMonday(LocalDate.of(2020, 11, 1));
+        int j = 0;
+        for (LocalDate i = first; !i.isEqual(last); i = i.plusDays(1)) {
+            if (i.getDayOfWeek().getValue() < 6) {
+                Pane cell = new Pane();
+                cell.setBackground(new Background(new BackgroundFill(Color.valueOf(getColor(i, task)),
+                        CornerRadii.EMPTY, Insets.EMPTY)));
+                Label label = new Label(i.toString());
+                cell.getChildren().add(label);
+                rowT.add(cell, j, 0);
+                System.out.println(i);
+                j++;
+            }
+        }
     }
 
     private void addPane(int colIndex, int rowIndex, int labelSize, String content) {
@@ -200,25 +220,38 @@ public class PrimaryViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
-        refreshTable();
-        refreshTimeline();
+        addTimelineRow(tasks.get(1));
+        //refreshTimeline();
+        initScrollBar();
+    }
+
+    public void initScrollBar() {
+//        scBar.setLayoutX(titleBox.getHeight() + rightPane.getHeight() - scBar.getHeight());
+//        scBar.valueProperty().addListener(new ChangeListener<Number>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+//                System.out.println(t1.doubleValue() + "V");
+//                rightPane.setLayoutY(-t1.doubleValue());
+//            }
+//        });
     }
 
     public void refreshTimeline() {
         HBox pane = new HBox();
+        HBox timeline = new HBox();
         int year = 2020;
         for (int i = 0; i < 52; i++) {
-//            WeekTitle weekTitle = new WeekTitle(LocalDate.of(year,1,1).plusWeeks(i));
-
-            Week week = new Week(LocalDate.of(year, 1, 1).plusWeeks(i), tasks);
+            WeekTitle weekTitle = new WeekTitle();
+            LocalDate addDay = LocalDate.of(year, 1, 1).plusWeeks(i);
+            weekTitle.setText(addDay);
+            timeline.getChildren().add(weekTitle);
+            Week week = new Week(addDay, tasks);
             pane.getChildren().add(week);
         }
-        rightPane.setContent(pane);
+        timeLineTitle.getChildren().add(timeline);
+        rightPane.getChildren().add(pane);
 
-        TableTitle tableTitle = new TableTitle();
-//        VBox left = new VBox();
-//        left.getChildren().add(tableTitle);
-        leftPaneTitle.getChildren().add(tableTitle);
+
 //        try {
 //            eventHandler();
 //        } catch (Exception e) {
