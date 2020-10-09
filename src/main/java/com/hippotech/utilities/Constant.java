@@ -45,6 +45,7 @@ public interface Constant {
         String ADD_TASK_TITLE = "Thêm công việc";
         String ADD_PERSON_TITLE = "Thêm nhân sự";
         String ADD_PROJECT_TITLE = "Thêm dự án";
+        String UPDATE_PERSON_TITLE = "Cập nhật nhân sự";
         String UPDATE_TASK_TITLE = "Chỉnh sủa công việc";
         String DELETE_TASK_TITLE = "Xóa công việc";
         String PERSON_MANAGEMENT_TITLE = "Quản lý nhân sự";

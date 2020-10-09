@@ -206,6 +206,7 @@ public class PrimaryViewController implements Initializable {
                 if (selected == null) {
                     _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_UPDATE);
                 }else {
+                    // TODO : Add controller in a function
                 FXMLLoader loader = modalWindowController.getLoader("/com/hippotech/UpdateTaskView.fxml");
                 Parent parent = modalWindowController.load(loader);
                 Node node = (Node) mouseEvent.getSource();

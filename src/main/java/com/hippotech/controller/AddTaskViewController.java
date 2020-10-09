@@ -56,6 +56,7 @@ public class AddTaskViewController implements Initializable {
     private PersonService personService;
     private ProjectNameService projectNameService;
     private TaskService taskService;
+    private final ModalWindowController modalWindowController = new ModalWindowController(this.getClass());
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         taskService = new TaskService();
@@ -183,32 +184,19 @@ public class AddTaskViewController implements Initializable {
     }
 
     public void AddProject(ActionEvent e) throws IOException {
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/com/hippotech/AddProject.fxml"));
-        Parent addProject = loader.load();
-        Scene scene = new Scene(addProject);
-        Stage addProjectWindow = new Stage();
-        addProjectWindow.setTitle("Thêm dự án");
-        addProjectWindow.setScene(scene);
-        addProjectWindow.initModality(Modality.WINDOW_MODAL);
-        addProjectWindow.initOwner(stage);
-        addProjectWindow.showAndWait();
+        modalWindowController.showWindowModal(e,
+                "/com/hippotech/AddProject.fxml",
+                Constant.WindowTitleConstant.ADD_PROJECT_TITLE);
         setComboBox();
     }
 
     public void AddPerson(ActionEvent e) throws IOException {
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/com/hippotech/AddPerson.fxml"));
-        Parent addProject = loader.load();
-        Scene scene = new Scene(addProject);
-        Stage addProjectWindow = new Stage();
-        addProjectWindow.setTitle("Thêm nhân sự");
-        addProjectWindow.setScene(scene);
-        addProjectWindow.initModality(Modality.WINDOW_MODAL);
-        addProjectWindow.initOwner(stage);
-        addProjectWindow.showAndWait();
+        Node node = (Node) e.getSource();
+        FXMLLoader loader = modalWindowController.getLoader("/com/hippotech/AddPerson.fxml");
+        Parent parent = modalWindowController.load(loader);
+
+        modalWindowController.showWindowModal(node, parent,
+                Constant.WindowTitleConstant.ADD_PERSON_TITLE);
         setComboBox();
         AddPerson addPerson = loader.getController();
         addPerson.setID();

@@ -3,6 +3,7 @@ package com.hippotech.controller;
 
 import com.hippotech.model.Person;
 import com.hippotech.service.PersonService;
+import com.hippotech.utilities.Constant;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -39,25 +40,25 @@ public class ManagePerson implements Initializable {
     @FXML
     private Button btnKick;
     private PersonService service;
+    private final ModalWindowController modalWindowController = new ModalWindowController(
+            this.getClass());
 
     public ManagePerson() {
         service = new PersonService();
     }
 
     public void btnAdd(ActionEvent e) throws IOException {
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/com/hippotech/AddPerson.fxml"));
-        Parent addProject = loader.load();
-        Scene scene = new Scene(addProject);
-        Stage addProjectWindow = new Stage();
-        addProjectWindow.setTitle("Thêm nhân sự");
-        addProjectWindow.setScene(scene);
-        addProjectWindow.initModality(Modality.WINDOW_MODAL);
-        addProjectWindow.initOwner(stage);
+        FXMLLoader loader = modalWindowController.getLoader(
+                "/com/hippotech/AddPerson.fxml");
+        Parent addProject = modalWindowController.load(loader);
+
         AddPerson addPerson = loader.getController();
         addPerson.setID();
-        addProjectWindow.showAndWait();
+
+        Node node = (Node) e.getSource();
+        modalWindowController.showWindowModal(node,
+                addProject,
+                Constant.WindowTitleConstant.ADD_PERSON_TITLE);
         RefreshTable(service.getRetiredPeople(0));
         refreshColor();
     }
@@ -65,24 +66,19 @@ public class ManagePerson implements Initializable {
     public void btnUpdate(ActionEvent e) throws IOException {
         Person person = (Person) tbData.getSelectionModel().getSelectedItem();
         if (person == null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Warning");
-            alert.setHeaderText("Vui lòng chọn nhân viên");
-            alert.show();
+            _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_PERSON);
         } else {
-            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/com/hippotech/UpdatePerson.fxml"));
-            Parent addProject = loader.load();
-            Scene scene = new Scene(addProject);
-            Stage addProjectWindow = new Stage();
-            addProjectWindow.setTitle("Cập nhật nhân sự");
-            addProjectWindow.setScene(scene);
-            addProjectWindow.initModality(Modality.WINDOW_MODAL);
-            addProjectWindow.initOwner(stage);
+            FXMLLoader loader = modalWindowController.getLoader(
+                    "/com/hippotech/UpdatePerson.fxml");
+            Parent parent = modalWindowController.load(loader);
+
             UpdatePerson updatePerson = loader.getController();
             updatePerson.setPerson(person);
-            addProjectWindow.showAndWait();
+
+            Node node = (Node) e.getSource();
+            modalWindowController.showWindowModal(node,
+                    parent, Constant.WindowTitleConstant.UPDATE_PERSON_TITLE);
+
             RefreshTable(service.getRetiredPeople(0));
             refreshColor();
             checkNow.setSelected(true);
@@ -94,10 +90,7 @@ public class ManagePerson implements Initializable {
     public void btnKick(ActionEvent actionEvent) {
         Person person = (Person) tbData.getSelectionModel().getSelectedItem();
         if (person == null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Warning");
-            alert.setHeaderText("Vui lòng chọn nhân viên");
-            alert.show();
+            _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_PERSON);
         } else {
             person.setRetired(1);
             service.updatePerson(person);

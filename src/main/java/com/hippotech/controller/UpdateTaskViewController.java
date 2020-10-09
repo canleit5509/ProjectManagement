@@ -149,7 +149,6 @@ public class UpdateTaskViewController implements Initializable {
         stage.close();
     }
 
-    //todo: constant
     public void AddProject(ActionEvent e) throws IOException {
         Node node = (Node) e.getSource();
         modalWindowController.showWindowModal(node,
