@@ -3,6 +3,8 @@ package com.hippotech.controller;
 
 import com.hippotech.controller.components.TableTitle;
 import com.hippotech.controller.components.Week;
+import com.hippotech.model.Person;
+import com.hippotech.model.ProjectName;
 import com.hippotech.model.Task;
 import com.hippotech.service.PersonService;
 import com.hippotech.service.ProjectNameService;
@@ -11,16 +13,23 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+import static javafx.scene.paint.Color.RED;
 
 
 public class PrimaryViewController implements Initializable {
@@ -41,6 +50,8 @@ public class PrimaryViewController implements Initializable {
     PersonService personService;
     ProjectNameService projectNameService;
     ArrayList<Task> tasks;
+    ArrayList<Double> heightestHeightPerRow = new ArrayList<>();
+    ArrayList<Double> heightListAllTable = new ArrayList<>();
 
     public PrimaryViewController() {
         taskService = new TaskService();
@@ -54,153 +65,101 @@ public class PrimaryViewController implements Initializable {
         ArrayList<Task> listTask2 = taskService.getAllTask();
         int numCols = 9;
         int numRows = listTask.size();
-//        for (int i = 0; i < numCols; i++) {
-//            ColumnConstraints colConstraints = new ColumnConstraints(200);
-//            colConstraints.setHgrow(Priority.ALWAYS);
-//            Pane pane = new Pane();
-//            Rectangle rectangle = new Rectangle();
-//            gridPane.getColumnConstraints().add(colConstraints);
-//        }
+
 
         for (int i = 0; i < numRows; i++) {
-            RowConstraints rowConstraints = new RowConstraints(35);
-            rowConstraints.setMaxHeight(50);
-            rowConstraints.setMinHeight(100);
+            RowConstraints rowConstraints = new RowConstraints();
+            rowConstraints.setMinHeight(35);
             rowConstraints.setVgrow(Priority.ALWAYS);
             gridPane.getRowConstraints().add(rowConstraints);
         }
 
-//        for (int i = 0; i < num; i++) {
-//            for (int j = 0; j < numRows; j++) {
-//                TaskDTO taskDTO = listTask.get(j);
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numCols; j++) {
                 Task task = listTask2.get(i);
-//                addPane(i, j , i*10 + j + 10, i*numCols+j+"");
-//                addPane(i, j , 50, i*numCols+j+"");
                 switch (j) {
-//                    case 0: {
-//                        addPane(i, j, 50, taskDTO.getId());
-//                        break;
-//                    }
                     case 0: {
-                        addPane(i, j, 20, task.getPrName());
+                        ProjectName projectName = projectNameService.getProjectName(task.getPrName());
+                        addPane(i, j, 20, task.getPrName(), projectName.getProjectColor());
                         break;
                     }
                     case 1: {
-                        addPane(i, j, 20, task.getTitle());
+                        addPane(i, j, 20, task.getTitle(), "");
                         break;
                     }
                     case 2: {
-                        addPane(i, j, 20, task.getName());
+                        Person person = personService.getPersonByName(task.getName());
+                        addPane(i, j, 20, task.getName(), person.getColor());
                         break;
                     }
                     case 3: {
-                        addPane(i, j, 20, task.getStartDate());
+                        addPane(i, j, 20, task.getStartDate(), "");
                         break;
                     }
                     case 4: {
-                        addPane(i, j, 20, task.getDeadline());
+                        addPane(i, j, 20, task.getDeadline(), "");
                         break;
                     }
                     case 5: {
-                        addPane(i, j, 20, task.getFinishDate());
+                        addPane(i, j, 20, task.getFinishDate(), "");
                         break;
                     }
                     case 6: {
-                        addPane(i, j, 20, task.getExpectedTime() + "");
+                        addPane(i, j, 20, task.getExpectedTime() + "", "");
                         break;
                     }
                     case 7: {
-                        addPane(i, j, 20, task.getFinishTime() + "");
+                        addPane(i, j, 20, task.getFinishTime() + "", "");
                         break;
                     }
                     case 8: {
-                        addPane(i, j, 20, task.getProcessed() + "%");
+                        addPane(i, j, 20, task.getProcessed() + "%", "");
                         break;
                     }
-
                 }
-
             }
         }
-//        addResizeListeners();
-//        makeResizable(50);
-//        tbData.setEditable(true);
-//        tbData.setMaxWidth(940);
-//        tcProjectName.setEditable(true);
-//        tcProjectName.setText(Constant.PrimaryConstant.PROJECT_NAME);
-//        tcProjectName.setCellValueFactory(new PropertyValueFactory<>("prName"));
-//        tcProjectName.setCellFactory(TextFieldTableCell.forTableColumn());
-//        tcTask.setEditable(true);
-//        tcTask.setCellValueFactory(new PropertyValueFactory<>("title"));
-//        tcTask.setCellFactory(TextFieldTableCell.forTableColumn());
-//        tcNgPTr.setEditable(true);
-//        tcNgPTr.setCellValueFactory(new PropertyValueFactory<>("name"));
-//        tcDateStart.setCellValueFactory(new PropertyValueFactory<>("startDate"));
-//        tcDeadline.setCellValueFactory(new PropertyValueFactory<>("deadline"));
-//        tcFinishDate.setCellValueFactory(new PropertyValueFactory<>("finishDate"));
-//        tcExpectedTime.setCellValueFactory(new PropertyValueFactory<>("expectedTime"));
-//        tcFinishTime.setCellValueFactory(new PropertyValueFactory<>("finishTime"));
-//        tcProcess.setEditable(true);
-//        tcProcess.setCellValueFactory(new PropertyValueFactory<>("processed"));
-//        tbData.setItems(listTask);
+        for (int h = 0; h < numRows; h++) {
+            double tempMaxHeight = 0;
+            for (int j = 0; j < numCols; j++) {
+                if (tempMaxHeight < heightListAllTable.get(h * numCols + j)) {
+                    tempMaxHeight = heightListAllTable.get(h * numCols + j);
+                }
+            }
+            heightestHeightPerRow.add(tempMaxHeight);
+        }
+        System.out.println("size: " + heightestHeightPerRow.size());
+        for (Double i : heightestHeightPerRow) {
+            System.out.println("height: " + i);
+        }
     }
 
-    public void refreshTable() {
-        ObservableList<Task> taskList = FXCollections.observableArrayList(taskService.getAllTask());
-//        tbData.setItems(taskList);
-//        tcProjectName.setCellFactory(new Callback<>() {
-//            @Override
-//            public TableCell<Task, String> call(TableColumn<Task, String> taskStringTableColumn) {
-//                return new TableCell<>() {
-//                    @Override
-//                    public void updateItem(String item, boolean empty) {
-//                        super.updateItem(item, empty);
-//                        if (!isEmpty()) {
-//                            ProjectName name = projectNameService.getProjectName(item);
-//                            this.setStyle("-fx-background-color: #" + name.getProjectColor().substring(2) + ";");
-//                            setText(item);
-//                        }
-//                    }
-//                };
-//            }
-//        });
-//        tcNgPTr.setCellFactory(new Callback<TableColumn<Task, String>, TableCell<Task, String>>() {
-//            @Override
-//            public TableCell<Task, String> call(TableColumn<Task, String> taskStringTableColumn) {
-//                return new TableCell<>() {
-//                    @Override
-//                    public void updateItem(String item, boolean empty) {
-//                        super.updateItem(item, empty);
-//                        if (!isEmpty()) {
-//                            Person person = personService.getPersonByName(item);
-//                            this.setStyle("-fx-background-color: #" + person.getColor().substring(2) + ";");
-//                            setText(item);
-//                        }
-//                    }
-//                };
-//            }
-//        });
-    }
 
-    private void addPane(int colIndex, int rowIndex, int labelSize, String content) {
-
-        int cellNum = rowIndex * 2 + colIndex + 1;
+    private void addPane(int colIndex, int rowIndex, int labelSize, String content, String colorCode) {
         Label label = new Label("  " + content);
-        TextField tf = new TextField();
-        tf.setLayoutX(10);
-        tf.setLayoutY(20);
-        Pane pane = new Pane();
-        pane.getChildren().add(label);
+        label.setWrapText(true);
+        Text text = new Text("  " + content);
+        text.setFont(new Font(15));
+        text.setWrappingWidth(250);
+        StackPane pane = new StackPane();
+        pane.getChildren().add(text);
+        pane.setPrefWidth(10);
+        pane.setMaxWidth(10);
+
+        if (rowIndex == 0 || rowIndex == 2) {
+            pane.setStyle("-fx-background-color: #" + colorCode.substring(2) + ";");
+        }
         gridPane.add(pane, rowIndex, colIndex);
+        ObservableList<Node> nodeList = pane.getChildren();
+        for (Node i : nodeList) {
+            heightListAllTable.add(i.getLayoutBounds().getHeight());
+        }
     }
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
-        refreshTable();
         refreshTimeline();
     }
 
@@ -208,27 +167,13 @@ public class PrimaryViewController implements Initializable {
         HBox pane = new HBox();
         int year = 2020;
         for (int i = 0; i < 52; i++) {
-//            WeekTitle weekTitle = new WeekTitle(LocalDate.of(year,1,1).plusWeeks(i));
-
             Week week = new Week(LocalDate.of(year, 1, 1).plusWeeks(i), tasks);
             pane.getChildren().add(week);
         }
         rightPane.setContent(pane);
 
         TableTitle tableTitle = new TableTitle();
-//        VBox left = new VBox();
-//        left.getChildren().add(tableTitle);
         leftPaneTitle.getChildren().add(tableTitle);
-//        try {
-//            eventHandler();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        try {
-//            eventHandler();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
 //    private void eventHandler() {
