@@ -34,13 +34,13 @@
 
                     </rowConstraints>
                 </GridPane>
-                <GridPane fx:id="rowT" gridLinesVisible="true">
+                <GridPane fx:id="timeLinePane" gridLinesVisible="true">
                     <rowConstraints>
-                        <RowConstraints minHeight="50"/>
+
                     </rowConstraints>
                 </GridPane>
                 <VBox fx:id="rightPane" maxWidth="960">
-
+                    <!--                <ScrollBar fx:id="scBar"/>-->
                 </VBox>
 
 

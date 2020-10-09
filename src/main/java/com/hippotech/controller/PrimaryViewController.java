@@ -1,7 +1,6 @@
 package com.hippotech.controller;
 
 
-import com.hippotech.controller.components.Week;
 import com.hippotech.controller.components.WeekTitle;
 import com.hippotech.model.Person;
 import com.hippotech.model.ProjectName;
@@ -10,7 +9,6 @@ import com.hippotech.service.PersonService;
 import com.hippotech.service.ProjectNameService;
 import com.hippotech.service.TaskService;
 import com.hippotech.utilities.Constant;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,12 +16,14 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.net.URL;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -31,7 +31,6 @@ import java.util.ResourceBundle;
 
 
 public class PrimaryViewController implements Initializable {
-    private final ObservableList<Task> listTask;
     @FXML
     GridPane gridPane;
     @FXML
@@ -51,22 +50,23 @@ public class PrimaryViewController implements Initializable {
     ProjectNameService projectNameService;
     ArrayList<Task> tasks;
     @FXML
-    GridPane rowT;
-    ArrayList<Double> heightestHeightPerRow = new ArrayList<>();
+    GridPane timeLinePane;
+    @FXML
+    ScrollBar scBar;
+
+    ArrayList<Double> highestHeightPerRow = new ArrayList<>();
     ArrayList<Double> heightListAllTable = new ArrayList<>();
 
     public PrimaryViewController() {
         taskService = new TaskService();
         personService = new PersonService();
         projectNameService = new ProjectNameService();
-        listTask = FXCollections.observableArrayList(taskService.getAllTask());
         tasks = taskService.getAllTask();
     }
 
     public void initTable() {
-        ArrayList<Task> listTask2 = taskService.getAllTask();
         int numCols = 9;
-        int numRows = listTask.size();
+        int numRows = tasks.size();
 
 
         for (int i = 0; i < numRows; i++) {
@@ -78,7 +78,7 @@ public class PrimaryViewController implements Initializable {
 
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numCols; j++) {
-                Task task = listTask2.get(i);
+                Task task = tasks.get(i);
                 switch (j) {
                     case 0: {
                         ProjectName projectName = projectNameService.getProjectName(task.getPrName());
@@ -130,10 +130,10 @@ public class PrimaryViewController implements Initializable {
                     tempMaxHeight = heightListAllTable.get(h * numCols + j);
                 }
             }
-            heightestHeightPerRow.add(tempMaxHeight);
+            highestHeightPerRow.add(tempMaxHeight);
         }
-        System.out.println("size: " + heightestHeightPerRow.size());
-        for (Double i : heightestHeightPerRow) {
+        System.out.println("size: " + highestHeightPerRow.size());
+        for (Double i : highestHeightPerRow) {
             System.out.println("height: " + i);
         }
     }
@@ -181,30 +181,41 @@ public class PrimaryViewController implements Initializable {
         return monday;
     }
 
-    private void addTimelineRow(Task task) {
-        rowT.getColumnConstraints().clear();
-        rowT.getChildren().clear();
-        int colsNum = 52 * 5;
+    private void addTimeline() throws ParseException {
+        timeLinePane.getColumnConstraints().clear();
+        timeLinePane.getChildren().clear();
+        LocalDate first = getMonday(LocalDate.of(2020, 1, 1));
+        LocalDate last = getMonday(LocalDate.of(2020, 12, 31)).plusDays(5);
+        int colsNum = new AddTaskViewController().workDays(first, last);
         ColumnConstraints columnConstraints = new ColumnConstraints();
         columnConstraints.setPercentWidth(35);
         for (int i = 0; i < colsNum; i++) {
-            rowT.getColumnConstraints().add(columnConstraints);
+            timeLinePane.getColumnConstraints().add(columnConstraints);
+        }
+        RowConstraints rowConstraints = new RowConstraints();
+
+        for (Double height :
+                highestHeightPerRow) {
+            rowConstraints.setPrefHeight(height);
+            timeLinePane.getRowConstraints().add(rowConstraints);
         }
 
-        //cell.setBackground(new Background(new BackgroundFill(Color.valueOf())));
-        LocalDate first = getMonday(LocalDate.of(2020, 1, 1));
-        LocalDate last = getMonday(LocalDate.of(2020, 11, 1));
-        int j = 0;
-        for (LocalDate i = first; !i.isEqual(last); i = i.plusDays(1)) {
-            if (i.getDayOfWeek().getValue() < 6) {
-                Pane cell = new Pane();
-                cell.setBackground(new Background(new BackgroundFill(Color.valueOf(getColor(i, task)),
-                        CornerRadii.EMPTY, Insets.EMPTY)));
-                Label label = new Label(i.toString());
-                cell.getChildren().add(label);
-                rowT.add(cell, j, 0);
-                System.out.println(i);
-                j++;
+
+        for (Task task : tasks) {
+            int j = 0;
+            for (LocalDate i = first; !i.isEqual(last); i = i.plusDays(1)) {
+                if (i.getDayOfWeek().getValue() < 6) {
+
+                    //TODO:
+                    Pane cell = new Pane();
+                    cell.setBackground(new Background(new BackgroundFill(Color.valueOf(getColor(i, task)),
+                            CornerRadii.EMPTY, Insets.EMPTY)));
+                    Label label = new Label(i.toString().substring(5));
+                    cell.getChildren().add(label);
+                    timeLinePane.add(cell, j, tasks.indexOf(task));
+                    System.out.println(i);
+                    j++;
+                }
             }
         }
     }
@@ -235,8 +246,12 @@ public class PrimaryViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
-        addTimelineRow(tasks.get(1));
-        //refreshTimeline();
+        try {
+            addTimeline();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        initTimelineTitle();
         initScrollBar();
     }
 
@@ -251,8 +266,8 @@ public class PrimaryViewController implements Initializable {
 //        });
     }
 
-    public void refreshTimeline() {
-        HBox pane = new HBox();
+    public void initTimelineTitle() {
+//        HBox pane = new HBox();
         HBox timeline = new HBox();
         int year = 2020;
         for (int i = 0; i < 52; i++) {
@@ -260,23 +275,8 @@ public class PrimaryViewController implements Initializable {
             LocalDate addDay = LocalDate.of(year, 1, 1).plusWeeks(i);
             weekTitle.setText(addDay);
             timeline.getChildren().add(weekTitle);
-            Week week = new Week(addDay, tasks);
-            pane.getChildren().add(week);
         }
         timeLineTitle.getChildren().add(timeline);
-        rightPane.getChildren().add(pane);
-
-
-//        try {
-//            eventHandler();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        try {
-//            eventHandler();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
 //    private void eventHandler() {
