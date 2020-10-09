@@ -20,7 +20,7 @@
         <Label layoutX="27.0" layoutY="155.0" text="Ngày bắt đầu:" />
         <Label layoutX="394.0" layoutY="155.0" text="Deadline:" />
         <Button layoutX="241.0" layoutY="286.0" onAction="#submit" prefHeight="46.0" prefWidth="51.0" text="OK" />
-        <Button layoutX="419.0" layoutY="286.0" onAction="#cancel" prefHeight="46.0" prefWidth="51.0" text="Cancel" />
+        <Button layoutX="419.0" layoutY="286.0" onAction="#cancel" prefHeight="46.0" text="Cancel" />
         <Button layoutX="304.0" layoutY="65.0" onAction="#AddProject" text="+" />
         <Button layoutX="680.0" layoutY="65.0" onAction="#AddPerson" text="+" />
         <DatePicker fx:id="finishDate" layoutX="133.0" layoutY="187.0" onAction="#onPickFinishDate" prefHeight="25.0" prefWidth="205.0" />

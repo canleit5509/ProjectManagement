@@ -6,6 +6,7 @@ import com.hippotech.model.Task;
 import com.hippotech.service.PersonService;
 import com.hippotech.service.ProjectNameService;
 import com.hippotech.service.TaskService;
+import com.hippotech.utilities.Constant;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -57,47 +58,31 @@ public class UpdateTaskViewController implements Initializable {
     private ProjectNameService projectNameService;
     private TaskService taskService;
 
+    private final ModalWindowController modalWindowController = new ModalWindowController(this.getClass());
+
     public boolean validate() {
         if (prName.getValue() == null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Thông báo");
-            alert.setHeaderText("Vui lòng chọn dự án!");
-            alert.showAndWait();
+            _Alert.showWaitInfoNotification(Constant.DialogConstant.CHOOSE_A_PROJECT);
             return false;
         }
         if (name.getValue() == null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Thông báo");
-            alert.setHeaderText("Vui lòng chọn nhân sự");
-            alert.showAndWait();
+            _Alert.showWaitInfoNotification(Constant.DialogConstant.CHOOSE_A_PERSON);
             return false;
         }
         if (title.getText().equals("")) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Thông báo");
-            alert.setHeaderText("Vui lòng chọn tên công việc");
-            alert.showAndWait();
+            _Alert.showWaitInfoNotification(Constant.DialogConstant.CHOOSE_TASK_TITLE);
             return false;
         }
         if (startDate.getValue() == null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Thông báo");
-            alert.setHeaderText("Vui lòng chọn ngày bắt đầu");
-            alert.showAndWait();
+            _Alert.showWaitInfoNotification(Constant.DialogConstant.CHOOSE_START_DATE);
             return false;
         }
         if (deadline.getValue() == null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Thông báo");
-            alert.setHeaderText("Vui lòng chọn ngày deadline");
-            alert.showAndWait();
+            _Alert.showWaitInfoNotification(Constant.DialogConstant.CHOOSE_DEADLINE);
             return false;
         }
         if (processed.getText().equals("")) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Thông báo");
-            alert.setHeaderText("Vui lòng nhập tiến độ công việc");
-            alert.showAndWait();
+            _Alert.showWaitInfoNotification(Constant.DialogConstant.CHOOSE_PROCESSED);
             return false;
         }
         int processed2 = Integer.parseInt(processed.getText());
@@ -164,36 +149,24 @@ public class UpdateTaskViewController implements Initializable {
         stage.close();
     }
 
-    //todo: constant
     public void AddProject(ActionEvent e) throws IOException {
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/com/hippotech/AddProject.fxml"));
-        Parent addProject = loader.load();
-        Scene scene = new Scene(addProject);
-        Stage addProjectWindow = new Stage();
-        addProjectWindow.setTitle("Thêm dự án");
-        addProjectWindow.setScene(scene);
-        addProjectWindow.initModality(Modality.WINDOW_MODAL);
-        addProjectWindow.initOwner(stage);
-        addProjectWindow.showAndWait();
+        Node node = (Node) e.getSource();
+        modalWindowController.showWindowModal(node,
+                "/com/hippotech/AddProject.fxml",
+                Constant.WindowTitleConstant.ADD_PROJECT_TITLE);
+
         setComboBox();
     }
 
     public void AddPerson(ActionEvent e) throws IOException {
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/com/hippotech/AddPerson.fxml"));
-        Parent addProject = loader.load();
-        Scene scene = new Scene(addProject);
-        Stage addProjectWindow = new Stage();
-        addProjectWindow.setTitle("Thêm nhân sự");
-        addProjectWindow.setScene(scene);
-        addProjectWindow.initModality(Modality.WINDOW_MODAL);
-        addProjectWindow.initOwner(stage);
+        FXMLLoader loader = modalWindowController.getLoader("/com/hippotech/AddPerson.fxml");
+        Parent parent = modalWindowController.load(loader);
+        Node node = (Node) e.getSource();
+
         AddPerson addPerson = loader.getController();
         addPerson.setID();
-        addProjectWindow.showAndWait();
+
+        modalWindowController.showWindowModal(node, parent, Constant.WindowTitleConstant.ADD_PERSON_TITLE);
         setComboBox();
     }
 
@@ -219,10 +192,7 @@ public class UpdateTaskViewController implements Initializable {
         LocalDate date1 = startDate.getValue();
         LocalDate date2 = deadline.getValue();
         if (date2.compareTo(date1) < 0) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Thông báo");
-            alert.setHeaderText("Ngày deadline trước ngày bắt đầu!");
-            alert.showAndWait();
+            _Alert.showInfoNotification(Constant.DialogConstant.ERROR_DEADLINE_BEFORE_START_DATE);
         } else {
             expectedTime.setText(String.valueOf(workDays(date1, date2)));
         }
@@ -253,10 +223,7 @@ public class UpdateTaskViewController implements Initializable {
         LocalDate date1 = startDate.getValue();
         LocalDate date2 = finishDate.getValue();
         if (date2.compareTo(date1) < 0) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Thông báo");
-            alert.setHeaderText("Ngày hoàn thành trước ngày bắt đầu!");
-            alert.showAndWait();
+            _Alert.showInfoNotification(Constant.DialogConstant.ERROR_FINISH_TIME_BEFORE_START_DATE);
         } else {
             finishTime.setText(String.valueOf(workDays(date1, date2)));
         }
@@ -266,10 +233,7 @@ public class UpdateTaskViewController implements Initializable {
         if (validate()) {
             Task task = getTask();
             taskService.updateTask(task);
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Thông báo");
-            alert.setHeaderText("Cập nhật thành công");
-            alert.showAndWait();
+            _Alert.showInfoNotification(Constant.DialogConstant.SUCCESS_UPDATE_TASK);
             Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
             stage.close();
         }

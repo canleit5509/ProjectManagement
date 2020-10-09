@@ -38,23 +38,16 @@ public class ManageProject implements Initializable {
     private TableColumn<ProjectName, String> tcName;
     @FXML
     private Button btnDone;
+    ModalWindowController modalWindowController = new ModalWindowController(this.getClass());
 
     public ManageProject() {
         service = new ProjectNameService();
     }
 
     public void btnAdd(ActionEvent e) throws IOException {
-        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/com/hippotech/AddProject.fxml"));
-        Parent addProject = loader.load();
-        Scene scene = new Scene(addProject);
-        Stage addProjectWindow = new Stage();
-        addProjectWindow.setTitle(Constant.ManagerProject.NOTIFICATION_TITLE);
-        addProjectWindow.setScene(scene);
-        addProjectWindow.initModality(Modality.WINDOW_MODAL);
-        addProjectWindow.initOwner(stage);
-        addProjectWindow.showAndWait();
+        modalWindowController.showWindowModal(e,
+                "/com/hippotech/AddProject.fxml",
+                Constant.WindowTitleConstant.ADD_PROJECT_TITLE);
         RefreshTable(service.getAllDoneProject(0));
         refreshColor();
         checkNow.setSelected(true);
@@ -63,25 +56,18 @@ public class ManageProject implements Initializable {
     public void btnUpdate(ActionEvent e) throws IOException {
         ProjectName projectName = (ProjectName) tbData.getSelectionModel().getSelectedItem();
         if (projectName == null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Warning");
-            alert.setHeaderText("Vui lòng chọn dự án");
-            alert.show();
+            _Alert.showWaitInfoNotification(Constant.DialogConstant.CHOOSE_A_PROJECT);
         } else {
-            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/com/hippotech/UpdateProject.fxml"));
-            Parent updateProject = loader.load();
-            Scene scene = new Scene(updateProject);
-            Stage updateProjectWindow = new Stage();
-            updateProjectWindow.setTitle("Cập nhật nhân sự");
-            updateProjectWindow.setScene(scene);
-            updateProjectWindow.initModality(Modality.WINDOW_MODAL);
-            updateProjectWindow.initOwner(stage);
+            FXMLLoader loader = modalWindowController.getLoader("/com/hippotech/UpdateProject.fxml");
+            Parent parent = modalWindowController.load(loader);
+
             UpdateProject updateProject1 = loader.getController();
             updateProject1.setProject(projectName);
             updateProject1.oldName = projectName.getProjectName();
-            updateProjectWindow.showAndWait();
+
+            Node node = (Node) e.getSource();
+            modalWindowController.showWindowModal(node, parent, Constant.WindowTitleConstant.UPDATE_PERSON_TITLE);
+
             RefreshTable(service.getAllDoneProject(0));
             refreshColor();
             checkNow.setSelected(true);
@@ -92,10 +78,7 @@ public class ManageProject implements Initializable {
     public void btnKick(ActionEvent actionEvent) {
         ProjectName projectName = (ProjectName) tbData.getSelectionModel().getSelectedItem();
         if (projectName == null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Warning");
-            alert.setHeaderText("Vui lòng chọn dự án");
-            alert.show();
+            _Alert.showWaitInfoNotification(Constant.DialogConstant.CHOOSE_A_PROJECT);
         } else {
             projectName.setDone(1);
             service.updateProject(projectName);

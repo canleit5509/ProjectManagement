@@ -2,6 +2,8 @@ package com.hippotech.controller;
 
 
 import com.hippotech.controller.components.WeekTitle;
+import com.hippotech.controller.components.Week;
+import com.hippotech.interfaces.IAddContentToWindow;
 import com.hippotech.model.Person;
 import com.hippotech.model.ProjectName;
 import com.hippotech.model.Task;
@@ -40,6 +42,11 @@ public class PrimaryViewController implements Initializable {
     @FXML
     Button btnDel;
     @FXML
+    Button btnProject;
+    @FXML
+    Button btnPerson;
+
+    @FXML
     VBox rightPane;
     @FXML
     VBox timeLineTitle;
@@ -56,6 +63,8 @@ public class PrimaryViewController implements Initializable {
 
     ArrayList<Double> highestHeightPerRow = new ArrayList<>();
     ArrayList<Double> heightListAllTable = new ArrayList<>();
+
+    ModalWindowController modalWindowController = new ModalWindowController(this.getClass());
 
     public PrimaryViewController() {
         taskService = new TaskService();
@@ -265,6 +274,59 @@ public class PrimaryViewController implements Initializable {
 //            }
 //        });
     }
+            eventHandler();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void eventHandler() {
+        btnAdd.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                Node node = (Node) mouseEvent.getSource();
+                modalWindowController.showWindowModal(node,
+                        "/com/hippotech/AddTaskView.fxml",
+                        Constant.WindowTitleConstant.ADD_TASK_TITLE);
+                refreshTable();
+            }
+        });
+        btnDel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                Task selected = tbData.getSelectionModel().getSelectedItem();
+                if (selected == null) {
+                    _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_DELETE);
+                } else {
+                    Optional<ButtonType> option = _Alert.showWaitConfirmation(
+                            Constant.WindowTitleConstant.DELETE_TASK_TITLE,
+                            Constant.DialogConstant.CONFIRM_DELETE_TASK
+                    );
+                    if (option.get() == ButtonType.OK) {
+                        tbData.getItems().remove(selected);
+                        taskService.deleteTask(selected);
+                        _Alert.showInfoNotification(Constant.WindowTitleConstant.DELETE_TASK_TITLE);
+                        refreshTable();
+                    }
+                }
+            }
+        });
+        btnEdit.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                Task selected = tbData.getSelectionModel().getSelectedItem();
+                if (selected == null) {
+                    _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_UPDATE);
+                }else {
+                    // TODO : Add controller in a function
+                FXMLLoader loader = modalWindowController.getLoader("/com/hippotech/UpdateTaskView.fxml");
+                Parent parent = modalWindowController.load(loader);
+                Node node = (Node) mouseEvent.getSource();
+
+                UpdateTaskViewController controller = loader.getController();
+                controller.setTask(selected);
+                controller.setComboBox();
 
     public void initTimelineTitle() {
 //        HBox pane = new HBox();
@@ -278,164 +340,34 @@ public class PrimaryViewController implements Initializable {
         }
         timeLineTitle.getChildren().add(timeline);
     }
+                modalWindowController.showWindowModal(
+                        node,
+                        parent,
+                        Constant.WindowTitleConstant.UPDATE_TASK_TITLE
+                        );
+                    refreshTable();
+                }
+            }
+        });
 
-//    private void eventHandler() {
-//        btnAdd.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent mouseEvent) {
-//                Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-//                FXMLLoader loader = getLoader("/com/hippotech/AddTaskView.fxml");
-//                Parent addTaskParent = null;
-//                try {
-//                    addTaskParent = loader.load();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                Scene scene = new Scene(addTaskParent);
-//                Stage addTaskWindow = new Stage();
-//                addTaskWindow.setTitle("Thêm công việc");
-//                addTaskWindow.setScene(scene);
-//                addTaskWindow.initModality(Modality.WINDOW_MODAL);
-//                addTaskWindow.initOwner(stage);
-//                addTaskWindow.showAndWait();
-//                refreshTable();
-//                refreshTimeline();
-//            }
-//        });
-//        btnDel.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent mouseEvent) {
-//                Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-//                FXMLLoader loader = getLoader("/com/hippotech/UpdateTaskView.fxml");
-//                Parent updateTaskParent = null;
-//                try {
-//                    updateTaskParent = loader.load();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                Scene scene = new Scene(updateTaskParent);
-//                UpdateTaskViewController controller = loader.getController();
-//                Task selected = tbData.getSelectionModel().getSelectedItem();
-//                if (selected == null) {
-//                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//                    alert.setTitle("Warning");
-//                    alert.setHeaderText("Vui lòng chọn công việc cần chỉnh sửa");
-//                    alert.show();
-//                } else {
-//                    controller.setTask(selected);
-//                    controller.setComboBox();
-//                    Stage updateTaskWindow = new Stage();
-//                    updateTaskWindow.setTitle("Chỉnh sửa công việc");
-//                    updateTaskWindow.setScene(scene);
-//                    updateTaskWindow.initModality(Modality.WINDOW_MODAL);
-//                    updateTaskWindow.initOwner(stage);
-//                    updateTaskWindow.showAndWait();
-//                    refreshTable();
-//                    refreshTimeline();
-//                }
-//            }
-//        });
-//        btnEdit.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent mouseEvent) {
-//                Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-//                FXMLLoader loader = new FXMLLoader();
-//                loader.setLocation(getClass().getResource("/com/hippotech/UpdateTaskView.fxml"));
-//                Parent updateTaskParent = null;
-//                try {
-//                    updateTaskParent = loader.load();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                Scene scene = new Scene(updateTaskParent);
-//                UpdateTaskViewController controller = loader.getController();
-//                Task selected = tbData.getSelectionModel().getSelectedItem();
-//                if (selected == null) {
-//                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//                    alert.setTitle("Warning");
-//                    alert.setHeaderText("Vui lòng chọn công việc cần chỉnh sửa");
-//                    alert.show();
-//                } else {
-//                    controller.setTask(selected);
-//                    controller.setComboBox();
-//                    Stage updateTaskWindow = new Stage();
-//                    updateTaskWindow.setTitle("Chỉnh sửa công việc");
-//                    updateTaskWindow.setScene(scene);
-//                    updateTaskWindow.initModality(Modality.WINDOW_MODAL);
-//                    updateTaskWindow.initOwner(stage);
-//                    updateTaskWindow.showAndWait();
-//                    refreshTable();
-//                    refreshTimeline();
-//                }
-//            }
-//        });
-//    }
-//
-//    public FXMLLoader getLoader(String source) {
-//        FXMLLoader loader = new FXMLLoader();
-//        loader.setLocation(getClass().getResource(source));
-//        return loader;
-//    }
-//
-//
-//    public void Delete(ActionEvent e) {
-//        Task selected = tbData.getSelectionModel().getSelectedItem();
-//        if (selected == null) {
-//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//            alert.setTitle("Warning");
-//            alert.setHeaderText("Vui lòng chọn công việc cần xóa");
-//            alert.show();
-//        } else {
-//            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//            alert.setTitle("Xóa công việc");
-//            alert.setHeaderText("Bạn có chắc chắn muốn xóa công việc này?");
-//            Optional<ButtonType> option = alert.showAndWait();
-//            if (option.get() == null) {
-//            } else if (option.get() == ButtonType.OK) {
-//                tbData.getItems().remove(selected);
-//                taskService.deleteTask(selected);
-//                Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
-//                alert2.setTitle("Thông báo");
-//                alert2.setHeaderText("Đã xóa");
-//                alert2.show();
-//                refreshTable();
-//                refreshTimeline();
-//            } else if (option.get() == ButtonType.CANCEL) {
-//            }
-//        }
-//    }
-//
-//    public void btnProject(ActionEvent e) throws IOException {
-//        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-//        FXMLLoader loader = new FXMLLoader();
-//        loader.setLocation(getClass().getResource("/com/hippotech/ProjectManagement.fxml"));
-//        Parent addTaskParent = loader.load();
-//        Scene scene = new Scene(addTaskParent);
-//        Stage addTaskWindow = new Stage();
-//        addTaskWindow.setTitle("Quản lý nhân sự");
-//        addTaskWindow.setScene(scene);
-//        addTaskWindow.initModality(Modality.WINDOW_MODAL);
-//        addTaskWindow.initOwner(stage);
-//        addTaskWindow.showAndWait();
-//        refreshTable();
-//        refreshTimeline();
-//    }
-//
-//    public void btnPerson(ActionEvent e) throws IOException {
-//        Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-//        FXMLLoader loader = new FXMLLoader();
-//        loader.setLocation(getClass().getResource("/com/hipptech/PersonManagement.fxml"));
-//        Parent addTaskParent = loader.load();
-//        Scene scene = new Scene(addTaskParent);
-//        Stage addTaskWindow = new Stage();
-//        addTaskWindow.setTitle("Quản lý nhân sự");
-//        addTaskWindow.setScene(scene);
-//        addTaskWindow.initModality(Modality.WINDOW_MODAL);
-//        addTaskWindow.initOwner(stage);
-//        addTaskWindow.showAndWait();
-//        refreshTable();
-//        refreshTimeline();
-//    }
+        btnPerson.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                modalWindowController.showWindowModal(mouseEvent,
+                        "/com/hippotech/PersonManagement.fxml",
+                        Constant.WindowTitleConstant.PERSON_MANAGEMENT_TITLE);
+                refreshTable();
+            }
+        });
 
+        btnProject.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                modalWindowController.showWindowModal(e,
+                        "/com/hippotech/ProjectManagement.fxml",
+                        Constant.WindowTitleConstant.PROJECT_MANAGEMENT_TITLE);
+                refreshTable();
+            }
+        });
+    }
 }

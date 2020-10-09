@@ -13,7 +13,7 @@
       <TextField fx:id="txtName" layoutX="167.0" layoutY="21.0" prefHeight="26.0" prefWidth="209.0" />
       <ColorPicker fx:id="color" layoutX="167.0" layoutY="70.0" />
       <Button layoutX="134.0" layoutY="181.0" mnemonicParsing="false" onAction="#okBtn" prefHeight="45.0" prefWidth="51.0" text="OK" />
-      <Button layoutX="301.0" layoutY="181.0" mnemonicParsing="false" onAction="#cancelBtn" prefHeight="46.0" prefWidth="51.0" text="Cancel" />
+      <Button layoutX="301.0" layoutY="181.0" mnemonicParsing="false" onAction="#cancelBtn" prefHeight="46.0" prefWidth="80.0" text="Cancel" />
       <RadioButton fx:id="radioNow" layoutX="167.0" layoutY="137.0" mnemonicParsing="false" text="Đang làm" />
       <RadioButton fx:id="radioDone" layoutX="277.0" layoutY="137.0" mnemonicParsing="false" text="Đã hoàn thành" />
       <Label layoutX="64.0" layoutY="74.0" text="Nhãn màu" />

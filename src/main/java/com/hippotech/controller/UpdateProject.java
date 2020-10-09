@@ -3,6 +3,7 @@ package com.hippotech.controller;
 
 import com.hippotech.model.ProjectName;
 import com.hippotech.service.ProjectNameService;
+import com.hippotech.utilities.Constant;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -55,10 +56,7 @@ public class UpdateProject implements Initializable {
         ProjectName project = new ProjectName(name, txtColor, done);
         ProjectNameService service = new ProjectNameService();
         service.updateProject(project);
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Thông báo");
-        alert.setHeaderText("Cập nhật thành công");
-        alert.show();
+        _Alert.showInfoNotification(Constant.DialogConstant.SUCCESS_UPDATE_PROJECT);
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.close();
     }
