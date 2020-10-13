@@ -74,6 +74,7 @@ public class PrimaryViewController implements Initializable {
             rowConstraints.setMinHeight(35);
             rowConstraints.setVgrow(Priority.ALWAYS);
             gridPane.getRowConstraints().add(rowConstraints);
+//            System.out.println("height ooooooooooo:" + rowConstraints.getPrefHeight());
         }
 
         for (int i = 0; i < numRows; i++) {
@@ -123,6 +124,25 @@ public class PrimaryViewController implements Initializable {
 
             }
         }
+
+//        //test lay do dai theo stack pane va max height cell--------------------------------------------------
+        ObservableList<RowConstraints> rowConstraintsList = gridPane.getRowConstraints();
+//        ObservableList<Node> list = gridPane.getChildren();
+//        System.out.println("size: " + list.size());
+//        for(Node i: list){
+//            System.out.println("node: " + i);
+//            System.out.println("height ffffff: " + i.getLayoutBounds().getHeight());
+//        }
+        System.out.println("row list size: " + rowConstraintsList.size());
+        for(RowConstraints i:rowConstraintsList){
+            System.out.println("row : " + i.getPrefHeight());
+            System.out.println(i.getMaxHeight());
+            System.out.println(i.getMinHeight());
+            System.out.println(i.getVgrow());
+            System.out.println(i.getPercentHeight());
+            System.out.println(i.getValignment());
+
+        }
         for (int h = 0; h < numRows; h++) {
             double tempMaxHeight = 0;
             for (int j = 0; j < numCols; j++) {
@@ -132,10 +152,10 @@ public class PrimaryViewController implements Initializable {
             }
             highestHeightPerRow.add(tempMaxHeight);
         }
-        System.out.println("size: " + highestHeightPerRow.size());
-        for (Double i : highestHeightPerRow) {
-            System.out.println("height: " + i);
-        }
+//        System.out.println("size: " + highestHeightPerRow.size());
+//        for (Double i : highestHeightPerRow) {
+//            System.out.println("height: " + i);
+//        }
     }
 
 
@@ -240,6 +260,10 @@ public class PrimaryViewController implements Initializable {
         for (Node i : nodeList) {
             heightListAllTable.add(i.getLayoutBounds().getHeight());
         }
+        if(rowIndex==0)
+            text.setWrappingWidth(100);
+        if(rowIndex==2)
+            text.setWrappingWidth(90);
     }
 
 
