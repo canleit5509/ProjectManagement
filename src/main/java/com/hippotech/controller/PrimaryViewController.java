@@ -247,6 +247,10 @@ public class PrimaryViewController implements Initializable {
         for (Node i : nodeList) {
             heightListAllTable.add(i.getLayoutBounds().getHeight());
         }
+        if(rowIndex==0)
+            text.setWrappingWidth(100);
+        if(rowIndex==2)
+            text.setWrappingWidth(90);
     }
 
 
@@ -261,6 +265,32 @@ public class PrimaryViewController implements Initializable {
                         Constant.WindowTitleConstant.ADD_TASK_TITLE);
             }
         });
+    }
+
+//    private void eventHandler() {
+//        btnAdd.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent mouseEvent) {
+//                Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+//                FXMLLoader loader = getLoader("/com/hippotech/AddTaskView.fxml");
+//                Parent addTaskParent = null;
+//                try {
+//                    addTaskParent = loader.load();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                Scene scene = new Scene(addTaskParent);
+//                Stage addTaskWindow = new Stage();
+//                addTaskWindow.setTitle("Thêm công việc");
+//                addTaskWindow.setScene(scene);
+//                addTaskWindow.initModality(Modality.WINDOW_MODAL);
+//                addTaskWindow.initOwner(stage);
+//                addTaskWindow.showAndWait();
+//                refreshTable();
+//                refreshTimeline();
+//            }
+//        });
 //        btnDel.setOnMouseClicked(new EventHandler<MouseEvent>() {
 //            @Override
 //            public void handle(MouseEvent mouseEvent) {
@@ -327,7 +357,7 @@ public class PrimaryViewController implements Initializable {
 //            }
 //        });
 //    }
-    }
+//    }
 
     public void initTimelineTitle() {
         HBox timeline = new HBox();
