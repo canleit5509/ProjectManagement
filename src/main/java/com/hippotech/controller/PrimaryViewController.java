@@ -85,50 +85,16 @@ public class PrimaryViewController implements Initializable {
         }
 
         for (int i = 0; i < numRows; i++) {
+            Task task = tasks.get(i);
+            ArrayList<String> taskObj = valuesForTaskRow(task);
+            ProjectName projectName = projectNameService.getProjectName(task.getPrName());
+            Person person = personService.getPersonByName(task.getName());
+            String color = "";
             for (int j = 0; j < numCols; j++) {
-                Task task = tasks.get(i);
-                switch (j) {
-                    case 0: {
-                        ProjectName projectName = projectNameService.getProjectName(task.getPrName());
-                        addPane(i, j, 20, task.getPrName(), projectName.getProjectColor());
-                        break;
-                    }
-                    case 1: {
-                        addPane(i, j, 20, task.getTitle(), "");
-                        break;
-                    }
-                    case 2: {
-                        Person person = personService.getPersonByName(task.getName());
-                        addPane(i, j, 20, task.getName(), person.getColor());
-                        break;
-                    }
-                    case 3: {
-                        addPane(i, j, 20, task.getStartDate(), "");
-                        break;
-                    }
-                    case 4: {
-                        addPane(i, j, 20, task.getDeadline(), "");
-                        break;
-                    }
-                    case 5: {
-                        addPane(i, j, 20, task.getFinishDate(), "");
-                        break;
-                    }
-                    case 6: {
-                        addPane(i, j, 20, task.getExpectedTime() + "", "");
-                        break;
-                    }
-                    case 7: {
-                        addPane(i, j, 20, task.getFinishTime() + "", "");
-                        break;
-                    }
-                    case 8: {
-                        addPane(i, j, 20, task.getProcessed() + "%", "");
-                        break;
-                    }
-
-                }
-
+                if (j == 0) color = projectName.getProjectColor();
+                else if (j == 2) color = person.getColor();
+                else color = "";
+                addPane(i, j, 15, taskObj.get(j), color);
             }
         }
         for (int h = 0; h < numRows; h++) {
@@ -144,6 +110,22 @@ public class PrimaryViewController implements Initializable {
         for (Double i : highestHeightPerRow) {
             System.out.println("height: " + i);
         }
+    }
+
+    private ArrayList<String> valuesForTaskRow(Task task) {
+        ArrayList<String> arrayList = new ArrayList<>();
+
+        arrayList.add(task.getPrName());
+        arrayList.add(task.getTitle());
+        arrayList.add(task.getName());
+        arrayList.add(task.getStartDate());
+        arrayList.add(task.getDeadline());
+        arrayList.add(task.getFinishDate());
+        arrayList.add(task.getExpectedTime()+"");
+        arrayList.add(task.getFinishTime()+"");
+        arrayList.add(task.getProcessed()+"%");
+
+        return arrayList;
     }
 
 
@@ -228,28 +210,28 @@ public class PrimaryViewController implements Initializable {
     }
 
 
-    private void addPane(int colIndex, int rowIndex, int labelSize, String content, String colorCode) {
+    private void addPane(int rowIndex, int colIndex, int labelSize, String content, String colorCode) {
         Label label = new Label("  " + content);
         label.setWrapText(true);
         Text text = new Text("  " + content);
-        text.setFont(new Font(15));
+        text.setFont(new Font(labelSize));
         text.setWrappingWidth(250);
         StackPane pane = new StackPane();
         pane.getChildren().add(text);
         pane.setPrefWidth(10);
         pane.setMaxWidth(10);
 
-        if (rowIndex == 0 || rowIndex == 2) {
+        if (colIndex == 0 || colIndex == 2) {
             pane.setStyle("-fx-background-color: #" + colorCode.substring(2) + ";");
         }
-        gridPane.add(pane, rowIndex, colIndex);
+        gridPane.add(pane, colIndex, rowIndex);
         ObservableList<Node> nodeList = pane.getChildren();
         for (Node i : nodeList) {
             heightListAllTable.add(i.getLayoutBounds().getHeight());
         }
-        if(rowIndex==0)
+        if(colIndex==0)
             text.setWrappingWidth(100);
-        if(rowIndex==2)
+        if(colIndex==2)
             text.setWrappingWidth(90);
     }
 
