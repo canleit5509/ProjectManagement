@@ -17,7 +17,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -30,6 +30,8 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class PrimaryViewController implements Initializable {
@@ -45,27 +47,24 @@ public class PrimaryViewController implements Initializable {
     Button btnProject;
     @FXML
     Button btnPerson;
-
-    @FXML
-    VBox rightPane;
     @FXML
     VBox timeLineTitle;
     @FXML
     HBox titleBox;
+    @FXML
+    ScrollPane timeLineScrollPane;
+    @FXML
+    GridPane timeLinePane;
+
     TaskService taskService;
     PersonService personService;
     ProjectNameService projectNameService;
     ArrayList<Task> tasks;
-    @FXML
-    GridPane timeLinePane;
-    @FXML
-    ScrollBar scBar;
 
     ArrayList<Double> highestHeightPerRow = new ArrayList<>();
     ArrayList<Double> heightListAllTable = new ArrayList<>();
 
     ModalWindowController modalWindowController = new ModalWindowController(this.getClass());
-
     public PrimaryViewController() {
         taskService = new TaskService();
         personService = new PersonService();
@@ -222,7 +221,6 @@ public class PrimaryViewController implements Initializable {
                     Label label = new Label(i.toString().substring(5));
                     cell.getChildren().add(label);
                     timeLinePane.add(cell, j, tasks.indexOf(task));
-                    System.out.println(i);
                     j++;
                 }
             }
@@ -256,29 +254,6 @@ public class PrimaryViewController implements Initializable {
     }
 
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        initTable();
-        try {
-            addTimeline();
-            eventHandler();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        initTimelineTitle();
-        initScrollBar();
-    }
-
-    public void initScrollBar() {
-//        scBar.setLayoutX(titleBox.getHeight() + rightPane.getHeight() - scBar.getHeight());
-//        scBar.valueProperty().addListener(new ChangeListener<Number>() {
-//            @Override
-//            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-//                System.out.println(t1.doubleValue() + "V");
-//                rightPane.setLayoutY(-t1.doubleValue());
-//            }
-//        });
-    }
 
     private void eventHandler() {
         btnAdd.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -385,7 +360,6 @@ public class PrimaryViewController implements Initializable {
 //    }
 
     public void initTimelineTitle() {
-//        HBox pane = new HBox();
         HBox timeline = new HBox();
         int year = 2020;
         for (int i = 0; i < 52; i++) {
@@ -395,5 +369,49 @@ public class PrimaryViewController implements Initializable {
             timeline.getChildren().add(weekTitle);
         }
         timeLineTitle.getChildren().add(timeline);
+        // timeLineTitle set back
+        timeLineTitle.setViewOrder(5);
+    }
+
+    public void initScrollBar() {
+        AtomicInteger AITimeLineTitleWidth = new AtomicInteger();
+        AtomicReference<Double> ARHScrollValue = new AtomicReference<>((double) 0);
+        // Ref object
+        var ref = new Object() {
+            double hScrollValue;
+            int timeLineTitleWidth = 0;
+
+        };
+
+        // Get timeline title width
+        timeLineTitle.widthProperty().addListener((observableValue, number, t1) -> {
+            AITimeLineTitleWidth.set(t1.intValue());
+            ref.timeLineTitleWidth = AITimeLineTitleWidth.get();
+        });
+
+        // Get scroll value and set offset for timeLineTitle
+        timeLineScrollPane.hvalueProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (ref.timeLineTitleWidth == 0) return;
+            ARHScrollValue.set(newValue.doubleValue());
+            ref.hScrollValue = (double) ARHScrollValue.get();
+            int offset;
+
+            offset = (int) Math.floor(ref.hScrollValue* ref.timeLineTitleWidth);
+            timeLineTitle.setTranslateX(-offset);
+        });
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        initTable();
+        try {
+            addTimeline();
+            eventHandler();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        initTimelineTitle();
+        timeLineScrollPane.setMaxWidth(timeLineTitle.getMaxWidth());
+        initScrollBar();
     }
 }
