@@ -1,13 +1,13 @@
 package com.hippotech.controller.components;
 
 import com.hippotech.model.Task;
+import com.hippotech.utilities.DateAndColor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 public class Week extends VBox {
@@ -16,7 +16,7 @@ public class Week extends VBox {
     ArrayList<TaskRow> taskRows;
 
     public Week(LocalDate date, ArrayList<Task> tasks) {
-        LocalDate monday = getMonday(date);
+        LocalDate monday = DateAndColor.getMonday(date);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/hippotech/components/Week.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
@@ -32,9 +32,5 @@ public class Week extends VBox {
         weekTask.getChildren().addAll(taskRows);
     }
 
-    private LocalDate getMonday(LocalDate date) {
-        LocalDate monday;
-        monday = date.minus(date.getDayOfWeek().getValue() - 1, ChronoUnit.DAYS);
-        return monday;
-    }
+
 }
