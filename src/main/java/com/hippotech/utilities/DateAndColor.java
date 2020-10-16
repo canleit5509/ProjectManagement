@@ -26,9 +26,9 @@ public class DateAndColor {
                 if (date.isBefore(finishDate) || date.isEqual(startDate))
                     return Constant.COLOR.SOFT_GREEN;
             } else {
+                if (finishDate.isEqual(deadLine) && finishDate.isEqual(date)) return Constant.COLOR.DARK_GREEN;
                 if (date.isEqual(deadLine)) return Constant.COLOR.RED;
                 if (date.isEqual(finishDate)) return Constant.COLOR.YELLOW;
-                if (finishDate.isEqual(deadLine) && finishDate.isEqual(date)) return Constant.COLOR.DARK_GREEN;
                 if (date.isBefore(deadLine) || date.isEqual(startDate)) return Constant.COLOR.SOFT_GREEN;
                 if (date.isBefore(finishDate)) return Constant.COLOR.ORANGE;
 
@@ -43,7 +43,7 @@ public class DateAndColor {
             } else {
                 if (date.isEqual(deadLine)) return Constant.COLOR.RED;
                 if (date.isEqual(startDate) || date.isBefore(deadLine)) return Constant.COLOR.SOFT_GREEN;
-                if (date.isBefore(now)) return Constant.COLOR.ORANGE;
+                if (date.isBefore(now) || date.equals(now)) return Constant.COLOR.ORANGE;
             }
         }
         return Constant.COLOR.WHITE;
