@@ -27,6 +27,7 @@ import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -157,7 +158,7 @@ public class PrimaryViewController implements Initializable {
             if (i.getDayOfWeek().getValue() < 6) {
                 // TODO:
                 Rectangle rect = new Rectangle(35, height);
-                rect.setHeight(height);
+                rect.setHeight(height + 30);
 //                rect.setWidth(35);
                 rect.setStrokeType(StrokeType.INSIDE);
                 rect.setStroke(Color.valueOf("#000000"));
