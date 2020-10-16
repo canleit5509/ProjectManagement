@@ -16,7 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -51,14 +51,17 @@ public class PrimaryViewController implements Initializable {
     @FXML
     HBox titleBox;
     @FXML
-    ScrollPane timeLineScrollPane;
-    @FXML
     GridPane timeLinePane;
+    @FXML
+    ScrollBar timeLineScrollbar;
 
+    int numCols = 9;
+    int numRows;
     TaskService taskService;
     PersonService personService;
     ProjectNameService projectNameService;
     ArrayList<Task> tasks;
+
 
     ArrayList<Double> highestHeightPerRow = new ArrayList<>();
     ArrayList<Double> heightListAllTable = new ArrayList<>();
@@ -73,9 +76,8 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void initTable() {
-        int numCols = 9;
-        int numRows = tasks.size();
-
+        numCols = 9;
+        numRows = tasks.size();
 
         for (int i = 0; i < numRows; i++) {
             RowConstraints rowConstraints = new RowConstraints();
@@ -83,25 +85,27 @@ public class PrimaryViewController implements Initializable {
 //            rowConstraints.setVgrow(Priority.ALWAYS);
             gridPane.getRowConstraints().add(rowConstraints);
         }
-
+        // Fill data to table
         for (int i = 0; i < numRows; i++) {
             Task task = tasks.get(i);
             ArrayList<String> taskObj = valuesForTaskRow(task);
+            // Pick color
             ProjectName projectName = projectNameService.getProjectName(task.getPrName());
             Person person = personService.getPersonByName(task.getName());
-            String color = "";
+            String color;
             for (int j = 0; j < numCols; j++) {
                 if (j == 0) color = projectName.getProjectColor();
                 else if (j == 2) color = person.getColor();
-                else color = "";
+                else color = Constant.COLOR.WHITE;
                 addPane(i, j, 15, taskObj.get(j), color);
             }
         }
-        for (int h = 0; h < numRows; h++) {
+        // Get height of rows
+        for (int i = 0; i < numRows; i++) {
             double tempMaxHeight = 0;
             for (int j = 0; j < numCols; j++) {
-                if (tempMaxHeight < heightListAllTable.get(h * numCols + j)) {
-                    tempMaxHeight = heightListAllTable.get(h * numCols + j);
+                if (tempMaxHeight < heightListAllTable.get(i * numCols + j)) {
+                    tempMaxHeight = heightListAllTable.get(i * numCols + j);
                 }
             }
             highestHeightPerRow.add(tempMaxHeight);
@@ -129,6 +133,7 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void addTimeline() {
+        timeLinePane.setViewOrder(5);
         timeLinePane.getColumnConstraints().clear();
         timeLinePane.getChildren().clear();
         LocalDate first = DateAndColor.getMonday(LocalDate.of(2020, 1, 1));
@@ -145,13 +150,10 @@ public class PrimaryViewController implements Initializable {
             addTimelineRow(height, tasks.get(j), first, last);
             j++;
         }
-
-
     }
 
 
     private void addTimelineRow(double height, Task task, LocalDate first, LocalDate last) {
-        // System.out.println(height);
         HBox pane = new HBox();
         for (LocalDate i = first; !i.isEqual(last); i = i.plusDays(1)) {
             if (i.getDayOfWeek().getValue() < 6) {
@@ -176,17 +178,19 @@ public class PrimaryViewController implements Initializable {
     private void addPane(int rowIndex, int colIndex, int labelSize, String content, String colorCode) {
         Label label = new Label("  " + content);
         label.setWrapText(true);
+
         Text text = new Text("  " + content);
         text.setFont(new Font(labelSize));
         text.setWrappingWidth(250);
+
         StackPane pane = new StackPane();
         pane.getChildren().add(text);
-        pane.setPrefWidth(10);
-        pane.setMaxWidth(10);
-
+        pane.setBorder(new Border(new BorderStroke(Color.BLACK,
+                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0.5, 0.5, 0.5, 0.5))));
         if (colIndex == 0 || colIndex == 2) {
             pane.setStyle("-fx-background-color: #" + colorCode.substring(2) + ";");
-        }
+        } else
+            pane.setStyle("-fx-background-color: "+colorCode + ";");
         gridPane.add(pane, colIndex, rowIndex);
         ObservableList<Node> nodeList = pane.getChildren();
         for (Node i : nodeList) {
@@ -196,27 +200,23 @@ public class PrimaryViewController implements Initializable {
             text.setWrappingWidth(100);
         if (colIndex == 2)
             text.setWrappingWidth(90);
+        if (colIndex == 8)
+            text.setWrappingWidth(70);
     }
 
     private void eventHandler() {
-        btnAdd.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                Node node = (Node) mouseEvent.getSource();
-                modalWindowController.showWindowModal(node, "/com/hippotech/AddTaskView.fxml",
-                        Constant.WindowTitleConstant.ADD_TASK_TITLE);
-            }
+        btnAdd.setOnMouseClicked(mouseEvent -> {
+            Node node = (Node) mouseEvent.getSource();
+            modalWindowController.showWindowModal(node, "/com/hippotech/AddTaskView.fxml",
+                    Constant.WindowTitleConstant.ADD_TASK_TITLE);
         });
 
         gridPane.addEventFilter(MouseEvent.MOUSE_CLICKED,
                 e -> {
                     for (Node node : gridPane.getChildren()) {
-
-
                         if (node.getBoundsInParent().contains(e.getSceneX(), e.getSceneY())) {
                             System.out.println("Node: " + node + " at " + GridPane.getRowIndex(node) + "/" + GridPane.getColumnIndex(node));
                         }
-
                     }
                 });
     }
@@ -343,14 +343,13 @@ public class PrimaryViewController implements Initializable {
             ref.timeLineTitleWidth = AITimeLineTitleWidth.get();
         });
 
-        // Get scroll value and set offset for timeLineTitle
-        timeLineScrollPane.hvalueProperty().addListener((observableValue, oldValue, newValue) -> {
+        timeLineScrollbar.valueProperty().addListener((observableValue, number, newValue) -> {
             if (ref.timeLineTitleWidth == 0) return;
             ARHScrollValue.set(newValue.doubleValue());
             ref.hScrollValue = ARHScrollValue.get();
-            int offset;
-
-            offset = (int) Math.floor(ref.hScrollValue * ref.timeLineTitleWidth);
+            double offset;
+            offset = ref.hScrollValue * ref.timeLineTitleWidth/100.0;
+            timeLinePane.setTranslateX(-offset);
             timeLineTitle.setTranslateX(-offset);
         });
     }
@@ -365,7 +364,7 @@ public class PrimaryViewController implements Initializable {
             e.printStackTrace();
         }
         initTimelineTitle();
-        timeLineScrollPane.setMaxWidth(timeLineTitle.getMaxWidth());
+        timeLinePane.setMaxWidth(timeLineTitle.getMaxWidth());
         initScrollBar();
     }
 }
