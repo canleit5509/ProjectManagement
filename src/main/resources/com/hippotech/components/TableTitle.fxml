@@ -6,39 +6,39 @@
 <fx:root xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" type="javafx.scene.layout.HBox"
          xmlns="http://javafx.com/javafx/11.0.1">
     <StackPane maxWidth="100">
-        <Rectangle fill="WHITE" height="40" stroke="BLACK" strokeWidth="0.5" width="99.5"/>
+        <Rectangle fill="WHITE" height="39" stroke="BLACK" strokeWidth="0.5" width="99.5"/>
         <Text text="Project" textAlignment="CENTER" wrappingWidth="100"/>
     </StackPane>
     <StackPane maxWidth="260">
-        <Rectangle fill="WHITE" height="40" stroke="BLACK" strokeWidth="0.5" width="259.5"/>
+        <Rectangle fill="WHITE" height="39" stroke="BLACK" strokeWidth="0.5" width="259.5"/>
         <Text text="Task" textAlignment="CENTER" wrappingWidth="260"/>
     </StackPane>
     <StackPane maxWidth="90">
-        <Rectangle fill="WHITE" height="40" stroke="BLACK" strokeWidth="0.5" width="89.5"/>
+        <Rectangle fill="WHITE" height="39" stroke="BLACK" strokeWidth="0.5" width="89.5"/>
         <Text text="Employee" textAlignment="CENTER" wrappingWidth="90"/>
     </StackPane>
     <StackPane maxWidth="90">
-        <Rectangle fill="WHITE" height="40" stroke="BLACK" strokeWidth="0.5" width="89.5"/>
+        <Rectangle fill="WHITE" height="39" stroke="BLACK" strokeWidth="0.5" width="89.5"/>
         <Text text="Start" textAlignment="CENTER" wrappingWidth="90"/>
     </StackPane>
     <StackPane>
-        <Rectangle fill="WHITE" height="40" stroke="BLACK" strokeWidth="0.5" width="89.5"/>
+        <Rectangle fill="WHITE" height="39" stroke="BLACK" strokeWidth="0.5" width="89.5"/>
         <Text text="Deadline" textAlignment="CENTER" wrappingWidth="90"/>
     </StackPane>
     <StackPane>
-        <Rectangle fill="WHITE" height="40" stroke="BLACK" strokeWidth="0.5" width="89.5"/>
+        <Rectangle fill="WHITE" height="39" stroke="BLACK" strokeWidth="0.5" width="89.5"/>
         <Text text="Finish" textAlignment="CENTER" wrappingWidth="90"/>
     </StackPane>
     <StackPane>
-        <Rectangle fill="WHITE" height="40" stroke="BLACK" strokeWidth="0.5" width="84.5"/>
+        <Rectangle fill="WHITE" height="39" stroke="BLACK" strokeWidth="0.5" width="84.5"/>
         <Text text="Expected" textAlignment="CENTER" wrappingWidth="85"/>
     </StackPane>
     <StackPane>
-        <Rectangle fill="WHITE" height="40" stroke="BLACK" strokeWidth="0.5" width="84.5"/>
+        <Rectangle fill="WHITE" height="39" stroke="BLACK" strokeWidth="0.5" width="84.5"/>
         <Text text="Finish Time" textAlignment="CENTER" wrappingWidth="85"/>
     </StackPane>
     <StackPane>
-        <Rectangle fill="WHITE" height="40" stroke="BLACK" strokeWidth="0.5" width="69.5"/>
+        <Rectangle fill="WHITE" height="39" stroke="BLACK" strokeWidth="0.5" width="69.5"/>
         <Text text="Process" textAlignment="CENTER" wrappingWidth="70"/>
     </StackPane>
 

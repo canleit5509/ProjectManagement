@@ -27,7 +27,6 @@ import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -81,7 +80,7 @@ public class PrimaryViewController implements Initializable {
         for (int i = 0; i < numRows; i++) {
             RowConstraints rowConstraints = new RowConstraints();
             rowConstraints.setMinHeight(35);
-            rowConstraints.setVgrow(Priority.ALWAYS);
+//            rowConstraints.setVgrow(Priority.ALWAYS);
             gridPane.getRowConstraints().add(rowConstraints);
         }
 
@@ -122,9 +121,9 @@ public class PrimaryViewController implements Initializable {
         arrayList.add(task.getStartDate());
         arrayList.add(task.getDeadline());
         arrayList.add(task.getFinishDate());
-        arrayList.add(task.getExpectedTime()+"");
-        arrayList.add(task.getFinishTime()+"");
-        arrayList.add(task.getProcessed()+"%");
+        arrayList.add(task.getExpectedTime() + "");
+        arrayList.add(task.getFinishTime() + "");
+        arrayList.add(task.getProcessed() + "%");
 
         return arrayList;
     }
@@ -139,15 +138,15 @@ public class PrimaryViewController implements Initializable {
         columnConstraints.setPercentWidth(35 * 260);
         timeLinePane.getColumnConstraints().add(columnConstraints);
         RowConstraints rowConstraints = new RowConstraints();
-
+        int j = 0;
         for (Double height : highestHeightPerRow) {
-            rowConstraints.setPrefHeight(height);
+            rowConstraints.setMinHeight(30);
             timeLinePane.getRowConstraints().add(rowConstraints);
+            addTimelineRow(height, tasks.get(j), first, last);
+            j++;
         }
 
-        for (Task task : tasks) {
-            addTimelineRow(highestHeightPerRow.get(tasks.indexOf(task)), task, first, last);
-        }
+
     }
 
 
@@ -158,7 +157,11 @@ public class PrimaryViewController implements Initializable {
             if (i.getDayOfWeek().getValue() < 6) {
                 // TODO:
                 Rectangle rect = new Rectangle(35, height);
-                rect.setHeight(height + 30);
+                if (height > 20) {
+                    rect.setHeight(height);
+                } else {
+                    rect.setHeight(height + 15);
+                }
 //                rect.setWidth(35);
                 rect.setStrokeType(StrokeType.INSIDE);
                 rect.setStroke(Color.valueOf("#000000"));
@@ -189,9 +192,9 @@ public class PrimaryViewController implements Initializable {
         for (Node i : nodeList) {
             heightListAllTable.add(i.getLayoutBounds().getHeight());
         }
-        if(colIndex==0)
+        if (colIndex == 0)
             text.setWrappingWidth(100);
-        if(colIndex==2)
+        if (colIndex == 2)
             text.setWrappingWidth(90);
     }
 
@@ -347,7 +350,7 @@ public class PrimaryViewController implements Initializable {
             ref.hScrollValue = ARHScrollValue.get();
             int offset;
 
-            offset = (int) Math.floor(ref.hScrollValue* ref.timeLineTitleWidth);
+            offset = (int) Math.floor(ref.hScrollValue * ref.timeLineTitleWidth);
             timeLineTitle.setTranslateX(-offset);
         });
     }
