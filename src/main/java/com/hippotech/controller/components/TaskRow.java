@@ -1,7 +1,7 @@
 package com.hippotech.controller.components;
 
 import com.hippotech.model.Task;
-import com.hippotech.utilities.Constant;
+import com.hippotech.utilities.DateAndColor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.HBox;
@@ -38,46 +38,12 @@ public class TaskRow extends HBox {
     }
 
     public void setFill(LocalDate date) {
-        mon.setFill(Paint.valueOf(getColor(date)));
-        tue.setFill(Paint.valueOf(getColor(date.plusDays(1))));
-        wed.setFill(Paint.valueOf(getColor(date.plusDays(2))));
-        thu.setFill(Paint.valueOf(getColor(date.plusDays(3))));
-        fri.setFill(Paint.valueOf(getColor(date.plusDays(4))));
+        mon.setFill(Paint.valueOf(DateAndColor.getColor(date, task)));
+        tue.setFill(Paint.valueOf(DateAndColor.getColor(date.plusDays(1), task)));
+        wed.setFill(Paint.valueOf(DateAndColor.getColor(date.plusDays(2), task)));
+        thu.setFill(Paint.valueOf(DateAndColor.getColor(date.plusDays(3), task)));
+        fri.setFill(Paint.valueOf(DateAndColor.getColor(date.plusDays(4), task)));
     }
 
-    public String getColor(LocalDate date) {
-        LocalDate startDate = LocalDate.parse(this.task.getStartDate());
-        if (date.isBefore(startDate)) return Constant.COLOR.WHITE;
 
-        LocalDate deadLine = LocalDate.parse(this.task.getDeadline());
-        if (this.task.getFinishDate() != null) {
-            LocalDate finishDate = LocalDate.parse(this.task.getFinishDate());
-            if (finishDate.isBefore(deadLine)) {
-                if (date.isEqual(finishDate)) return Constant.COLOR.DARK_GREEN;
-                if (date.isEqual(deadLine)) return Constant.COLOR.RED;
-                if (date.isBefore(finishDate) || date.isEqual(startDate))
-                    return Constant.COLOR.SOFT_GREEN;
-            } else {
-                if (date.isEqual(deadLine)) return Constant.COLOR.RED;
-                if (date.isEqual(finishDate)) return Constant.COLOR.YELLOW;
-                if (finishDate.isEqual(deadLine) && finishDate.isEqual(date)) return Constant.COLOR.DARK_GREEN;
-                if (date.isBefore(deadLine) || date.isEqual(startDate)) return Constant.COLOR.SOFT_GREEN;
-                if (date.isBefore(finishDate)) return Constant.COLOR.ORANGE;
-
-            }
-        } else {
-            LocalDate now = LocalDate.now();
-            if (now.isBefore(deadLine)) {
-                if (date.isEqual(deadLine)) return Constant.COLOR.RED;
-                if (date.isBefore(now) || date.isEqual(startDate)) return Constant.COLOR.SOFT_GREEN;
-                if (date.isBefore(deadLine)) return Constant.COLOR.WHITE;
-
-            } else {
-                if (date.isEqual(deadLine)) return Constant.COLOR.RED;
-                if (date.isBefore(now) || date.isEqual(startDate)) return Constant.COLOR.SOFT_GREEN;
-                if (date.isBefore(deadLine)) return Constant.COLOR.YELLOW;
-            }
-        }
-        return Constant.COLOR.WHITE;
-    }
 }
