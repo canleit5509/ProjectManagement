@@ -15,10 +15,10 @@
         <VBox>
             <HBox fx:id="titleBox">
                 <TableTitle/>
-                <VBox fx:id="timeLineTitle" maxWidth="600"/>
+                <VBox fx:id="timeLineTitle" maxWidth="500"/>
             </HBox>
             <HBox>
-                <GridPane fx:id="gridPane" gridLinesVisible="true">
+                <GridPane fx:id="gridPane" gridLinesVisible="true" maxHeight="800">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0"/>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="260.0" prefWidth="100.0"/>
@@ -28,27 +28,21 @@
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="90"/>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="85.0" prefWidth="85"/>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="85.0" prefWidth="85"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="70.0" prefWidth="70"/>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="70" prefWidth="70"/>
                     </columnConstraints>
                     <rowConstraints>
 
                     </rowConstraints>
                 </GridPane>
-                <ScrollPane fx:id="timeLineScrollPane" minWidth="960">
-                    <content>
+                <GridPane fx:id="timeLinePane" gridLinesVisible="true">
+                    <rowConstraints>
 
-                        <GridPane fx:id="timeLinePane" gridLinesVisible="true">
-                            <!--                        <rowConstraints>-->
-
-                            <!--                        </rowConstraints>-->
-                        </GridPane>
-                    </content>
-                </ScrollPane>
-<!--                <VBox fx:id="rightPane" maxWidth="960">-->
-<!--                    &lt;!&ndash;                <ScrollBar fx:id="scBar"/>&ndash;&gt;-->
-<!--                </VBox>-->
-
-
+                    </rowConstraints>
+                </GridPane>
+            </HBox>
+            <HBox>
+                <Pane prefWidth="950"/>
+                <ScrollBar fx:id="timeLineScrollbar" prefWidth="500"/>
             </HBox>
         </VBox>
     </HBox>
