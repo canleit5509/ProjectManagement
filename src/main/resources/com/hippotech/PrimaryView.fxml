@@ -11,7 +11,7 @@
             <MenuItem text="Export"/>
         </Menu>
     </MenuBar>
-    <HBox>
+    <HBox minHeight="950">
         <VBox>
             <HBox fx:id="titleBox">
                 <TableTitle/>
@@ -34,10 +34,10 @@
 
                     </rowConstraints>
                 </GridPane>
-                <ScrollPane fx:id="timeLineScrollPane">
+                <ScrollPane fx:id="timeLineScrollPane" minWidth="960">
                     <content>
 
-                        <GridPane fx:id="timeLinePane" gridLinesVisible="true" >
+                        <GridPane fx:id="timeLinePane" gridLinesVisible="true">
                             <!--                        <rowConstraints>-->
 
                             <!--                        </rowConstraints>-->

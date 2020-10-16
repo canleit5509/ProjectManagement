@@ -21,12 +21,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -128,47 +128,6 @@ public class PrimaryViewController implements Initializable {
         return arrayList;
     }
 
-
-    public String getColor(LocalDate date, Task task) {
-        LocalDate startDate = LocalDate.parse(task.getStartDate());
-        if (date.isBefore(startDate)) return Constant.COLOR.WHITE;
-
-        LocalDate deadLine = LocalDate.parse(task.getDeadline());
-        if (task.getFinishDate() != null) {
-            LocalDate finishDate = LocalDate.parse(task.getFinishDate());
-            if (finishDate.isBefore(deadLine)) {
-                if (date.isEqual(finishDate)) return Constant.COLOR.DARK_GREEN;
-                if (date.isEqual(deadLine)) return Constant.COLOR.RED;
-                if (date.isBefore(finishDate) || date.isEqual(startDate))
-                    return Constant.COLOR.SOFT_GREEN;
-            } else {
-                if (date.isEqual(deadLine)) return Constant.COLOR.RED;
-                if (date.isEqual(finishDate)) return Constant.COLOR.YELLOW;
-                if (finishDate.isEqual(deadLine) && finishDate.isEqual(date)) return Constant.COLOR.DARK_GREEN;
-                if (date.isBefore(deadLine) || date.isEqual(startDate)) return Constant.COLOR.SOFT_GREEN;
-                if (date.isBefore(finishDate)) return Constant.COLOR.ORANGE;
-
-            }
-        } else {
-            LocalDate now = LocalDate.now();
-            if (now.isBefore(deadLine)) {
-                if (date.isEqual(deadLine)) return Constant.COLOR.RED;
-                if (date.isBefore(now) || date.isEqual(startDate)) return Constant.COLOR.SOFT_GREEN;
-                if (date.isBefore(deadLine)) return Constant.COLOR.WHITE;
-
-            } else {
-                if (date.isEqual(deadLine)) return Constant.COLOR.RED;
-                if (date.isBefore(now) || date.isEqual(startDate)) return Constant.COLOR.SOFT_GREEN;
-                if (date.isBefore(deadLine)) return Constant.COLOR.YELLOW;
-            }
-        }
-        return Constant.COLOR.WHITE;
-        // System.out.println("size: " + highestHeightPerRow.size());
-        // for (Double i : highestHeightPerRow) {
-        // System.out.println("height: " + i);
-        // }
-    }
-
     private void addTimeline() {
         timeLinePane.getColumnConstraints().clear();
         timeLinePane.getChildren().clear();
@@ -198,8 +157,9 @@ public class PrimaryViewController implements Initializable {
             if (i.getDayOfWeek().getValue() < 6) {
                 // TODO:
                 Rectangle rect = new Rectangle(35, height);
-                rect.setHeight(height);
+                rect.setHeight(height + 30);
                 rect.setWidth(35);
+                rect.setStrokeType(StrokeType.INSIDE);
                 rect.setStroke(Color.valueOf("#000000"));
                 rect.setStrokeWidth(0.5);
                 rect.setFill(Color.valueOf(DateAndColor.getColor(i, task)));
@@ -383,7 +343,7 @@ public class PrimaryViewController implements Initializable {
         timeLineScrollPane.hvalueProperty().addListener((observableValue, oldValue, newValue) -> {
             if (ref.timeLineTitleWidth == 0) return;
             ARHScrollValue.set(newValue.doubleValue());
-            ref.hScrollValue = (double) ARHScrollValue.get();
+            ref.hScrollValue = ARHScrollValue.get();
             int offset;
 
             offset = (int) Math.floor(ref.hScrollValue* ref.timeLineTitleWidth);
