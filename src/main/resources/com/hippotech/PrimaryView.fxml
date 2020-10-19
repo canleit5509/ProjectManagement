@@ -34,10 +34,7 @@
 
                     </rowConstraints>
                 </GridPane>
-                <GridPane fx:id="timeLinePane" gridLinesVisible="true" >
-                    <rowConstraints>
-
-                    </rowConstraints>
+                <GridPane fx:id="timeLinePane" gridLinesVisible="true">
                 </GridPane>
             </HBox>
             <HBox>
