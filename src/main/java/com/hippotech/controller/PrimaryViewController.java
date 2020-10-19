@@ -11,11 +11,13 @@ import com.hippotech.utilities.Constant;
 import com.hippotech.utilities.DateAndColor;
 import com.hippotech.utilities._Dimension;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.input.MouseEvent;
@@ -29,6 +31,7 @@ import javafx.scene.text.Text;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -68,6 +71,7 @@ public class PrimaryViewController implements Initializable {
     ArrayList<Double> heightListAllTable = new ArrayList<>();
 
     ModalWindowController modalWindowController = new ModalWindowController(this.getClass());
+    int selectedRowIndex = -1;
 
     public PrimaryViewController() {
         taskService = new TaskService();
@@ -77,7 +81,6 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void initTable() {
-        numCols = 9;
         numRows = tasks.size();
 
         for (int i = 0; i < numRows; i++) {
@@ -98,7 +101,7 @@ public class PrimaryViewController implements Initializable {
                 if (j == 0) color = projectName.getProjectColor();
                 else if (j == 2) color = person.getColor();
                 else color = Constant.COLOR.WHITE;
-                addPane(i, j, 15, taskObj.get(j), color);
+                addPane(i, j, taskObj.get(j), color);
             }
         }
         // Get height of rows
@@ -153,7 +156,6 @@ public class PrimaryViewController implements Initializable {
         }
     }
 
-
     private void addTimelineRow(double height, Task task, LocalDate first, LocalDate last) {
         HBox pane = new HBox();
         for (LocalDate i = first; !i.isEqual(last); i = i.plusDays(1)) {
@@ -165,7 +167,6 @@ public class PrimaryViewController implements Initializable {
                 } else {
                     rect.setHeight(height + 15);
                 }
-//                rect.setWidth(35);
                 rect.setStrokeType(StrokeType.INSIDE);
                 rect.setStroke(Color.valueOf("#000000"));
                 rect.setStrokeWidth(0.5);
@@ -176,12 +177,12 @@ public class PrimaryViewController implements Initializable {
         timeLinePane.add(pane, 0, tasks.indexOf(task));
     }
 
-    private void addPane(int rowIndex, int colIndex, int labelSize, String content, String colorCode) {
+    private void addPane(int rowIndex, int colIndex, String content, String colorCode) {
         Label label = new Label("  " + content);
         label.setWrapText(true);
 
         Text text = new Text("  " + content);
-        text.setFont(new Font(labelSize));
+        text.setFont(new Font(15));
         text.setWrappingWidth(250);
 
         StackPane pane = new StackPane();
@@ -191,7 +192,7 @@ public class PrimaryViewController implements Initializable {
         if (colIndex == 0 || colIndex == 2) {
             pane.setStyle("-fx-background-color: #" + colorCode.substring(2) + ";");
         } else
-            pane.setStyle("-fx-background-color: "+colorCode + ";");
+            pane.setStyle("-fx-background-color: " + colorCode + ";");
         gridPane.add(pane, colIndex, rowIndex);
         ObservableList<Node> nodeList = pane.getChildren();
         for (Node i : nodeList) {
@@ -206,113 +207,72 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void eventHandler() {
+        ObservableList<Node> nodes = gridPane.getChildren();
+        for (Node node : gridPane.getChildren()) {
+            node.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                selectedRowIndex = (nodes.indexOf(node) - 1) / numCols;
+                System.out.println(selectedRowIndex);
+            });
+        }
         btnAdd.setOnMouseClicked(mouseEvent -> {
             Node node = (Node) mouseEvent.getSource();
             modalWindowController.showWindowModal(node, "/com/hippotech/AddTaskView.fxml",
                     Constant.WindowTitleConstant.ADD_TASK_TITLE);
+            //// TODO: 10/19/2020 refresh
+        });
+        btnEdit.setOnMouseClicked(mouseEvent -> {
+            Node node = (Node) mouseEvent.getSource();
+            if (selectedRowIndex != -1) {
+                Task selected = tasks.get(selectedRowIndex);
+                if (selected == null) {
+                    _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_UPDATE);
+                } else {
+                    // TODO : Add controller in a function
+                    FXMLLoader loader = modalWindowController.getLoader("/com/hippotech/UpdateTaskView.fxml");
+                    Parent parent = modalWindowController.load(loader);
+                    UpdateTaskViewController controller = loader.getController();
+                    controller.setTask(selected);
+                    controller.setComboBox();
+                    modalWindowController.showWindowModal(
+                            node,
+                            parent,
+                            Constant.WindowTitleConstant.UPDATE_TASK_TITLE
+                    );
+                }
+                //TODO: refresh
+            }
+            selectedRowIndex = -1;
+        });
+        btnDel.setOnMouseClicked(mouseEvent -> {
+            if (selectedRowIndex != -1) {
+                Task selected = tasks.get(selectedRowIndex);
+                if (selected == null) {
+                    _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_DELETE);
+                } else {
+                    Optional<ButtonType> option = _Alert.showWaitConfirmation(Constant.DialogConstant.WARNING_TITLE,
+                            Constant.DialogConstant.CONFIRM_DELETE_TASK);
+                    if (option.get() == ButtonType.OK) {
+                        taskService.deleteTask(tasks.get(selectedRowIndex));
+                        _Alert.showInfoNotification(Constant.WindowTitleConstant.DELETE_TASK_TITLE);
+                        //// TODO: 10/19/2020 refresh
+                    }
+                }
+            }
+            selectedRowIndex = -1;
+        });
+        btnPerson.setOnMouseClicked(mouseEvent -> {
+            modalWindowController.showWindowModal(mouseEvent,
+                    "/com/hippotech/PersonManagement.fxml",
+                    Constant.WindowTitleConstant.PERSON_MANAGEMENT_TITLE);
+            //TODO: refresh color for primary screen
         });
 
-        gridPane.addEventFilter(MouseEvent.MOUSE_CLICKED,
-                e -> {
-                    for (Node node : gridPane.getChildren()) {
-                        if (node.getBoundsInParent().contains(e.getSceneX(), e.getSceneY())) {
-                            System.out.println("Node: " + node + " at " + GridPane.getRowIndex(node) + "/" + GridPane.getColumnIndex(node));
-                        }
-                    }
-                });
+        btnProject.setOnMouseClicked(e -> {
+            modalWindowController.showWindowModal(e,
+                    "/com/hippotech/ProjectManagement.fxml",
+                    Constant.WindowTitleConstant.PROJECT_MANAGEMENT_TITLE);
+        });
     }
-
-//    private void eventHandler() {
-//        btnAdd.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent mouseEvent) {
-//                Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-//                FXMLLoader loader = getLoader("/com/hippotech/AddTaskView.fxml");
-//                Parent addTaskParent = null;
-//                try {
-//                    addTaskParent = loader.load();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                Scene scene = new Scene(addTaskParent);
-//                Stage addTaskWindow = new Stage();
-//                addTaskWindow.setTitle("Thêm công việc");
-//                addTaskWindow.setScene(scene);
-//                addTaskWindow.initModality(Modality.WINDOW_MODAL);
-//                addTaskWindow.initOwner(stage);
-//                addTaskWindow.showAndWait();
-//                refreshTable();
-//                refreshTimeline();
-//            }
-//        });
-//        btnDel.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent mouseEvent) {
-//                Task selected = tbData.getSelectionModel().getSelectedItem();
-//                if (selected == null) {
-//                    _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_DELETE);
-//                } else {
-//                    Optional<ButtonType> option = _Alert.showWaitConfirmation(
-//                            Constant.WindowTitleConstant.DELETE_TASK_TITLE,
-//                            Constant.DialogConstant.CONFIRM_DELETE_TASK
-//                    );
-//                    if (option.get() == ButtonType.OK) {
-//                        tbData.getItems().remove(selected);
-//                        taskService.deleteTask(selected);
-//                        _Alert.showInfoNotification(Constant.WindowTitleConstant.DELETE_TASK_TITLE);
-//                        refreshTable();
-//                    }
-//                }
-//            }
-//        });
-//        btnEdit.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent mouseEvent) {
-//                Task selected = tbData.getSelectionModel().getSelectedItem();
-//                if (selected == null) {
-//                    _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_UPDATE);
-//                }else {
-//                    // TODO : Add controller in a function
-//                FXMLLoader loader = modalWindowController.getLoader("/com/hippotech/UpdateTaskView.fxml");
-//                Parent parent = modalWindowController.load(loader);
-//                Node node = (Node) mouseEvent.getSource();
-//
-//                UpdateTaskViewController controller = loader.getController();
-//                controller.setTask(selected);
-//                controller.setComboBox();
-//
-//
-//                modalWindowController.showWindowModal(
-//                        node,
-//                        parent,
-//                        Constant.WindowTitleConstant.UPDATE_TASK_TITLE
-//                        );
-//                }
-//            }
-//        });
-//
-//        btnPerson.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent mouseEvent) {
-//                modalWindowController.showWindowModal(mouseEvent,
-//                        "/com/hippotech/PersonManagement.fxml",
-//                        Constant.WindowTitleConstant.PERSON_MANAGEMENT_TITLE);
-//                refreshTable();
-//            }
-//        });
-//
-//        btnProject.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent e) {
-//                modalWindowController.showWindowModal(e,
-//                        "/com/hippotech/ProjectManagement.fxml",
-//                        Constant.WindowTitleConstant.PROJECT_MANAGEMENT_TITLE);
-//                refreshTable();
-//            }
-//        });
-//    }
-//    }
 
     private void initTimelineTitle() {
         HBox timeline = new HBox();
