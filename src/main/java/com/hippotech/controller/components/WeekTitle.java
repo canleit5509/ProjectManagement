@@ -1,5 +1,6 @@
 package com.hippotech.controller.components;
 
+import com.hippotech.utilities.DateAndColor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.VBox;
@@ -7,7 +8,6 @@ import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 
@@ -29,7 +29,7 @@ public class WeekTitle extends VBox {
     }
 
     public void setText(LocalDate date) {
-        row.setText(getMonday(date));
+        row.setText(DateAndColor.getMonday(date));
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
         int weekNumber = date.get(weekFields.weekOfWeekBasedYear());
         weekNum.setText(weekNumber + "");
@@ -39,9 +39,5 @@ public class WeekTitle extends VBox {
         return weekNum.getText();
     }
 
-    private LocalDate getMonday(LocalDate date) {
-        LocalDate monday;
-        monday = date.minus(date.getDayOfWeek().getValue() - 1, ChronoUnit.DAYS);
-        return monday;
-    }
+
 }

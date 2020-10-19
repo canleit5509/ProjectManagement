@@ -11,15 +11,15 @@
             <MenuItem text="Export"/>
         </Menu>
     </MenuBar>
-    <HBox>
+    <HBox minHeight="950">
         <VBox>
             <HBox fx:id="titleBox">
                 <TableTitle/>
-                <VBox fx:id="timeLineTitle" maxWidth="600"/>
+                <VBox fx:id="timeLineTitle" maxWidth="500"/>
             </HBox>
             <HBox>
-                <GridPane fx:id="gridPane" gridLinesVisible="true">
-                    <columnConstraints>
+                <GridPane fx:id="gridPane" gridLinesVisible="true" maxHeight="800" maxWidth="960">
+                    <columnConstraints >
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0"/>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="260.0" prefWidth="100.0"/>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="90"/>
@@ -28,31 +28,22 @@
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="90"/>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="85.0" prefWidth="85"/>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="85.0" prefWidth="85"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="70.0" prefWidth="70"/>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="70" prefWidth="70"/>
                     </columnConstraints>
                     <rowConstraints>
 
                     </rowConstraints>
                 </GridPane>
-                <ScrollPane fx:id="timeLineScrollPane">
-                    <content>
-
-                        <GridPane fx:id="timeLinePane" gridLinesVisible="true" >
-                            <!--                        <rowConstraints>-->
-
-                            <!--                        </rowConstraints>-->
-                        </GridPane>
-                    </content>
-                </ScrollPane>
-<!--                <VBox fx:id="rightPane" maxWidth="960">-->
-<!--                    &lt;!&ndash;                <ScrollBar fx:id="scBar"/>&ndash;&gt;-->
-<!--                </VBox>-->
-
-
+                <GridPane fx:id="timeLinePane" gridLinesVisible="true">
+                </GridPane>
+            </HBox>
+            <HBox>
+                <Pane prefWidth="960"/>
+                <ScrollBar fx:id="timeLineScrollbar" prefWidth="500"/>
             </HBox>
         </VBox>
     </HBox>
-    <HBox alignment="CENTER" spacing="200">
+    <HBox alignment="CENTER" spacing="200" >
         <Button fx:id="btnAdd" layoutX="72.0" layoutY="550.0" mnemonicParsing="false"  text="Thêm" />
         <Button fx:id="btnDel" layoutX="527.0" layoutY="550.0" mnemonicParsing="false" text="Xoá" />
         <Button fx:id="btnEdit" layoutX="350.0" layoutY="550.0" mnemonicParsing="false"  text="Sửa" />

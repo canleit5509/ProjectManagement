@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Text?>
 <fx:root xmlns:fx="http://javafx.com/fxml" type="javafx.scene.layout.VBox" alignment="CENTER">
     <StackPane>
-        <Rectangle fill="WHITE" height="20" stroke="BLACK" strokeWidth="0.5" width="179"/>
+        <Rectangle fill="WHITE" height="20" stroke="BLACK" strokeWidth="0.5" width="175" strokeType="INSIDE"/>
         <Text fx:id="weekNum" textAlignment="CENTER"/>
     </StackPane>
     <DayRow fx:id="row"/>

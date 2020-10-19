@@ -1,7 +1,6 @@
 package com.hippotech.dao;
 
 
-
 import com.hippotech.dto.TaskDTO;
 
 import java.sql.*;
@@ -12,7 +11,7 @@ public class TaskDAO implements DAO<TaskDTO> {
     private static final String DELETE = "DELETE FROM task WHERE id=?";
     private static final String FIND_ALL = "SELECT * FROM task ORDER BY id";
     private static final String FIND_BY_ID = "SELECT * FROM task WHERE id=?";
-//    private static final String FIND_BY_NAME = "SELECT * FROM task WHERE name=?";
+    //    private static final String FIND_BY_NAME = "SELECT * FROM task WHERE name=?";
     private static final String INSERT = "INSERT INTO task(id, projectName, title, name, startDate, deadline, finishDate," +
             "expectTime, finishTime, processed) VALUES(?, ?, ?, ?, ? ,?, ?, ?, ?, ?)";
     private static final String UPDATE = "UPDATE task SET projectName=?, title=?, name=?, startDate=?, deadline=?, " +
@@ -23,6 +22,16 @@ public class TaskDAO implements DAO<TaskDTO> {
 
     public TaskDAO() {
         connection = getConnection();
+    }
+
+    private static void close(Statement stmt) {
+        if (stmt != null) {
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override
@@ -39,7 +48,6 @@ public class TaskDAO implements DAO<TaskDTO> {
                         RS.getInt("processed"));
                 tasks.add(task);
             }
-            connection.close();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         } finally {
@@ -93,7 +101,6 @@ public class TaskDAO implements DAO<TaskDTO> {
             preparedStatement.setInt(9, task.getFinishTime());
             preparedStatement.setInt(10, task.getProcessed());
             preparedStatement.executeUpdate();
-            connection.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         } finally {
@@ -116,7 +123,7 @@ public class TaskDAO implements DAO<TaskDTO> {
             preparedStatement.setInt(8, task.getFinishTime());
             preparedStatement.setInt(9, task.getProcessed());
             preparedStatement.executeUpdate();
-            connection.close();
+
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         } finally {
@@ -131,7 +138,7 @@ public class TaskDAO implements DAO<TaskDTO> {
             preparedStatement = connection.prepareStatement(DELETE);
             preparedStatement.setString(1, task.getId());
             preparedStatement.executeUpdate();
-            connection.close();
+
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         } finally {
@@ -150,16 +157,6 @@ public class TaskDAO implements DAO<TaskDTO> {
             return DriverManager.getConnection(DB_URL, ID, PASS);
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private static void close(Statement stmt) {
-        if (stmt != null) {
-            try {
-                stmt.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 }
