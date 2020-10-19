@@ -9,6 +9,7 @@ import com.hippotech.service.ProjectNameService;
 import com.hippotech.service.TaskService;
 import com.hippotech.utilities.Constant;
 import com.hippotech.utilities.DateAndColor;
+import com.hippotech.utilities._Dimension;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -323,11 +324,13 @@ public class PrimaryViewController implements Initializable {
             timeline.getChildren().add(weekTitle);
         }
         timeLineTitle.getChildren().add(timeline);
+        timeLineTitle.setMaxWidth(new _Dimension().getMaxScreenWidth()-950);
         // timeLineTitle set back
         timeLineTitle.setViewOrder(5);
     }
 
     private void initScrollBar() {
+        timeLineScrollbar.setPrefWidth(new _Dimension().getMaxScreenWidth()-950);
         AtomicInteger AITimeLineTitleWidth = new AtomicInteger();
         AtomicReference<Double> ARHScrollValue = new AtomicReference<>((double) 0);
         // Ref object
@@ -342,15 +345,17 @@ public class PrimaryViewController implements Initializable {
             AITimeLineTitleWidth.set(t1.intValue());
             ref.timeLineTitleWidth = AITimeLineTitleWidth.get();
         });
-
         timeLineScrollbar.valueProperty().addListener((observableValue, number, newValue) -> {
             if (ref.timeLineTitleWidth == 0) return;
+
             ARHScrollValue.set(newValue.doubleValue());
             ref.hScrollValue = ARHScrollValue.get();
-            double offset;
-            offset = ref.hScrollValue * ref.timeLineTitleWidth/100.0;
-            timeLinePane.setTranslateX(-offset);
-            timeLineTitle.setTranslateX(-offset);
+            double translateX;
+            double timeLineTitleMaxWidth = (new _Dimension().getMaxScreenWidth() - 950);
+            translateX = ref.hScrollValue * (ref.timeLineTitleWidth - timeLineTitleMaxWidth)/100.0;
+
+            timeLinePane.setTranslateX(-translateX-10);
+            timeLineTitle.setTranslateX(-translateX-10*ref.hScrollValue/100.0);
         });
     }
 
