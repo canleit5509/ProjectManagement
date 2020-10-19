@@ -134,7 +134,7 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void addTimeline() {
-        timeLinePane.setViewOrder(5);
+        timeLinePane.setViewOrder(1);
         timeLinePane.getColumnConstraints().clear();
         timeLinePane.getChildren().clear();
         LocalDate first = DateAndColor.getMonday(LocalDate.of(2020, 1, 1));
@@ -182,7 +182,7 @@ public class PrimaryViewController implements Initializable {
 
         Text text = new Text("  " + content);
         text.setFont(new Font(labelSize));
-        text.setWrappingWidth(250);
+        if (colIndex == 1) text.setWrappingWidth(260);
 
         StackPane pane = new StackPane();
         pane.getChildren().add(text);
@@ -193,6 +193,7 @@ public class PrimaryViewController implements Initializable {
         } else
             pane.setStyle("-fx-background-color: "+colorCode + ";");
         gridPane.add(pane, colIndex, rowIndex);
+
         ObservableList<Node> nodeList = pane.getChildren();
         for (Node i : nodeList) {
             heightListAllTable.add(i.getLayoutBounds().getHeight());
@@ -326,11 +327,11 @@ public class PrimaryViewController implements Initializable {
         timeLineTitle.getChildren().add(timeline);
         timeLineTitle.setMaxWidth(new _Dimension().getMaxScreenWidth()-950);
         // timeLineTitle set back
-        timeLineTitle.setViewOrder(5);
+        timeLineTitle.setViewOrder(3);
     }
 
     private void initScrollBar() {
-        timeLineScrollbar.setPrefWidth(new _Dimension().getMaxScreenWidth()-950);
+        timeLineScrollbar.setPrefWidth(new _Dimension().getMaxScreenWidth()-960);
         AtomicInteger AITimeLineTitleWidth = new AtomicInteger();
         AtomicReference<Double> ARHScrollValue = new AtomicReference<>((double) 0);
         // Ref object
@@ -351,11 +352,11 @@ public class PrimaryViewController implements Initializable {
             ARHScrollValue.set(newValue.doubleValue());
             ref.hScrollValue = ARHScrollValue.get();
             double translateX;
-            double timeLineTitleMaxWidth = (new _Dimension().getMaxScreenWidth() - 950);
+            double timeLineTitleMaxWidth = (new _Dimension().getMaxScreenWidth() - 960);
             translateX = ref.hScrollValue * (ref.timeLineTitleWidth - timeLineTitleMaxWidth)/100.0;
 
-            timeLinePane.setTranslateX(-translateX-10);
-            timeLineTitle.setTranslateX(-translateX-10*ref.hScrollValue/100.0);
+            timeLinePane.setTranslateX(-translateX);
+            timeLineTitle.setTranslateX(-translateX);
         });
     }
 
