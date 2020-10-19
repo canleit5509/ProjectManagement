@@ -10,7 +10,6 @@ import com.hippotech.service.TaskService;
 import com.hippotech.utilities.Constant;
 import com.hippotech.utilities.DateAndColor;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -97,7 +96,7 @@ public class PrimaryViewController implements Initializable {
                 if (j == 0) color = projectName.getProjectColor();
                 else if (j == 2) color = person.getColor();
                 else color = Constant.COLOR.WHITE;
-                addPane(i, j, 15, taskObj.get(j), color);
+                addPane(i, j, taskObj.get(j), color);
             }
         }
         // Get height of rows
@@ -175,12 +174,12 @@ public class PrimaryViewController implements Initializable {
         timeLinePane.add(pane, 0, tasks.indexOf(task));
     }
 
-    private void addPane(int rowIndex, int colIndex, int labelSize, String content, String colorCode) {
+    private void addPane(int rowIndex, int colIndex, String content, String colorCode) {
         Label label = new Label("  " + content);
         label.setWrapText(true);
 
         Text text = new Text("  " + content);
-        text.setFont(new Font(labelSize));
+        text.setFont(new Font(15));
         text.setWrappingWidth(250);
 
         StackPane pane = new StackPane();
@@ -190,7 +189,7 @@ public class PrimaryViewController implements Initializable {
         if (colIndex == 0 || colIndex == 2) {
             pane.setStyle("-fx-background-color: #" + colorCode.substring(2) + ";");
         } else
-            pane.setStyle("-fx-background-color: "+colorCode + ";");
+            pane.setStyle("-fx-background-color: " + colorCode + ";");
         gridPane.add(pane, colIndex, rowIndex);
         ObservableList<Node> nodeList = pane.getChildren();
         for (Node i : nodeList) {
@@ -205,20 +204,42 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void eventHandler() {
+        int selectedRowIndex = -1;
+
+//        for (int i = 1; i <= gridPane.getChildren().size(); i++) {
+//            gridPane.getChildren().get(i).addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+//                selectedRowIndex =
+//            });
+//        }
+        ObservableList<Node> nodes = gridPane.getChildren();
+        for (Node node : gridPane.getChildren()) {
+            node.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                System.out.println(nodes.indexOf(node) / numCols);
+            });
+        }
         btnAdd.setOnMouseClicked(mouseEvent -> {
             Node node = (Node) mouseEvent.getSource();
             modalWindowController.showWindowModal(node, "/com/hippotech/AddTaskView.fxml",
                     Constant.WindowTitleConstant.ADD_TASK_TITLE);
         });
+        btnEdit.setOnMouseClicked(mouseEvent -> {
+            Node node = (Node) mouseEvent.getSource();
 
-        gridPane.addEventFilter(MouseEvent.MOUSE_CLICKED,
-                e -> {
-                    for (Node node : gridPane.getChildren()) {
-                        if (node.getBoundsInParent().contains(e.getSceneX(), e.getSceneY())) {
-                            System.out.println("Node: " + node + " at " + GridPane.getRowIndex(node) + "/" + GridPane.getColumnIndex(node));
-                        }
-                    }
-                });
+            modalWindowController.showWindowModal(node, "/com/hippotech/UpdateTaskView.fxml",
+                    Constant.WindowTitleConstant.UPDATE_TASK_TITLE);
+        });
+        btnPerson.setOnMouseClicked(mouseEvent -> {
+            modalWindowController.showWindowModal(mouseEvent,
+                    "/com/hippotech/PersonManagement.fxml",
+                    Constant.WindowTitleConstant.PERSON_MANAGEMENT_TITLE);
+            //TODO: refresh color for primary screen
+        });
+
+        btnProject.setOnMouseClicked(e -> {
+            modalWindowController.showWindowModal(e,
+                    "/com/hippotech/ProjectManagement.fxml",
+                    Constant.WindowTitleConstant.PROJECT_MANAGEMENT_TITLE);
+        });
     }
 
 //    private void eventHandler() {
@@ -291,25 +312,7 @@ public class PrimaryViewController implements Initializable {
 //            }
 //        });
 //
-//        btnPerson.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent mouseEvent) {
-//                modalWindowController.showWindowModal(mouseEvent,
-//                        "/com/hippotech/PersonManagement.fxml",
-//                        Constant.WindowTitleConstant.PERSON_MANAGEMENT_TITLE);
-//                refreshTable();
-//            }
-//        });
-//
-//        btnProject.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent e) {
-//                modalWindowController.showWindowModal(e,
-//                        "/com/hippotech/ProjectManagement.fxml",
-//                        Constant.WindowTitleConstant.PROJECT_MANAGEMENT_TITLE);
-//                refreshTable();
-//            }
-//        });
+
 //    }
 //    }
 
@@ -348,7 +351,7 @@ public class PrimaryViewController implements Initializable {
             ARHScrollValue.set(newValue.doubleValue());
             ref.hScrollValue = ARHScrollValue.get();
             double offset;
-            offset = ref.hScrollValue * ref.timeLineTitleWidth/100.0;
+            offset = ref.hScrollValue * ref.timeLineTitleWidth / 100.0;
             timeLinePane.setTranslateX(-offset);
             timeLineTitle.setTranslateX(-offset);
         });
