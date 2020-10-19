@@ -35,9 +35,6 @@
                     </rowConstraints>
                 </GridPane>
                 <GridPane fx:id="timeLinePane" gridLinesVisible="true">
-                    <rowConstraints>
-
-                    </rowConstraints>
                 </GridPane>
             </HBox>
             <HBox>
@@ -47,10 +44,10 @@
         </VBox>
     </HBox>
     <HBox alignment="CENTER" spacing="200">
-        <Button fx:id="btnAdd" layoutX="72.0" layoutY="550.0" mnemonicParsing="false"  text="Thêm" />
-        <Button fx:id="btnDel" layoutX="527.0" layoutY="550.0" mnemonicParsing="false" text="Xoá" />
-        <Button fx:id="btnEdit" layoutX="350.0" layoutY="550.0" mnemonicParsing="false"  text="Sửa" />
-        <Button fx:id="btnProject" layoutX="769.0" layoutY="550.0" mnemonicParsing="false" text="Project" />
-        <Button fx:id="btnPerson" layoutX="951.0" layoutY="550.0" mnemonicParsing="false" text="Person" />
+        <Button fx:id="btnAdd" layoutX="72.0" layoutY="550.0" mnemonicParsing="false" text="Thêm"/>
+        <Button fx:id="btnDel" layoutX="527.0" layoutY="550.0" mnemonicParsing="false" text="Xoá"/>
+        <Button fx:id="btnEdit" layoutX="350.0" layoutY="550.0" mnemonicParsing="false" text="Sửa"/>
+        <Button fx:id="btnProject" layoutX="769.0" layoutY="550.0" mnemonicParsing="false" text="Project"/>
+        <Button fx:id="btnPerson" layoutX="951.0" layoutY="550.0" mnemonicParsing="false" text="Person"/>
     </HBox>
 </VBox>
