@@ -94,10 +94,6 @@ public class PrimaryViewController implements Initializable {
         // Fill data to table
         for (int i = 0; i < numRows; i++) {
             Task task = tasks.get(i);
-//            if(task.getFinishDate()==null){
-//                task.setFinishDate("");
-//            }
-//            System.out.println("finish date: " + task.getFinishDate());
             ArrayList<String> taskObj = valuesForTaskRow(task);
             // Pick color
             ProjectName projectName = projectNameService.getProjectName(task.getPrName());
@@ -215,6 +211,19 @@ public class PrimaryViewController implements Initializable {
             node.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 selectedRowIndex = (nodes.indexOf(node) - 1) / numCols;
                 System.out.println(selectedRowIndex);
+
+                tasks = taskService.getAllTask();
+                initTable();
+                node.setOnMouseClicked(event -> gridPane.getChildren().forEach(c -> {
+                    Integer targetIndex = GridPane.getRowIndex(node);
+                    if (gridPane.getRowIndex(c) == targetIndex) {
+                        if (gridPane.getColumnIndex(c) != 0 && gridPane.getColumnIndex(c) != 2) {
+                            tasks = taskService.getAllTask();
+                            c.setStyle("-fx-background-color:#8896DE;");
+                        }
+                    }
+                }));
+
             });
         }
         btnAdd.setOnMouseClicked(mouseEvent -> {
