@@ -67,8 +67,8 @@ public class PrimaryViewController implements Initializable {
     ArrayList<Task> tasks;
 
 
-    ArrayList<Double> highestHeightPerRow = new ArrayList<>();
-    ArrayList<Double> heightListAllTable = new ArrayList<>();
+    ArrayList<Double> highestHeightPerRow;
+    ArrayList<Double> heightListAllTable;
 
     ModalWindowController modalWindowController = new ModalWindowController(this.getClass());
     int selectedRowIndex = -1;
@@ -81,18 +81,23 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void initTable() {
+        highestHeightPerRow = new ArrayList<>();
+        heightListAllTable = new ArrayList<>();
+        gridPane.getChildren().clear();
         numCols = 9;
         numRows = tasks.size();
-
         for (int i = 0; i < numRows; i++) {
             RowConstraints rowConstraints = new RowConstraints();
             rowConstraints.setMinHeight(35);
-//            rowConstraints.setVgrow(Priority.ALWAYS);
             gridPane.getRowConstraints().add(rowConstraints);
         }
         // Fill data to table
         for (int i = 0; i < numRows; i++) {
             Task task = tasks.get(i);
+//            if(task.getFinishDate()==null){
+//                task.setFinishDate("");
+//            }
+//            System.out.println("finish date: " + task.getFinishDate());
             ArrayList<String> taskObj = valuesForTaskRow(task);
             // Pick color
             ProjectName projectName = projectNameService.getProjectName(task.getPrName());
@@ -115,10 +120,8 @@ public class PrimaryViewController implements Initializable {
             }
             highestHeightPerRow.add(tempMaxHeight);
         }
-        System.out.println("size: " + highestHeightPerRow.size());
-        for (Double i : highestHeightPerRow) {
-            System.out.println("height: " + i);
-        }
+        System.out.println("------------------");
+        eventHandler();
     }
 
     private ArrayList<String> valuesForTaskRow(Task task) {
@@ -143,7 +146,6 @@ public class PrimaryViewController implements Initializable {
         timeLinePane.getChildren().clear();
         LocalDate first = DateAndColor.getMonday(LocalDate.of(2020, 1, 1));
         LocalDate last = DateAndColor.getMonday(LocalDate.of(2020, 12, 31));
-        // int colsNum = new AddTaskViewController().workDays(first, last);
         ColumnConstraints columnConstraints = new ColumnConstraints();
         columnConstraints.setPercentWidth(35 * 260);
         timeLinePane.getColumnConstraints().add(columnConstraints);
@@ -195,7 +197,6 @@ public class PrimaryViewController implements Initializable {
         } else
             pane.setStyle("-fx-background-color: " + colorCode + ";");
         gridPane.add(pane, colIndex, rowIndex);
-
         ObservableList<Node> nodeList = pane.getChildren();
         for (Node i : nodeList) {
             heightListAllTable.add(i.getLayoutBounds().getHeight());
@@ -220,43 +221,46 @@ public class PrimaryViewController implements Initializable {
             Node node = (Node) mouseEvent.getSource();
             modalWindowController.showWindowModal(node, "/com/hippotech/AddTaskView.fxml",
                     Constant.WindowTitleConstant.ADD_TASK_TITLE);
-            //// TODO: 10/19/2020 refresh
+            tasks = taskService.getAllTask();
+            initTable();
+            addTimeline();
         });
         btnEdit.setOnMouseClicked(mouseEvent -> {
             Node node = (Node) mouseEvent.getSource();
-            if (selectedRowIndex != -1) {
+            if (selectedRowIndex == -1) {
+                _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_UPDATE);
+            } else {
                 Task selected = tasks.get(selectedRowIndex);
-                if (selected == null) {
-                    _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_UPDATE);
-                } else {
-                    // TODO : Add controller in a function
-                    FXMLLoader loader = modalWindowController.getLoader("/com/hippotech/UpdateTaskView.fxml");
-                    Parent parent = modalWindowController.load(loader);
-                    UpdateTaskViewController controller = loader.getController();
-                    controller.setTask(selected);
-                    controller.setComboBox();
-                    modalWindowController.showWindowModal(
-                            node,
-                            parent,
-                            Constant.WindowTitleConstant.UPDATE_TASK_TITLE
-                    );
-                }
-                //TODO: refresh
+                FXMLLoader loader = modalWindowController.getLoader("/com/hippotech/UpdateTaskView.fxml");
+                Parent parent = modalWindowController.load(loader);
+                UpdateTaskViewController controller = loader.getController();
+                controller.setTask(selected);
+                controller.setComboBox();
+                modalWindowController.showWindowModal(
+                        node,
+                        parent,
+                        Constant.WindowTitleConstant.UPDATE_TASK_TITLE
+                );
+                tasks = taskService.getAllTask();
+                initTable();
+                addTimeline();
             }
             selectedRowIndex = -1;
         });
         btnDel.setOnMouseClicked(mouseEvent -> {
-            if (selectedRowIndex != -1) {
+            if (selectedRowIndex == -1) {
+                _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_DELETE);
+            } else {
                 Task selected = tasks.get(selectedRowIndex);
-                if (selected == null) {
-                    _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_DELETE);
-                } else {
+                if (selected != null) {
                     Optional<ButtonType> option = _Alert.showWaitConfirmation(Constant.DialogConstant.WARNING_TITLE,
                             Constant.DialogConstant.CONFIRM_DELETE_TASK);
                     if (option.get() == ButtonType.OK) {
                         taskService.deleteTask(tasks.get(selectedRowIndex));
                         _Alert.showInfoNotification(Constant.WindowTitleConstant.DELETE_TASK_TITLE);
-                        //// TODO: 10/19/2020 refresh
+                        tasks = taskService.getAllTask();
+                        initTable();
+                        addTimeline();
                     }
                 }
             }
@@ -266,13 +270,16 @@ public class PrimaryViewController implements Initializable {
             modalWindowController.showWindowModal(mouseEvent,
                     "/com/hippotech/PersonManagement.fxml",
                     Constant.WindowTitleConstant.PERSON_MANAGEMENT_TITLE);
-            //TODO: refresh color for primary screen
+            tasks = taskService.getAllTask();
+            initTable();
         });
 
         btnProject.setOnMouseClicked(e -> {
             modalWindowController.showWindowModal(e,
                     "/com/hippotech/ProjectManagement.fxml",
                     Constant.WindowTitleConstant.PROJECT_MANAGEMENT_TITLE);
+            tasks = taskService.getAllTask();
+            initTable();
         });
     }
 
@@ -286,13 +293,13 @@ public class PrimaryViewController implements Initializable {
             timeline.getChildren().add(weekTitle);
         }
         timeLineTitle.getChildren().add(timeline);
-        timeLineTitle.setMaxWidth(new _Dimension().getMaxScreenWidth()-950);
+        timeLineTitle.setMaxWidth(new _Dimension().getMaxScreenWidth() - 950);
         // timeLineTitle set back
         timeLineTitle.setViewOrder(3);
     }
 
     private void initScrollBar() {
-        timeLineScrollbar.setPrefWidth(new _Dimension().getMaxScreenWidth()-960);
+        timeLineScrollbar.setPrefWidth(new _Dimension().getMaxScreenWidth() - 960);
         AtomicInteger AITimeLineTitleWidth = new AtomicInteger();
         AtomicReference<Double> ARHScrollValue = new AtomicReference<>((double) 0);
         // Ref object
@@ -314,7 +321,7 @@ public class PrimaryViewController implements Initializable {
             ref.hScrollValue = ARHScrollValue.get();
             double translateX;
             double timeLineTitleMaxWidth = (new _Dimension().getMaxScreenWidth() - 960);
-            translateX = ref.hScrollValue * (ref.timeLineTitleWidth - timeLineTitleMaxWidth)/100.0;
+            translateX = ref.hScrollValue * (ref.timeLineTitleWidth - timeLineTitleMaxWidth) / 100.0;
 
             timeLinePane.setTranslateX(-translateX);
             timeLineTitle.setTranslateX(-translateX);
