@@ -60,6 +60,14 @@ public class PrimaryViewController implements Initializable {
     @FXML
     ScrollBar timeLineScrollbar;
 
+    @FXML
+    Button currYear;
+    @FXML
+    Button nextYear;
+    @FXML
+    Button prevYear;
+
+    int year = 2020;
     int numCols = 9;
     int numRows;
     TaskService taskService;
@@ -138,12 +146,12 @@ public class PrimaryViewController implements Initializable {
         return arrayList;
     }
 
-    private void addTimeline() {
+    private void initTimeline() {
         timeLinePane.setViewOrder(1);
         timeLinePane.getColumnConstraints().clear();
         timeLinePane.getChildren().clear();
-        LocalDate first = DateAndColor.getMonday(LocalDate.of(2020, 1, 1));
-        LocalDate last = DateAndColor.getMonday(LocalDate.of(2020, 12, 31));
+        LocalDate first = DateAndColor.getMonday(LocalDate.of(year, 1, 1));
+        LocalDate last = DateAndColor.getMonday(LocalDate.of(year, 12, 31));
         ColumnConstraints columnConstraints = new ColumnConstraints();
         columnConstraints.setPercentWidth(35 * 260);
         timeLinePane.getColumnConstraints().add(columnConstraints);
@@ -241,13 +249,25 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void eventHandler() {
+        nextYear.setOnMouseClicked(e -> {
+            year++;
+            currYear.setText(String.valueOf(year));
+            initTimeline();
+            initTimelineTitle();
+        });
+        prevYear.setOnMouseClicked(e -> {
+            year--;
+            currYear.setText(String.valueOf(year));
+            initTimeline();
+            initTimelineTitle();
+        });
         btnAdd.setOnMouseClicked(mouseEvent -> {
             Node node = (Node) mouseEvent.getSource();
             modalWindowController.showWindowModal(node, "/com/hippotech/AddTaskView.fxml",
                     Constant.WindowTitleConstant.ADD_TASK_TITLE);
             tasks = taskService.getAllTask();
             initTable();
-            addTimeline();
+            initTimeline();
         });
         btnEdit.setOnMouseClicked(mouseEvent -> {
             Node node = (Node) mouseEvent.getSource();
@@ -267,7 +287,7 @@ public class PrimaryViewController implements Initializable {
                 );
                 tasks = taskService.getAllTask();
                 initTable();
-                addTimeline();
+                initTimeline();
             }
             selectedRowIndex = -1;
         });
@@ -284,7 +304,7 @@ public class PrimaryViewController implements Initializable {
                         _Alert.showInfoNotification(Constant.WindowTitleConstant.DELETE_TASK_TITLE);
                         tasks = taskService.getAllTask();
                         initTable();
-                        addTimeline();
+                        initTimeline();
                     }
                 }
             }
@@ -309,13 +329,13 @@ public class PrimaryViewController implements Initializable {
 
     private void initTimelineTitle() {
         HBox timeline = new HBox();
-        int year = 2020;
         for (int i = 0; i < 52; i++) {
             WeekTitle weekTitle = new WeekTitle();
             LocalDate addDay = LocalDate.of(year, 1, 1).plusWeeks(i);
             weekTitle.setText(addDay);
             timeline.getChildren().add(weekTitle);
         }
+        timeLineTitle.getChildren().clear();
         timeLineTitle.getChildren().add(timeline);
         timeLineTitle.setMaxWidth(new _Dimension().getMaxScreenWidth() - GRIDPANE_WIDTH);
         // timeLineTitle set back
@@ -363,8 +383,9 @@ public class PrimaryViewController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        currYear.setText(String.valueOf(year));
         initTable();
-        addTimeline();
+        initTimeline();
         eventHandler();
         initTimelineTitle();
         timeLinePane.setMaxWidth(timeLineTitle.getMaxWidth());

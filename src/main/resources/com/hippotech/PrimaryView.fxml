@@ -5,12 +5,20 @@
 <?import javafx.scene.layout.*?>
 <VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.hippotech.controller.PrimaryViewController">
-    <MenuBar VBox.vgrow="NEVER">
-        <Menu text="File">
-            <MenuItem text="Import"/>
-            <MenuItem text="Export"/>
-        </Menu>
-    </MenuBar>
+    <HBox spacing="1000">
+        <MenuBar VBox.vgrow="NEVER">
+            <Menu text="File">
+                <MenuItem text="Import"/>
+                <MenuItem text="Export"/>
+            </Menu>
+        </MenuBar>
+        <HBox>
+            <Button text="Prev" fx:id="prevYear"/>
+            <Button fx:id="currYear"/>
+            <Button text="Next" fx:id="nextYear"/>
+        </HBox>
+    </HBox>
+
     <VBox>
         <HBox fx:id="titleBox">
             <TableTitle/>
@@ -34,7 +42,7 @@
 
                     </rowConstraints>
                 </GridPane>
-                <GridPane fx:id="timeLinePane" gridLinesVisible="true"/>
+                <GridPane fx:id="timeLinePane" gridLinesVisible="true" maxWidth="960"/>
             </HBox>
         </ScrollPane>
         <HBox>
