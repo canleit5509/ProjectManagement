@@ -22,8 +22,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -38,6 +36,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 public class PrimaryViewController implements Initializable {
+    final double GRIDPANE_WIDTH = 960;
+    final double SCROLL_MAX_HEIGHT = 200;
     public ScrollPane verticalScrollPane;
     @FXML
     GridPane gridPane;
@@ -59,10 +59,6 @@ public class PrimaryViewController implements Initializable {
     GridPane timeLinePane;
     @FXML
     ScrollBar timeLineScrollbar;
-
-    final double GRIDPANE_WIDTH = 960;
-    final double SCROLL_MAX_HEIGHT = 200;
-
     int numCols = 9;
     int numRows;
     TaskService taskService;
@@ -205,7 +201,7 @@ public class PrimaryViewController implements Initializable {
         } else
             pane.setStyle("-fx-background-color: " + colorCode + ";");
         gridPane.add(pane, colIndex, rowIndex);
-        
+
         ObservableList<Node> nodeList = pane.getChildren();
         for (Node i : nodeList) {
             heightListAllTable.add(i.getLayoutBounds().getHeight());
@@ -296,13 +292,13 @@ public class PrimaryViewController implements Initializable {
             timeline.getChildren().add(weekTitle);
         }
         timeLineTitle.getChildren().add(timeline);
-        timeLineTitle.setMaxWidth(new _Dimension().getMaxScreenWidth()-GRIDPANE_WIDTH);
+        timeLineTitle.setMaxWidth(new _Dimension().getMaxScreenWidth() - GRIDPANE_WIDTH);
         // timeLineTitle set back
         timeLineTitle.setViewOrder(3);
     }
 
     private void initScrollBar() {
-        timeLineScrollbar.setPrefWidth(new _Dimension().getMaxScreenWidth()-GRIDPANE_WIDTH);
+        timeLineScrollbar.setPrefWidth(new _Dimension().getMaxScreenWidth() - GRIDPANE_WIDTH);
         AtomicInteger AITimeLineTitleWidth = new AtomicInteger();
         AtomicReference<Double> ARHScrollValue = new AtomicReference<>((double) 0);
         // Ref object
@@ -324,7 +320,7 @@ public class PrimaryViewController implements Initializable {
             ref.hScrollValue = ARHScrollValue.get();
             double translateX;
             double timeLineTitleMaxWidth = (new _Dimension().getMaxScreenWidth() - GRIDPANE_WIDTH);
-            translateX = ref.hScrollValue * (ref.timeLineTitleWidth - timeLineTitleMaxWidth)/100.0;
+            translateX = ref.hScrollValue * (ref.timeLineTitleWidth - timeLineTitleMaxWidth) / 100.0;
 
             timeLinePane.setTranslateX(-translateX);
             timeLineTitle.setTranslateX(-translateX);
@@ -341,12 +337,8 @@ public class PrimaryViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initTable();
-        try {
-            addTimeline();
-            eventHandler();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        addTimeline();
+        eventHandler();
         initTimelineTitle();
         timeLinePane.setMaxWidth(timeLineTitle.getMaxWidth());
         initVerticalScrollBar();
