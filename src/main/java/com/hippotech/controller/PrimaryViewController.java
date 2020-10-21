@@ -66,7 +66,7 @@ public class PrimaryViewController implements Initializable {
     PersonService personService;
     ProjectNameService projectNameService;
     ArrayList<Task> tasks;
-
+    ObservableList<Node> nodes;
 
     ArrayList<Double> highestHeightPerRow;
     ArrayList<Double> heightListAllTable;
@@ -119,7 +119,7 @@ public class PrimaryViewController implements Initializable {
             highestHeightPerRow.add(tempMaxHeight);
         }
         System.out.println("------------------");
-        eventHandler();
+        gridPaneItemEventHandler();
     }
 
     private ArrayList<String> valuesForTaskRow(Task task) {
@@ -211,27 +211,36 @@ public class PrimaryViewController implements Initializable {
             text.setWrappingWidth(70);
     }
 
-    private void eventHandler() {
-        ObservableList<Node> nodes = gridPane.getChildren();
-        for (Node node : gridPane.getChildren()) {
+    private void colorSelected() {
+        nodes = gridPane.getChildren();
+        for (Node node : nodes) {
+            if (GridPane.getRowIndex(node) != selectedRowIndex) {
+                if (GridPane.getColumnIndex(node) != 0 && GridPane.getColumnIndex(node) != 2) {
+                    node.setStyle("-fx-background-color:#ffffff;");
+                }
+            } else {
+                if (GridPane.getColumnIndex(node) != 0 && GridPane.getColumnIndex(node) != 2) {
+                    node.setStyle("-fx-background-color:#8896DE;");
+                }
+            }
+        }
+    }
+
+    private void gridPaneItemEventHandler() {
+        nodes = gridPane.getChildren();
+        for (Node node : nodes) {
             node.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                selectedRowIndex = (nodes.indexOf(node) - 1) / numCols;
+                if (GridPane.getColumnIndex(node) != 0 && GridPane.getColumnIndex(node) != 2) {
+                    node.setStyle("-fx-background-color:#8896DE;");
+                }
+                selectedRowIndex = GridPane.getRowIndex(node);
+                colorSelected();
                 System.out.println(selectedRowIndex);
-
-                tasks = taskService.getAllTask();
-                initTable();
-                node.setOnMouseClicked(event -> gridPane.getChildren().forEach(c -> {
-                    Integer targetIndex = GridPane.getRowIndex(node);
-                    if (gridPane.getRowIndex(c) == targetIndex) {
-                        if (gridPane.getColumnIndex(c) != 0 && gridPane.getColumnIndex(c) != 2) {
-                            tasks = taskService.getAllTask();
-                            c.setStyle("-fx-background-color:#8896DE;");
-                        }
-                    }
-                }));
-
             });
         }
+    }
+
+    private void eventHandler() {
         btnAdd.setOnMouseClicked(mouseEvent -> {
             Node node = (Node) mouseEvent.getSource();
             modalWindowController.showWindowModal(node, "/com/hippotech/AddTaskView.fxml",
@@ -347,7 +356,9 @@ public class PrimaryViewController implements Initializable {
         verticalScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         verticalScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         verticalScrollPane.setMaxWidth(new _Dimension().getMaxScreenWidth());
-        verticalScrollPane.setClip(new Rectangle(new _Dimension().getMaxScreenWidth(), SCROLL_MAX_HEIGHT));
+        verticalScrollPane.setMaxHeight(new _Dimension().getMaxScreenHeight() - 120);
+        verticalScrollPane.setClip(new Rectangle(new _Dimension().getMaxScreenWidth(),
+                new _Dimension().getMaxScreenHeight() - 120));
     }
 
     @Override

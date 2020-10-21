@@ -16,7 +16,7 @@
             <TableTitle/>
             <VBox fx:id="timeLineTitle" maxWidth="600"/>
         </HBox>
-        <ScrollPane fx:id="verticalScrollPane" prefHeight="200">
+        <ScrollPane fx:id="verticalScrollPane">
             <HBox>
                 <GridPane fx:id="gridPane" gridLinesVisible="true" maxWidth="960">
                     <columnConstraints>
