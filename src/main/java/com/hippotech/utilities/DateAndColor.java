@@ -19,6 +19,10 @@ public class DateAndColor {
 
         LocalDate deadLine = LocalDate.parse(task.getDeadline());
         if (task.getFinishDate() != null) {
+//            System.out.println("22: " + task.getFinishDate());
+//            if(task.getFinishDate().equals("")){
+//                task.setFinishDate("null");
+//            }
             LocalDate finishDate = LocalDate.parse(task.getFinishDate());
             if (finishDate.isBefore(deadLine)) {
                 if (date.isEqual(finishDate)) return Constant.COLOR.DARK_GREEN;
