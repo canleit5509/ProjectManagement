@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 public class PrimaryViewController implements Initializable {
-    final double GRIDPANE_WIDTH = 960;
+    final double GRID_PANE_WIDTH = 960;
     final double SCROLL_MAX_HEIGHT = 200;
     public ScrollPane verticalScrollPane;
     @FXML
@@ -66,15 +66,15 @@ public class PrimaryViewController implements Initializable {
     Button nextYear;
     @FXML
     Button prevYear;
-
-    int year = 2020;
+    _Dimension dimension;
+    int year = LocalDate.now().getYear();
     int numCols = 9;
     int numRows;
     TaskService taskService;
     PersonService personService;
     ProjectNameService projectNameService;
     ArrayList<Task> tasks;
-    ObservableList<Node> nodes;
+    ObservableList<Node> gridPaneNode;
 
     ArrayList<Double> highestHeightPerRow;
     ArrayList<Double> heightListAllTable;
@@ -86,6 +86,7 @@ public class PrimaryViewController implements Initializable {
         taskService = new TaskService();
         personService = new PersonService();
         projectNameService = new ProjectNameService();
+        dimension = new _Dimension();
         tasks = taskService.getAllTask();
     }
 
@@ -220,8 +221,8 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void colorSelected() {
-        nodes = gridPane.getChildren();
-        for (Node node : nodes) {
+        gridPaneNode = gridPane.getChildren();
+        for (Node node : gridPaneNode) {
             if (GridPane.getRowIndex(node) != selectedRowIndex) {
                 if (GridPane.getColumnIndex(node) != 0 && GridPane.getColumnIndex(node) != 2) {
                     node.setStyle("-fx-background-color:#ffffff;");
@@ -235,8 +236,8 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void gridPaneItemEventHandler() {
-        nodes = gridPane.getChildren();
-        for (Node node : nodes) {
+        gridPaneNode = gridPane.getChildren();
+        for (Node node : gridPaneNode) {
             node.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 if (GridPane.getColumnIndex(node) != 0 && GridPane.getColumnIndex(node) != 2) {
                     node.setStyle("-fx-background-color:#8896DE;");
@@ -337,13 +338,13 @@ public class PrimaryViewController implements Initializable {
         }
         timeLineTitle.getChildren().clear();
         timeLineTitle.getChildren().add(timeline);
-        timeLineTitle.setMaxWidth(new _Dimension().getMaxScreenWidth() - GRIDPANE_WIDTH);
+        timeLineTitle.setMaxWidth(dimension.getMaxScreenWidth() - GRID_PANE_WIDTH);
         // timeLineTitle set back
         timeLineTitle.setViewOrder(3);
     }
 
     private void initScrollBar() {
-        timeLineScrollbar.setPrefWidth(new _Dimension().getMaxScreenWidth() - GRIDPANE_WIDTH);
+        timeLineScrollbar.setPrefWidth(dimension.getMaxScreenWidth() - GRID_PANE_WIDTH);
         AtomicInteger AITimeLineTitleWidth = new AtomicInteger();
         AtomicReference<Double> ARHScrollValue = new AtomicReference<>((double) 0);
         // Ref object
@@ -364,7 +365,7 @@ public class PrimaryViewController implements Initializable {
             ARHScrollValue.set(newValue.doubleValue());
             ref.hScrollValue = ARHScrollValue.get();
             double translateX;
-            double timeLineTitleMaxWidth = (new _Dimension().getMaxScreenWidth() - GRIDPANE_WIDTH);
+            double timeLineTitleMaxWidth = (dimension.getMaxScreenWidth() - GRID_PANE_WIDTH);
             translateX = ref.hScrollValue * (ref.timeLineTitleWidth - timeLineTitleMaxWidth) / 100.0;
 
             timeLinePane.setTranslateX(-translateX);
@@ -375,10 +376,10 @@ public class PrimaryViewController implements Initializable {
     private void initVerticalScrollBar() {
         verticalScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         verticalScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        verticalScrollPane.setMaxWidth(new _Dimension().getMaxScreenWidth());
-        verticalScrollPane.setMaxHeight(new _Dimension().getMaxScreenHeight() - 120);
-        verticalScrollPane.setClip(new Rectangle(new _Dimension().getMaxScreenWidth(),
-                new _Dimension().getMaxScreenHeight() - 120));
+        verticalScrollPane.setMaxWidth(dimension.getMaxScreenWidth());
+        verticalScrollPane.setMaxHeight(dimension.getMaxScreenHeight() - 120);
+        verticalScrollPane.setClip(new Rectangle(dimension.getMaxScreenWidth(),
+                dimension.getMaxScreenHeight() - 120));
     }
 
     @Override
