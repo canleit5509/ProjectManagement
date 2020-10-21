@@ -16,14 +16,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollBar;
+import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -38,6 +38,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 public class PrimaryViewController implements Initializable {
+    public ScrollPane verticalScrollPane;
     @FXML
     GridPane gridPane;
     @FXML
@@ -58,6 +59,9 @@ public class PrimaryViewController implements Initializable {
     GridPane timeLinePane;
     @FXML
     ScrollBar timeLineScrollbar;
+
+    final double GRIDPANE_WIDTH = 960;
+    final double SCROLL_MAX_HEIGHT = 200;
 
     int numCols = 9;
     int numRows;
@@ -90,6 +94,7 @@ public class PrimaryViewController implements Initializable {
 //            rowConstraints.setVgrow(Priority.ALWAYS);
             gridPane.getRowConstraints().add(rowConstraints);
         }
+
         // Fill data to table
         for (int i = 0; i < numRows; i++) {
             Task task = tasks.get(i);
@@ -168,10 +173,12 @@ public class PrimaryViewController implements Initializable {
                 } else {
                     rect.setHeight(height + 15);
                 }
+                // TODO: set StrokeType
                 rect.setStrokeType(StrokeType.INSIDE);
                 rect.setStroke(Color.valueOf("#000000"));
                 rect.setStrokeWidth(0.5);
                 rect.setFill(Color.valueOf(DateAndColor.getColor(i, task)));
+
                 pane.getChildren().add(rect);
             }
         }
@@ -188,14 +195,17 @@ public class PrimaryViewController implements Initializable {
 
         StackPane pane = new StackPane();
         pane.getChildren().add(text);
-        pane.setBorder(new Border(new BorderStroke(Color.BLACK,
-                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0.5, 0.5, 0.5, 0.5))));
+        pane.setBorder(new Border(
+                new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID
+                        , CornerRadii.EMPTY, new BorderWidths(0.5, 0.5, 0.5, 0.5))));
+
+        pane.setEffect(new DropShadow(1, Color.BLACK));
         if (colIndex == 0 || colIndex == 2) {
             pane.setStyle("-fx-background-color: #" + colorCode.substring(2) + ";");
         } else
             pane.setStyle("-fx-background-color: " + colorCode + ";");
         gridPane.add(pane, colIndex, rowIndex);
-
+        
         ObservableList<Node> nodeList = pane.getChildren();
         for (Node i : nodeList) {
             heightListAllTable.add(i.getLayoutBounds().getHeight());
@@ -286,13 +296,13 @@ public class PrimaryViewController implements Initializable {
             timeline.getChildren().add(weekTitle);
         }
         timeLineTitle.getChildren().add(timeline);
-        timeLineTitle.setMaxWidth(new _Dimension().getMaxScreenWidth()-950);
+        timeLineTitle.setMaxWidth(new _Dimension().getMaxScreenWidth()-GRIDPANE_WIDTH);
         // timeLineTitle set back
         timeLineTitle.setViewOrder(3);
     }
 
     private void initScrollBar() {
-        timeLineScrollbar.setPrefWidth(new _Dimension().getMaxScreenWidth()-960);
+        timeLineScrollbar.setPrefWidth(new _Dimension().getMaxScreenWidth()-GRIDPANE_WIDTH);
         AtomicInteger AITimeLineTitleWidth = new AtomicInteger();
         AtomicReference<Double> ARHScrollValue = new AtomicReference<>((double) 0);
         // Ref object
@@ -313,12 +323,19 @@ public class PrimaryViewController implements Initializable {
             ARHScrollValue.set(newValue.doubleValue());
             ref.hScrollValue = ARHScrollValue.get();
             double translateX;
-            double timeLineTitleMaxWidth = (new _Dimension().getMaxScreenWidth() - 960);
+            double timeLineTitleMaxWidth = (new _Dimension().getMaxScreenWidth() - GRIDPANE_WIDTH);
             translateX = ref.hScrollValue * (ref.timeLineTitleWidth - timeLineTitleMaxWidth)/100.0;
 
             timeLinePane.setTranslateX(-translateX);
             timeLineTitle.setTranslateX(-translateX);
         });
+    }
+
+    private void initVerticalScrollBar() {
+        verticalScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        verticalScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        verticalScrollPane.setMaxWidth(new _Dimension().getMaxScreenWidth());
+        verticalScrollPane.setClip(new Rectangle(new _Dimension().getMaxScreenWidth(), SCROLL_MAX_HEIGHT));
     }
 
     @Override
@@ -332,6 +349,8 @@ public class PrimaryViewController implements Initializable {
         }
         initTimelineTitle();
         timeLinePane.setMaxWidth(timeLineTitle.getMaxWidth());
+        initVerticalScrollBar();
         initScrollBar();
     }
+
 }

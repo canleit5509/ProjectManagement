@@ -11,31 +11,36 @@
             <MenuItem text="Export"/>
         </Menu>
     </MenuBar>
-    <HBox minHeight="950">
+    <HBox>
         <VBox>
             <HBox fx:id="titleBox">
                 <TableTitle/>
-                <VBox fx:id="timeLineTitle" maxWidth="500"/>
+                <VBox fx:id="timeLineTitle" maxWidth="600"/>
             </HBox>
             <HBox>
-                <GridPane fx:id="gridPane" gridLinesVisible="true" maxHeight="800" maxWidth="960">
-                    <columnConstraints >
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="260.0" prefWidth="100.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="90"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="90"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="90"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="90"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="85.0" prefWidth="85"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="85.0" prefWidth="85"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="70" prefWidth="70"/>
-                    </columnConstraints>
-                    <rowConstraints>
+                <ScrollPane fx:id="verticalScrollPane" prefHeight="200">
+                    <HBox>
+                        <GridPane fx:id="gridPane" gridLinesVisible="true" maxWidth="960">
+                            <columnConstraints >
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="260.0" prefWidth="100.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="90"/>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="90"/>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="90"/>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="90"/>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="85.0" prefWidth="85"/>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="85.0" prefWidth="85"/>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="70" prefWidth="70"/>
+                            </columnConstraints>
+                            <rowConstraints>
 
-                    </rowConstraints>
-                </GridPane>
-                <GridPane fx:id="timeLinePane" gridLinesVisible="true">
-                </GridPane>
+                            </rowConstraints>
+                        </GridPane>
+                        <GridPane fx:id="timeLinePane" gridLinesVisible="true">
+                        </GridPane>
+                    </HBox>
+                </ScrollPane>
+
             </HBox>
             <HBox>
                 <Pane prefWidth="960"/>
