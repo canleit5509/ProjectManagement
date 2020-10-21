@@ -173,7 +173,8 @@ public class PrimaryViewController implements Initializable {
                 // TODO:
                 Rectangle rect = new Rectangle(35, height);
                 if (height > 20) {
-                    rect.setHeight(height);
+                    rect.setHeight(Math.ceil(height) + 1);
+
                 } else {
                     rect.setHeight(height + 15);
                 }
