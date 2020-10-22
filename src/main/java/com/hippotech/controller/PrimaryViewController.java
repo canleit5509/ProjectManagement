@@ -28,9 +28,8 @@ import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.time.temporal.WeekFields;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -177,7 +176,6 @@ public class PrimaryViewController implements Initializable {
         HBox pane = new HBox();
         for (LocalDate i = first; !i.isEqual(last); i = i.plusDays(1)) {
             if (i.getDayOfWeek().getValue() < 6) {
-                // TODO:
                 Rectangle rect = new Rectangle(35, height);
                 if (height > 20) {
                     rect.setHeight(Math.ceil(height) + 1);
@@ -259,14 +257,32 @@ public class PrimaryViewController implements Initializable {
         nextYear.setOnMouseClicked(e -> {
             year++;
             currYear.setText(String.valueOf(year));
+            Date dateTemp = new Date();
+            int yearNow = dateTemp.getYear() + 1900;
+            if (year != yearNow) {
+                timeLineTitle.setTranslateX(0);
+                timeLinePane.setTranslateX(0);
+                timeLineScrollbar.setValue(0);
+                return;
+            }
             initTimeline();
             initTimelineTitle();
+            refreshAutoScroll();
         });
         prevYear.setOnMouseClicked(e -> {
             year--;
             currYear.setText(String.valueOf(year));
+            Date dateTemp = new Date();
+            int yearNow = dateTemp.getYear() + 1900;
+            if (year != yearNow) {
+                timeLineTitle.setTranslateX(0);
+                timeLinePane.setTranslateX(0);
+                timeLineScrollbar.setValue(0);
+                return;
+            }
             initTimeline();
             initTimelineTitle();
+            refreshAutoScroll();
         });
         btnAdd.setOnMouseClicked(mouseEvent -> {
             Node node = (Node) mouseEvent.getSource();
@@ -318,6 +334,7 @@ public class PrimaryViewController implements Initializable {
             selectedRowIndex = -1;
         });
         btnPerson.setOnMouseClicked(mouseEvent -> {
+            timeLineScrollbar.setValue(50);
             modalWindowController.showWindowModal(mouseEvent,
                     "/com/hippotech/PersonManagement.fxml",
                     Constant.WindowTitleConstant.PERSON_MANAGEMENT_TITLE);
@@ -367,13 +384,11 @@ public class PrimaryViewController implements Initializable {
         });
         timeLineScrollbar.valueProperty().addListener((observableValue, number, newValue) -> {
             if (ref.timeLineTitleWidth == 0) return;
-
             ARHScrollValue.set(newValue.doubleValue());
             ref.hScrollValue = ARHScrollValue.get();
             double translateX;
             double timeLineTitleMaxWidth = (dimension.getMaxScreenWidth() - GRID_PANE_WIDTH);
             translateX = ref.hScrollValue * (ref.timeLineTitleWidth - timeLineTitleMaxWidth) / 100.0;
-
             timeLinePane.setTranslateX(-translateX);
             timeLineTitle.setTranslateX(-translateX);
         });
@@ -388,6 +403,22 @@ public class PrimaryViewController implements Initializable {
                 dimension.getMaxScreenHeight() - 120));
     }
 
+    public void refreshAutoScroll() {
+        Date dateTemp = new Date();
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        int month = dateTemp.getMonth() + 1;
+        int year = dateTemp.getYear() + 1900;
+        LocalDate dateNow = LocalDate.of(year, month, day);
+        int weekNumberNow = dateNow.get(weekFields.weekOfWeekBasedYear());
+        double timelineScrollBarValue = (weekNumberNow / 52.0) * 100 + Constant.TIMELINEPANESPECS.OFFSETAUTOSCROLLTIMELINE;
+        double timeLineTitleMaxWidth = (dimension.getMaxScreenWidth() - GRID_PANE_WIDTH);
+        double translateX = timelineScrollBarValue * (Constant.TIMELINEPANESPECS.GRIDPANETOTALWIDTH - timeLineTitleMaxWidth) / 100.0;
+        timeLineScrollbar.setValue(timelineScrollBarValue);
+        timeLinePane.setTranslateX(-translateX);
+        timeLineTitle.setTranslateX(-translateX);
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         currYear.setText(String.valueOf(year));
@@ -398,5 +429,8 @@ public class PrimaryViewController implements Initializable {
         timeLinePane.setMaxWidth(timeLineTitle.getMaxWidth());
         initVerticalScrollBar();
         initScrollBar();
+
+        refreshAutoScroll();
+
     }
 }
