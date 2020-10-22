@@ -46,7 +46,7 @@ public class WeekTitle extends VBox {
         int year = dateTemp.getYear() + 1900;
         LocalDate dateNow = LocalDate.of(year, month, day);
         int weekNumberNow = dateNow.get(weekFields.weekOfWeekBasedYear());
-        if(weekNumberNow==weekNumber){
+        if(weekNumberNow==weekNumber && year==(date.getYear())){
             weekNum.setFill(Color.BLUE);
             weekNum.setFont(new Font(18));
         }

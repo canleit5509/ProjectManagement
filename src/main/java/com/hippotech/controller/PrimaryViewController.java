@@ -187,13 +187,6 @@ public class PrimaryViewController implements Initializable {
                 rect.setStroke(Color.valueOf("#000000"));
                 rect.setStrokeWidth(0.5);
                 rect.setFill(Color.valueOf(DateAndColor.getColor(i, task)));
-//                if(dateNow.isEqual(i)){
-//                    System.out.println("fffffffffff");
-//                    rect.setFill(Color.valueOf(DateAndColor.getColor(i, task)));
-//                }else{
-////                    System.out.println("date : " + i.toString());
-//                    rect.setStyle("-fx-background-color: " + Constant.COLOR.NAVY_BLUE + ";");
-//                }
                 pane.getChildren().add(rect);
             }
         }
@@ -261,14 +254,32 @@ public class PrimaryViewController implements Initializable {
         nextYear.setOnMouseClicked(e -> {
             year++;
             currYear.setText(String.valueOf(year));
+            Date dateTemp = new Date();
+            int yearNow = dateTemp.getYear() + 1900;
+            if (year != yearNow) {
+                timeLineTitle.setTranslateX(0);
+                timeLinePane.setTranslateX(0);
+                timeLineScrollbar.setValue(0);
+                return;
+            }
             initTimeline();
             initTimelineTitle();
+            refreshAutoScroll();
         });
         prevYear.setOnMouseClicked(e -> {
             year--;
             currYear.setText(String.valueOf(year));
+            Date dateTemp = new Date();
+            int yearNow = dateTemp.getYear() + 1900;
+            if (year != yearNow) {
+                timeLineTitle.setTranslateX(0);
+                timeLinePane.setTranslateX(0);
+                timeLineScrollbar.setValue(0);
+                return;
+            }
             initTimeline();
             initTimelineTitle();
+            refreshAutoScroll();
         });
         btnAdd.setOnMouseClicked(mouseEvent -> {
             Node node = (Node) mouseEvent.getSource();
@@ -389,17 +400,7 @@ public class PrimaryViewController implements Initializable {
                 dimension.getMaxScreenHeight() - 120));
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        currYear.setText(String.valueOf(year));
-        initTable();
-        initTimeline();
-        eventHandler();
-        initTimelineTitle();
-        timeLinePane.setMaxWidth(timeLineTitle.getMaxWidth());
-        initVerticalScrollBar();
-        initScrollBar();
-
+    public void refreshAutoScroll() {
         Date dateTemp = new Date();
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
         int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
@@ -413,5 +414,20 @@ public class PrimaryViewController implements Initializable {
         timeLineScrollbar.setValue(timelineScrollBarValue);
         timeLinePane.setTranslateX(-translateX);
         timeLineTitle.setTranslateX(-translateX);
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        currYear.setText(String.valueOf(year));
+        initTable();
+        initTimeline();
+        eventHandler();
+        initTimelineTitle();
+        timeLinePane.setMaxWidth(timeLineTitle.getMaxWidth());
+        initVerticalScrollBar();
+        initScrollBar();
+
+        refreshAutoScroll();
+
     }
 }
