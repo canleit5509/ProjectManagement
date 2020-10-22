@@ -22,7 +22,7 @@
     <VBox>
         <HBox fx:id="titleBox">
             <TableTitle/>
-            <VBox fx:id="timeLineTitle" maxWidth="600"/>
+            <VBox fx:id="timeLineTitle" maxWidth="600" viewOrder="1"/>
         </HBox>
         <ScrollPane fx:id="verticalScrollPane">
             <HBox>
@@ -42,7 +42,7 @@
 
                     </rowConstraints>
                 </GridPane>
-                <GridPane fx:id="timeLinePane" maxWidth="960"/>
+                <GridPane fx:id="timeLinePane" maxWidth="960" viewOrder="1"/>
             </HBox>
         </ScrollPane>
         <HBox>

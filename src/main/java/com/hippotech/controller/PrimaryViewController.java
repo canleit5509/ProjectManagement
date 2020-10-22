@@ -17,6 +17,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -89,7 +90,6 @@ public class PrimaryViewController implements Initializable {
         dimension = new _Dimension();
         tasks = taskService.getAllTask();
     }
-
     private void initTable() {
         highestHeightPerRow = new ArrayList<>();
         heightListAllTable = new ArrayList<>();
@@ -109,7 +109,7 @@ public class PrimaryViewController implements Initializable {
             // Pick color
             ProjectName projectName = projectNameService.getProjectName(task.getPrName());
             Person person = personService.getPersonByName(task.getName());
-            String color = Constant.COLOR.WHITE;
+            String color;
             for (int j = 0; j < numCols; j++) {
                 if (j == 0) color = projectName.getProjectColor();
                 else if (j == 2) color = person.getColor();
@@ -157,7 +157,6 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void initTimeline() {
-        timeLinePane.setViewOrder(1);
         timeLinePane.getColumnConstraints().clear();
         timeLinePane.getChildren().clear();
         LocalDate first = DateAndColor.getMonday(LocalDate.of(year, 1, 1));
@@ -200,6 +199,7 @@ public class PrimaryViewController implements Initializable {
     private void addPane(int rowIndex, int colIndex, String content, String colorCode) {
         Label label = new Label("  " + content);
         label.setWrapText(true);
+
         Text text = new Text("  " + content);
         text.setFont(new Font(15));
         if (colIndex == 1) text.setWrappingWidth(260);
@@ -229,17 +229,22 @@ public class PrimaryViewController implements Initializable {
             text.setWrappingWidth(70);
     }
 
-    private void colorSelected() {
+    private void colorSelected(Node node) {
         gridPaneNode = gridPane.getChildren();
-        for (Node node : gridPaneNode) {
-            if (GridPane.getRowIndex(node) != selectedRowIndex) {
-                if (GridPane.getColumnIndex(node) != 0 && GridPane.getColumnIndex(node) != 2 && GridPane.getColumnIndex(node) != 8) {
-                    node.setStyle("-fx-background-color:#ffffff;");
-                }
-            } else {
-                if (GridPane.getColumnIndex(node) != 0 && GridPane.getColumnIndex(node) != 2 && GridPane.getColumnIndex(node) != 8) {
-                    node.setStyle("-fx-background-color:#8896DE;");
-                }
+        // Init
+        if (selectedRowIndex == -1) selectedRowIndex = GridPane.getRowIndex(node);
+        // Deselect previous selected row
+        for (int i = 0; i < numCols; i++) {
+            if (i != 0 && i != 2 && i != 8) {
+                gridPaneNode.get(selectedRowIndex * numCols + i).setStyle("-fx-background-color:#FFFFFF;");
+            }
+        }
+
+        selectedRowIndex = GridPane.getRowIndex(node);
+        // Select current row
+        for (int i = 0; i < numCols; i++) {
+            if (i != 0 && i != 2 && i != 8) {
+                gridPaneNode.get(selectedRowIndex * numCols + i).setStyle("-fx-background-color:#8896DE;");
             }
         }
     }
@@ -247,11 +252,7 @@ public class PrimaryViewController implements Initializable {
     private void gridPaneItemEventHandler() {
         gridPaneNode = gridPane.getChildren();
         for (Node node : gridPaneNode) {
-            node.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                selectedRowIndex = GridPane.getRowIndex(node);
-                colorSelected();
-                System.out.println(selectedRowIndex);
-            });
+            node.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> colorSelected(node));
         }
     }
 
@@ -335,7 +336,9 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void initTimelineTitle() {
+        timeLineTitle.getChildren().clear();
         HBox timeline = new HBox();
+//        int year = yearChoiceBox.getValue();
         for (int i = 0; i < 52; i++) {
             WeekTitle weekTitle = new WeekTitle();
             LocalDate addDay = LocalDate.of(year, 1, 1).plusWeeks(i);
