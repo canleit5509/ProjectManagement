@@ -20,8 +20,8 @@
     </HBox>
 
     <VBox>
-        <HBox fx:id="titleBox">
-            <TableTitle/>
+        <HBox fx:id="titleBox" style="-fx-border-width: 1;-fx-border-style: solid;">
+            <TableTitle />
             <VBox fx:id="timeLineTitle" maxWidth="600" viewOrder="1"/>
         </HBox>
         <ScrollPane fx:id="verticalScrollPane">
