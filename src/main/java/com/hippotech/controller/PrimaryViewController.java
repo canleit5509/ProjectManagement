@@ -109,11 +109,20 @@ public class PrimaryViewController implements Initializable {
             // Pick color
             ProjectName projectName = projectNameService.getProjectName(task.getPrName());
             Person person = personService.getPersonByName(task.getName());
-            String color;
+            String color = Constant.COLOR.WHITE;
             for (int j = 0; j < numCols; j++) {
                 if (j == 0) color = projectName.getProjectColor();
                 else if (j == 2) color = person.getColor();
-                else color = Constant.COLOR.WHITE;
+                else if (j == 8) {
+                    int percentage = 100 - task.getProcessed();
+                    double red = percentage / 100.0;
+                    double blue = percentage / 100.0;
+                    Color c = new Color(red, 1, blue, 1);
+                    System.out.println(c.toString());
+                    color = "#" + c.toString().substring(2);
+                } else {
+                    color = Constant.COLOR.WHITE;
+                }
                 addPane(i, j, taskObj.get(j), color);
             }
         }
@@ -191,7 +200,6 @@ public class PrimaryViewController implements Initializable {
     private void addPane(int rowIndex, int colIndex, String content, String colorCode) {
         Label label = new Label("  " + content);
         label.setWrapText(true);
-
         Text text = new Text("  " + content);
         text.setFont(new Font(15));
         if (colIndex == 1) text.setWrappingWidth(260);
@@ -225,11 +233,11 @@ public class PrimaryViewController implements Initializable {
         gridPaneNode = gridPane.getChildren();
         for (Node node : gridPaneNode) {
             if (GridPane.getRowIndex(node) != selectedRowIndex) {
-                if (GridPane.getColumnIndex(node) != 0 && GridPane.getColumnIndex(node) != 2) {
+                if (GridPane.getColumnIndex(node) != 0 && GridPane.getColumnIndex(node) != 2 && GridPane.getColumnIndex(node) != 8) {
                     node.setStyle("-fx-background-color:#ffffff;");
                 }
             } else {
-                if (GridPane.getColumnIndex(node) != 0 && GridPane.getColumnIndex(node) != 2) {
+                if (GridPane.getColumnIndex(node) != 0 && GridPane.getColumnIndex(node) != 2 && GridPane.getColumnIndex(node) != 8) {
                     node.setStyle("-fx-background-color:#8896DE;");
                 }
             }
@@ -240,9 +248,6 @@ public class PrimaryViewController implements Initializable {
         gridPaneNode = gridPane.getChildren();
         for (Node node : gridPaneNode) {
             node.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                if (GridPane.getColumnIndex(node) != 0 && GridPane.getColumnIndex(node) != 2) {
-                    node.setStyle("-fx-background-color:#8896DE;");
-                }
                 selectedRowIndex = GridPane.getRowIndex(node);
                 colorSelected();
                 System.out.println(selectedRowIndex);
