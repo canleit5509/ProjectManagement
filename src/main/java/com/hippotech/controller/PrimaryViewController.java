@@ -17,7 +17,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -90,6 +89,7 @@ public class PrimaryViewController implements Initializable {
         dimension = new _Dimension();
         tasks = taskService.getAllTask();
     }
+
     private void initTable() {
         highestHeightPerRow = new ArrayList<>();
         heightListAllTable = new ArrayList<>();
@@ -136,7 +136,6 @@ public class PrimaryViewController implements Initializable {
             }
             highestHeightPerRow.add(tempMaxHeight);
         }
-        System.out.println("------------------");
         gridPaneItemEventHandler();
     }
 
@@ -241,7 +240,7 @@ public class PrimaryViewController implements Initializable {
         }
 
         selectedRowIndex = GridPane.getRowIndex(node);
-        // Select current row
+        // Paint current row
         for (int i = 0; i < numCols; i++) {
             if (i != 0 && i != 2 && i != 8) {
                 gridPaneNode.get(selectedRowIndex * numCols + i).setStyle("-fx-background-color:#8896DE;");
@@ -336,9 +335,7 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void initTimelineTitle() {
-        timeLineTitle.getChildren().clear();
         HBox timeline = new HBox();
-//        int year = yearChoiceBox.getValue();
         for (int i = 0; i < 52; i++) {
             WeekTitle weekTitle = new WeekTitle();
             LocalDate addDay = LocalDate.of(year, 1, 1).plusWeeks(i);
