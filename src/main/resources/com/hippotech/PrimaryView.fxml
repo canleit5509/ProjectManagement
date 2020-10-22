@@ -20,8 +20,8 @@
     </HBox>
 
     <VBox>
-        <HBox fx:id="titleBox">
-            <TableTitle/>
+        <HBox fx:id="titleBox" style="-fx-border-width: 1;-fx-border-style: solid;">
+            <TableTitle />
             <VBox fx:id="timeLineTitle" maxWidth="600" viewOrder="1"/>
         </HBox>
         <ScrollPane fx:id="verticalScrollPane">
@@ -51,7 +51,7 @@
         </HBox>
     </VBox>
 
-    <HBox alignment="CENTER" spacing="200">
+    <HBox fx:id="buttonsHBox" alignment="CENTER" spacing="200">
         <Button fx:id="btnAdd" layoutX="72.0" layoutY="550.0" mnemonicParsing="false" text="Thêm"/>
         <Button fx:id="btnDel" layoutX="527.0" layoutY="550.0" mnemonicParsing="false" text="Xoá"/>
         <Button fx:id="btnEdit" layoutX="350.0" layoutY="550.0" mnemonicParsing="false" text="Sửa"/>
