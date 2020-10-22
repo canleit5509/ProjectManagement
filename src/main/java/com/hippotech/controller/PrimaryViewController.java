@@ -42,6 +42,8 @@ public class PrimaryViewController implements Initializable {
     @FXML
     GridPane gridPane;
     @FXML
+    HBox buttonsHBox;
+    @FXML
     Button btnEdit;
     @FXML
     Button btnAdd;
@@ -118,7 +120,6 @@ public class PrimaryViewController implements Initializable {
                     double red = percentage / 100.0;
                     double blue = percentage / 100.0;
                     Color c = new Color(red, 1, blue, 1);
-                    System.out.println(c.toString());
                     color = "#" + c.toString().substring(2);
                 } else {
                     color = Constant.COLOR.WHITE;
@@ -275,6 +276,12 @@ public class PrimaryViewController implements Initializable {
             tasks = taskService.getAllTask();
             initTable();
             initTimeline();
+
+//            // TODO
+//            verticalScrollPane.setMaxHeight(dimension.getMaxScreenHeight() - 120);
+//            verticalScrollPane.setClip(new Rectangle(dimension.getMaxScreenWidth(),
+//                    dimension.getMaxScreenHeight() - 120));
+
         });
         btnEdit.setOnMouseClicked(mouseEvent -> {
             Node node = (Node) mouseEvent.getSource();
@@ -345,8 +352,6 @@ public class PrimaryViewController implements Initializable {
         timeLineTitle.getChildren().clear();
         timeLineTitle.getChildren().add(timeline);
         timeLineTitle.setMaxWidth(dimension.getMaxScreenWidth() - GRID_PANE_WIDTH);
-        // timeLineTitle set back
-        timeLineTitle.setViewOrder(3);
     }
 
     private void initScrollBar() {
@@ -383,9 +388,12 @@ public class PrimaryViewController implements Initializable {
         verticalScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         verticalScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         verticalScrollPane.setMaxWidth(dimension.getMaxScreenWidth());
-        verticalScrollPane.setMaxHeight(dimension.getMaxScreenHeight() - 120);
+        double scrollPaneHeight = dimension.getMaxScreenHeight()
+                - gridPane.getLayoutBounds().getMaxY()
+                - buttonsHBox.getLayoutBounds().getHeight();
+        verticalScrollPane.setPrefHeight(scrollPaneHeight);
         verticalScrollPane.setClip(new Rectangle(dimension.getMaxScreenWidth(),
-                dimension.getMaxScreenHeight() - 120));
+                scrollPaneHeight));
     }
 
     @Override

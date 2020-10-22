@@ -51,7 +51,7 @@
         </HBox>
     </VBox>
 
-    <HBox alignment="CENTER" spacing="200">
+    <HBox fx:id="buttonsHBox" alignment="CENTER" spacing="200">
         <Button fx:id="btnAdd" layoutX="72.0" layoutY="550.0" mnemonicParsing="false" text="Thêm"/>
         <Button fx:id="btnDel" layoutX="527.0" layoutY="550.0" mnemonicParsing="false" text="Xoá"/>
         <Button fx:id="btnEdit" layoutX="350.0" layoutY="550.0" mnemonicParsing="false" text="Sửa"/>
