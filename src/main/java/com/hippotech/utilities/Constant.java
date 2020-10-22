@@ -62,4 +62,10 @@ public interface Constant {
         String ORANGE = "#ffe987";
         String YELLOW = "#eaff00";
     }
+
+
+    interface TIMELINEPANESPECS{
+        double GRIDPANETOTALWIDTH = 9100;
+        double OFFSETAUTOSCROLLTIMELINE = 5.4;
+    }
 }
