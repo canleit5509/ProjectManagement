@@ -118,7 +118,6 @@ public class PrimaryViewController implements Initializable {
                     double red = percentage / 100.0;
                     double blue = percentage / 100.0;
                     Color c = new Color(red, 1, blue, 1);
-                    System.out.println(c.toString());
                     color = "#" + c.toString().substring(2);
                 } else {
                     color = Constant.COLOR.WHITE;
@@ -136,7 +135,6 @@ public class PrimaryViewController implements Initializable {
             }
             highestHeightPerRow.add(tempMaxHeight);
         }
-        System.out.println("------------------");
         gridPaneItemEventHandler();
     }
 
@@ -234,11 +232,11 @@ public class PrimaryViewController implements Initializable {
         for (Node node : gridPaneNode) {
             if (GridPane.getRowIndex(node) != selectedRowIndex) {
                 if (GridPane.getColumnIndex(node) != 0 && GridPane.getColumnIndex(node) != 2 && GridPane.getColumnIndex(node) != 8) {
-                    node.setStyle("-fx-background-color:#ffffff;");
+                    node.setStyle("-fx-background-color:" + Constant.COLOR.WHITE + ";");
                 }
             } else {
                 if (GridPane.getColumnIndex(node) != 0 && GridPane.getColumnIndex(node) != 2 && GridPane.getColumnIndex(node) != 8) {
-                    node.setStyle("-fx-background-color:#8896DE;");
+                    node.setStyle("-fx-background-color:" + Constant.COLOR.NAVY_BLUE + ";");
                 }
             }
         }
@@ -250,7 +248,6 @@ public class PrimaryViewController implements Initializable {
             node.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 selectedRowIndex = GridPane.getRowIndex(node);
                 colorSelected();
-                System.out.println(selectedRowIndex);
             });
         }
     }

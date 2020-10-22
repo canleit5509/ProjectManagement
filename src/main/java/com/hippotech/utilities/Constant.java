@@ -54,6 +54,7 @@ public interface Constant {
 
 
     interface COLOR {
+        String NAVY_BLUE = "#8896DE";
         String WHITE = "#FFFFFF";
         String SOFT_GREEN = "#6bfc5b";
         String DARK_GREEN = "#0d8500";
