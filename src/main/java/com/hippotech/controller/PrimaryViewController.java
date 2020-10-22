@@ -22,8 +22,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -38,6 +36,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 public class PrimaryViewController implements Initializable {
+    final double GRID_PANE_WIDTH = 960;
+    final double SCROLL_MAX_HEIGHT = 200;
     public ScrollPane verticalScrollPane;
     @FXML
     GridPane gridPane;
@@ -60,19 +60,24 @@ public class PrimaryViewController implements Initializable {
     @FXML
     ScrollBar timeLineScrollbar;
 
-    final double GRIDPANE_WIDTH = 960;
-    final double SCROLL_MAX_HEIGHT = 200;
-
+    @FXML
+    Button currYear;
+    @FXML
+    Button nextYear;
+    @FXML
+    Button prevYear;
+    _Dimension dimension;
+    int year = LocalDate.now().getYear();
     int numCols = 9;
     int numRows;
     TaskService taskService;
     PersonService personService;
     ProjectNameService projectNameService;
     ArrayList<Task> tasks;
+    ObservableList<Node> gridPaneNode;
 
-
-    ArrayList<Double> highestHeightPerRow = new ArrayList<>();
-    ArrayList<Double> heightListAllTable = new ArrayList<>();
+    ArrayList<Double> highestHeightPerRow;
+    ArrayList<Double> heightListAllTable;
 
     ModalWindowController modalWindowController = new ModalWindowController(this.getClass());
     int selectedRowIndex = -1;
@@ -81,17 +86,19 @@ public class PrimaryViewController implements Initializable {
         taskService = new TaskService();
         personService = new PersonService();
         projectNameService = new ProjectNameService();
+        dimension = new _Dimension();
         tasks = taskService.getAllTask();
     }
 
     private void initTable() {
+        highestHeightPerRow = new ArrayList<>();
+        heightListAllTable = new ArrayList<>();
+        gridPane.getChildren().clear();
         numCols = 9;
         numRows = tasks.size();
-
         for (int i = 0; i < numRows; i++) {
             RowConstraints rowConstraints = new RowConstraints();
             rowConstraints.setMinHeight(35);
-//            rowConstraints.setVgrow(Priority.ALWAYS);
             gridPane.getRowConstraints().add(rowConstraints);
         }
 
@@ -106,7 +113,16 @@ public class PrimaryViewController implements Initializable {
             for (int j = 0; j < numCols; j++) {
                 if (j == 0) color = projectName.getProjectColor();
                 else if (j == 2) color = person.getColor();
-                else color = Constant.COLOR.WHITE;
+                else if (j == 8) {
+                    int percentage = 100 - task.getProcessed();
+                    double red = percentage / 100.0;
+                    double blue = percentage / 100.0;
+                    Color c = new Color(red, 1, blue, 1);
+                    System.out.println(c.toString());
+                    color = "#" + c.toString().substring(2);
+                } else {
+                    color = Constant.COLOR.WHITE;
+                }
                 addPane(i, j, taskObj.get(j), color);
             }
         }
@@ -120,10 +136,7 @@ public class PrimaryViewController implements Initializable {
             }
             highestHeightPerRow.add(tempMaxHeight);
         }
-        System.out.println("size: " + highestHeightPerRow.size());
-        for (Double i : highestHeightPerRow) {
-            System.out.println("height: " + i);
-        }
+        gridPaneItemEventHandler();
     }
 
     private ArrayList<String> valuesForTaskRow(Task task) {
@@ -142,13 +155,11 @@ public class PrimaryViewController implements Initializable {
         return arrayList;
     }
 
-    private void addTimeline() {
-        timeLinePane.setViewOrder(1);
+    private void initTimeline() {
         timeLinePane.getColumnConstraints().clear();
         timeLinePane.getChildren().clear();
-        LocalDate first = DateAndColor.getMonday(LocalDate.of(2020, 1, 1));
-        LocalDate last = DateAndColor.getMonday(LocalDate.of(2020, 12, 31));
-        // int colsNum = new AddTaskViewController().workDays(first, last);
+        LocalDate first = DateAndColor.getMonday(LocalDate.of(year, 1, 1));
+        LocalDate last = DateAndColor.getMonday(LocalDate.of(year, 12, 31));
         ColumnConstraints columnConstraints = new ColumnConstraints();
         columnConstraints.setPercentWidth(35 * 260);
         timeLinePane.getColumnConstraints().add(columnConstraints);
@@ -169,16 +180,15 @@ public class PrimaryViewController implements Initializable {
                 // TODO:
                 Rectangle rect = new Rectangle(35, height);
                 if (height > 20) {
-                    rect.setHeight(height);
+                    rect.setHeight(Math.ceil(height) + 1);
+
                 } else {
                     rect.setHeight(height + 15);
                 }
-                // TODO: set StrokeType
                 rect.setStrokeType(StrokeType.INSIDE);
                 rect.setStroke(Color.valueOf("#000000"));
                 rect.setStrokeWidth(0.5);
                 rect.setFill(Color.valueOf(DateAndColor.getColor(i, task)));
-
                 pane.getChildren().add(rect);
             }
         }
@@ -205,7 +215,7 @@ public class PrimaryViewController implements Initializable {
         } else
             pane.setStyle("-fx-background-color: " + colorCode + ";");
         gridPane.add(pane, colIndex, rowIndex);
-        
+
         ObservableList<Node> nodeList = pane.getChildren();
         for (Node i : nodeList) {
             heightListAllTable.add(i.getLayoutBounds().getHeight());
@@ -218,55 +228,90 @@ public class PrimaryViewController implements Initializable {
             text.setWrappingWidth(70);
     }
 
-    private void eventHandler() {
-        ObservableList<Node> nodes = gridPane.getChildren();
-        for (Node node : gridPane.getChildren()) {
-            node.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                selectedRowIndex = (nodes.indexOf(node) - 1) / numCols;
-                System.out.println(selectedRowIndex);
-            });
+    private void colorSelected(Node node) {
+        gridPaneNode = gridPane.getChildren();
+        // Init
+        if (selectedRowIndex == -1) selectedRowIndex = GridPane.getRowIndex(node);
+        // Deselect previous selected row
+        for (int i = 0; i < numCols; i++) {
+            if (i != 0 && i != 2 && i != 8) {
+                gridPaneNode.get(selectedRowIndex * numCols + i).setStyle("-fx-background-color:#FFFFFF;");
+            }
         }
+
+        selectedRowIndex = GridPane.getRowIndex(node);
+        // Paint current row
+        for (int i = 0; i < numCols; i++) {
+            if (i != 0 && i != 2 && i != 8) {
+                gridPaneNode.get(selectedRowIndex * numCols + i).setStyle("-fx-background-color:#8896DE;");
+            }
+        }
+    }
+
+    private void gridPaneItemEventHandler() {
+        gridPaneNode = gridPane.getChildren();
+        for (Node node : gridPaneNode) {
+            node.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> colorSelected(node));
+        }
+    }
+
+    private void eventHandler() {
+        nextYear.setOnMouseClicked(e -> {
+            year++;
+            currYear.setText(String.valueOf(year));
+            initTimeline();
+            initTimelineTitle();
+        });
+        prevYear.setOnMouseClicked(e -> {
+            year--;
+            currYear.setText(String.valueOf(year));
+            initTimeline();
+            initTimelineTitle();
+        });
         btnAdd.setOnMouseClicked(mouseEvent -> {
             Node node = (Node) mouseEvent.getSource();
             modalWindowController.showWindowModal(node, "/com/hippotech/AddTaskView.fxml",
                     Constant.WindowTitleConstant.ADD_TASK_TITLE);
-            //// TODO: 10/19/2020 refresh
+            tasks = taskService.getAllTask();
+            initTable();
+            initTimeline();
         });
         btnEdit.setOnMouseClicked(mouseEvent -> {
             Node node = (Node) mouseEvent.getSource();
-            if (selectedRowIndex != -1) {
+            if (selectedRowIndex == -1) {
+                _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_UPDATE);
+            } else {
                 Task selected = tasks.get(selectedRowIndex);
-                if (selected == null) {
-                    _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_UPDATE);
-                } else {
-                    // TODO : Add controller in a function
-                    FXMLLoader loader = modalWindowController.getLoader("/com/hippotech/UpdateTaskView.fxml");
-                    Parent parent = modalWindowController.load(loader);
-                    UpdateTaskViewController controller = loader.getController();
-                    controller.setTask(selected);
-                    controller.setComboBox();
-                    modalWindowController.showWindowModal(
-                            node,
-                            parent,
-                            Constant.WindowTitleConstant.UPDATE_TASK_TITLE
-                    );
-                }
-                //TODO: refresh
+                FXMLLoader loader = modalWindowController.getLoader("/com/hippotech/UpdateTaskView.fxml");
+                Parent parent = modalWindowController.load(loader);
+                UpdateTaskViewController controller = loader.getController();
+                controller.setTask(selected);
+                controller.setComboBox();
+                modalWindowController.showWindowModal(
+                        node,
+                        parent,
+                        Constant.WindowTitleConstant.UPDATE_TASK_TITLE
+                );
+                tasks = taskService.getAllTask();
+                initTable();
+                initTimeline();
             }
             selectedRowIndex = -1;
         });
         btnDel.setOnMouseClicked(mouseEvent -> {
-            if (selectedRowIndex != -1) {
+            if (selectedRowIndex == -1) {
+                _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_DELETE);
+            } else {
                 Task selected = tasks.get(selectedRowIndex);
-                if (selected == null) {
-                    _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_DELETE);
-                } else {
+                if (selected != null) {
                     Optional<ButtonType> option = _Alert.showWaitConfirmation(Constant.DialogConstant.WARNING_TITLE,
                             Constant.DialogConstant.CONFIRM_DELETE_TASK);
                     if (option.get() == ButtonType.OK) {
                         taskService.deleteTask(tasks.get(selectedRowIndex));
                         _Alert.showInfoNotification(Constant.WindowTitleConstant.DELETE_TASK_TITLE);
-                        //// TODO: 10/19/2020 refresh
+                        tasks = taskService.getAllTask();
+                        initTable();
+                        initTimeline();
                     }
                 }
             }
@@ -276,33 +321,36 @@ public class PrimaryViewController implements Initializable {
             modalWindowController.showWindowModal(mouseEvent,
                     "/com/hippotech/PersonManagement.fxml",
                     Constant.WindowTitleConstant.PERSON_MANAGEMENT_TITLE);
-            //TODO: refresh color for primary screen
+            tasks = taskService.getAllTask();
+            initTable();
         });
 
         btnProject.setOnMouseClicked(e -> {
             modalWindowController.showWindowModal(e,
                     "/com/hippotech/ProjectManagement.fxml",
                     Constant.WindowTitleConstant.PROJECT_MANAGEMENT_TITLE);
+            tasks = taskService.getAllTask();
+            initTable();
         });
     }
 
     private void initTimelineTitle() {
         HBox timeline = new HBox();
-        int year = 2020;
         for (int i = 0; i < 52; i++) {
             WeekTitle weekTitle = new WeekTitle();
             LocalDate addDay = LocalDate.of(year, 1, 1).plusWeeks(i);
             weekTitle.setText(addDay);
             timeline.getChildren().add(weekTitle);
         }
+        timeLineTitle.getChildren().clear();
         timeLineTitle.getChildren().add(timeline);
-        timeLineTitle.setMaxWidth(new _Dimension().getMaxScreenWidth()-GRIDPANE_WIDTH);
+        timeLineTitle.setMaxWidth(dimension.getMaxScreenWidth() - GRID_PANE_WIDTH);
         // timeLineTitle set back
         timeLineTitle.setViewOrder(3);
     }
 
     private void initScrollBar() {
-        timeLineScrollbar.setPrefWidth(new _Dimension().getMaxScreenWidth()-GRIDPANE_WIDTH);
+        timeLineScrollbar.setPrefWidth(dimension.getMaxScreenWidth() - GRID_PANE_WIDTH);
         AtomicInteger AITimeLineTitleWidth = new AtomicInteger();
         AtomicReference<Double> ARHScrollValue = new AtomicReference<>((double) 0);
         // Ref object
@@ -323,8 +371,8 @@ public class PrimaryViewController implements Initializable {
             ARHScrollValue.set(newValue.doubleValue());
             ref.hScrollValue = ARHScrollValue.get();
             double translateX;
-            double timeLineTitleMaxWidth = (new _Dimension().getMaxScreenWidth() - GRIDPANE_WIDTH);
-            translateX = ref.hScrollValue * (ref.timeLineTitleWidth - timeLineTitleMaxWidth)/100.0;
+            double timeLineTitleMaxWidth = (dimension.getMaxScreenWidth() - GRID_PANE_WIDTH);
+            translateX = ref.hScrollValue * (ref.timeLineTitleWidth - timeLineTitleMaxWidth) / 100.0;
 
             timeLinePane.setTranslateX(-translateX);
             timeLineTitle.setTranslateX(-translateX);
@@ -334,23 +382,21 @@ public class PrimaryViewController implements Initializable {
     private void initVerticalScrollBar() {
         verticalScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         verticalScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        verticalScrollPane.setMaxWidth(new _Dimension().getMaxScreenWidth());
-        verticalScrollPane.setClip(new Rectangle(new _Dimension().getMaxScreenWidth(), SCROLL_MAX_HEIGHT));
+        verticalScrollPane.setMaxWidth(dimension.getMaxScreenWidth());
+        verticalScrollPane.setMaxHeight(dimension.getMaxScreenHeight() - 120);
+        verticalScrollPane.setClip(new Rectangle(dimension.getMaxScreenWidth(),
+                dimension.getMaxScreenHeight() - 120));
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        currYear.setText(String.valueOf(year));
         initTable();
-        try {
-            addTimeline();
-            eventHandler();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        initTimeline();
+        eventHandler();
         initTimelineTitle();
         timeLinePane.setMaxWidth(timeLineTitle.getMaxWidth());
         initVerticalScrollBar();
         initScrollBar();
     }
-
 }
