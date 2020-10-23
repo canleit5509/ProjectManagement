@@ -16,7 +16,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -195,9 +198,6 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void addPane(int rowIndex, int colIndex, String content, String colorCode) {
-        Label label = new Label("  " + content);
-        label.setWrapText(true);
-
         Text text = new Text("  " + content);
         text.setFont(new Font(15));
         if (colIndex == 1) text.setWrappingWidth(260);
