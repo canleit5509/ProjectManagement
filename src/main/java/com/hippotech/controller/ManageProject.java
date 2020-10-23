@@ -12,14 +12,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import javafx.util.Callback;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -27,7 +23,7 @@ import java.util.ResourceBundle;
 public class ManageProject implements Initializable {
     ProjectNameService service;
     @FXML
-    private TableView tbData;
+    private TableView<ProjectName> tbData;
     @FXML
     private RadioButton checkNow;
     @FXML
@@ -44,7 +40,7 @@ public class ManageProject implements Initializable {
         service = new ProjectNameService();
     }
 
-    public void btnAdd(ActionEvent e) throws IOException {
+    public void btnAdd(ActionEvent e) {
         modalWindowController.showWindowModal(e,
                 "/com/hippotech/AddProject.fxml",
                 Constant.WindowTitleConstant.ADD_PROJECT_TITLE);
@@ -53,8 +49,8 @@ public class ManageProject implements Initializable {
         checkNow.setSelected(true);
     }
 
-    public void btnUpdate(ActionEvent e) throws IOException {
-        ProjectName projectName = (ProjectName) tbData.getSelectionModel().getSelectedItem();
+    public void btnUpdate(ActionEvent e) {
+        ProjectName projectName = tbData.getSelectionModel().getSelectedItem();
         if (projectName == null) {
             _Alert.showWaitInfoNotification(Constant.DialogConstant.CHOOSE_A_PROJECT);
         } else {
@@ -75,8 +71,8 @@ public class ManageProject implements Initializable {
         }
     }
 
-    public void btnKick(ActionEvent actionEvent) {
-        ProjectName projectName = (ProjectName) tbData.getSelectionModel().getSelectedItem();
+    public void btnKick() {
+        ProjectName projectName = tbData.getSelectionModel().getSelectedItem();
         if (projectName == null) {
             _Alert.showWaitInfoNotification(Constant.DialogConstant.CHOOSE_A_PROJECT);
         } else {

@@ -30,7 +30,7 @@ public class Resizable {
         }
     };
     private static final int MARGIN = 8;
-    private static final double MIN_W = 30;
+    private static final double MIN_W = 70;
     private static final double MIN_H = 20;
     private final Node node;
     private double clickX, clickY, nodeX, nodeY, nodeH, nodeW;

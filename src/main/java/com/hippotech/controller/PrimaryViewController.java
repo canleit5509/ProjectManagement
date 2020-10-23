@@ -257,33 +257,11 @@ public class PrimaryViewController implements Initializable {
     private void eventHandler() {
         nextYear.setOnMouseClicked(e -> {
             year++;
-            currYear.setText(String.valueOf(year));
-            Date dateTemp = new Date();
-            int yearNow = dateTemp.getYear() + 1900;
-            if (year != yearNow) {
-                timeLineTitle.setTranslateX(0);
-                timeLinePane.setTranslateX(0);
-                timeLineScrollbar.setValue(0);
-                return;
-            }
-            initTimeline();
-            initTimelineTitle();
-            refreshAutoScroll();
+            switchYear();
         });
         prevYear.setOnMouseClicked(e -> {
             year--;
-            currYear.setText(String.valueOf(year));
-            Date dateTemp = new Date();
-            int yearNow = dateTemp.getYear() + 1900;
-            if (year != yearNow) {
-                timeLineTitle.setTranslateX(0);
-                timeLinePane.setTranslateX(0);
-                timeLineScrollbar.setValue(0);
-                return;
-            }
-            initTimeline();
-            initTimelineTitle();
-            refreshAutoScroll();
+            switchYear();
         });
         btnAdd.setOnMouseClicked(mouseEvent -> {
             Node node = (Node) mouseEvent.getSource();
@@ -356,6 +334,18 @@ public class PrimaryViewController implements Initializable {
             tasks = taskService.getAllTask();
             initTable();
         });
+    }
+
+    private void switchYear() {
+        currYear.setText(String.valueOf(year));
+        initTimeline();
+        initTimelineTitle();
+        refreshAutoScroll();
+        if (year != LocalDate.now().getYear()) {
+            timeLineTitle.setTranslateX(0);
+            timeLinePane.setTranslateX(0);
+            timeLineScrollbar.setValue(0);
+        }
     }
 
     private void initTimelineTitle() {
