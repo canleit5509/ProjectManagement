@@ -4,6 +4,7 @@ import com.hippotech.utilities.Resizable;
 import javafx.beans.property.DoubleProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
@@ -17,8 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TableTitle extends HBox {
-    //    @FXML
-//    GridPane tableTitleGrid;
     @FXML
     HBox box;
     ArrayList<String> titleList = new ArrayList<>(Arrays.asList("Project",
@@ -59,6 +58,12 @@ public class TableTitle extends HBox {
             pane.setPrefWidth(prefWidthList.get(i));
 
             box.getChildren().add(pane);
+            box.setBorder(new Border(
+                    new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID
+                            , CornerRadii.EMPTY, new BorderWidths(0.5, 0.5, 0.5, 0.5))));
+
+            box.setEffect(new DropShadow(1, Color.BLACK));
+            box.setAlignment(Pos.CENTER_LEFT);
             widthList.add(pane.prefWidthProperty());
         }
     }
@@ -74,12 +79,14 @@ public class TableTitle extends HBox {
         widthList = new ArrayList<>();
         initTable();
 
-        for (Node node: box.getChildren()) {
-            Resizable.makeResizable(node);
+        for (int i = 0; i < box.getChildren().size(); i++) {
+            Node node = box.getChildren().get(i);
+            Node previousNode = null;
+            if (i > 0)
+                previousNode = box.getChildren().get(i-1);
+
+            Resizable.makeResizable(node, previousNode);
         }
-        box.prefHeightProperty().addListener((observableValue, number, t1) -> {
-            System.out.println(t1);
-        });
     }
 
     public static List<DoubleProperty> getWidthList() {

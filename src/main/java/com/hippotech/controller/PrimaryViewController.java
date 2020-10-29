@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 public class PrimaryViewController implements Initializable {
-    double GRID_PANE_WIDTH = 960;
+    double GRID_PANE_WIDTH;
     public ScrollPane verticalScrollPane;
     @FXML
     TableTitle tableTitle;
@@ -111,19 +111,14 @@ public class PrimaryViewController implements Initializable {
 
         gridPane.getChildren().clear();
 
-        highestHeightPerRow = new ArrayList<>();
-        heightListAllTable = new ArrayList<>();
-
         tableTitle.setMinWidth(GRID_PANE_WIDTH);
-
+        autosizeNullPane();
         for (int i = 0; i < widthColsTableTitle.size(); i++) {
             int finalI = i;
             widthColsTableTitle.get(i).addListener((observableValue, number, t1) -> {
-                System.out.println("Col" + finalI+"change from "+ number+"to" + t1);
                 setGridColWidth(finalI, (Double) t1);
-                autosizeNullPane();
-                tableTitle.prefWidthProperty().bind(gridPane.prefWidthProperty());
-                refreshTimeLineHeight();
+                GRID_PANE_WIDTH = gridPane.boundsInLocalProperty().get().getWidth();
+                handleChangeGridPaneWidth();
             });
         }
 
@@ -160,6 +155,13 @@ public class PrimaryViewController implements Initializable {
         findHighestHeightPerRow();
         gridPaneItemEventHandler();
     }
+    private void handleChangeGridPaneWidth() {
+        tableTitle.setMinWidth(GRID_PANE_WIDTH);
+        timeLineTitle.setMaxWidth(dimension.getMaxScreenWidth() - GRID_PANE_WIDTH);
+        refreshTimeLineHeight();
+        autosizeNullPane();
+        initScrollBar();
+    }
     private void findHighestHeightPerRow() {
         ObservableList<Node> nodeList = gridPane.getChildren();
         highestHeightPerRow.clear();
@@ -184,7 +186,7 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void autosizeNullPane() {
-        nullPane.setPrefWidth(gridPane.getWidth());
+        nullPane.setPrefWidth(GRID_PANE_WIDTH);
     }
 
 

@@ -37,21 +37,24 @@ public class Resizable {
     private static final double MIN_W = 70;
     private static final double MIN_H = 20;
     private final Node node;
+    private final Node previousNode;
     private double clickX, clickY, nodeX, nodeY, nodeH, nodeW;
+    private double previousNodeH, previousNodeW, previousNodeX, previousNodeY;
     private S state = S.DEFAULT;
     private OnResizeEventListener listener = defaultListener;
 
-    private Resizable(Node node, OnResizeEventListener listener) {
+    private Resizable(Node node, Node previousNode, OnResizeEventListener listener) {
         this.node = node;
+        this.previousNode = previousNode;
         if (listener != null) this.listener = listener;
     }
 
-    public static void makeResizable(Node node) {
-        makeResizable(node, null);
+    public static void makeResizable(Node node, Node previousNode) {
+        makeResizable(node, previousNode, null);
     }
 
-    public static void makeResizable(Node node, OnResizeEventListener listener) {
-        final Resizable resizer = new Resizable(node, listener);
+    public static void makeResizable(Node node, Node previousNode, OnResizeEventListener listener) {
+        final Resizable resizer = new Resizable(node, previousNode, listener);
 
         node.setOnMousePressed(resizer::mousePressed);
         node.setOnMouseDragged(resizer::mouseDragged);
@@ -113,53 +116,40 @@ public class Resizable {
     }
 
     protected void mouseDragged(MouseEvent event) {
-
         if (listener != null) {
             double mouseX = parentX(event.getX());
             double mouseY = parentY(event.getY());
             if (state == S.DRAG) {
 
             } else if (state != S.DEFAULT) {
-                //resizing
-                double newX = nodeX;
-                double newY = nodeY;
-                double newH = nodeH;
-                double newW = nodeW;
+                double newX;
+                double newY;
+                double newH;
+                double newW;
 
                 // Right Resize
                 if (state == S.E_RESIZE || state == S.NE_RESIZE || state == S.SE_RESIZE) {
+                    //resizing
+                    newX = nodeX;
+                    newY = nodeY;
+                    newH = nodeH;
                     newW = mouseX - nodeX;
+                    if (newW < MIN_W) {
+                        newW = MIN_W;
+                    }
+                    listener.onResize(node, newX, newY, newH, newW);
                 }
-//                // Left Resize
-//                if (state == S.W_RESIZE || state == S.NW_RESIZE || state == S.SW_RESIZE) {
-//                    newX = mouseX;
-//                    newW = nodeW + nodeX - newX;
-//                }
-
-//                // Bottom Resize
-//                if (state == S.S_RESIZE || state == S.SE_RESIZE || state == S.SW_RESIZE) {
-//                    newH = mouseY - nodeY;
-//                }
-//                // Top Resize
-//                if (state == S.N_RESIZE || state == S.NW_RESIZE || state == S.NE_RESIZE) {
-//                    newY = mouseY;
-//                    newH = nodeH + nodeY - newY;
-//                }
-
-                //min valid rect Size Check
-                if (newW < MIN_W) {
-                    if (state == S.W_RESIZE || state == S.NW_RESIZE || state == S.SW_RESIZE)
-                        newX = newX - MIN_W;
-                    newW = MIN_W;
+                // Left Resize
+                if (state == S.W_RESIZE || state == S.NW_RESIZE || state == S.SW_RESIZE) {
+                    newX = previousNodeX;
+                    newY = previousNodeY;
+                    newW = mouseX-previousNodeX;
+                    newH = previousNodeH;
+                    if (newW < MIN_W) {
+                        newW = MIN_W;
+                    }
+                    listener.onResize(previousNode, newX, newY, newH, newW);
                 }
-
-                if (newH < MIN_H) {
-                    if (state == S.N_RESIZE || state == S.NW_RESIZE || state == S.NE_RESIZE)
-                        newY = newY + newH - MIN_H;
-                    newH = MIN_H;
-                }
-
-                listener.onResize(node, newX, newY, newH, newW);
             }
         }
     }
@@ -179,6 +169,12 @@ public class Resizable {
         nodeY = nodeY();
         nodeH = nodeH();
         nodeW = nodeW();
+        if (previousNode!= null) {
+            previousNodeX = previousNodeX();
+            previousNodeY = previousNodeY();
+            previousNodeH = previousNodeH();
+            previousNodeW = previousNodeW();
+        }
         clickX = event.getX();
         clickY = event.getY();
     }
@@ -230,6 +226,22 @@ public class Resizable {
 
     private double nodeH() {
         return node.getBoundsInParent().getHeight();
+    }
+
+    private double previousNodeX() {
+        return previousNode.getBoundsInParent().getMinX();
+    }
+
+    private double previousNodeY() {
+        return previousNode.getBoundsInParent().getMinY();
+    }
+
+    private double previousNodeW() {
+        return previousNode.getBoundsInParent().getWidth();
+    }
+
+    private double previousNodeH() {
+        return previousNode.getBoundsInParent().getHeight();
     }
 
     public enum S {
