@@ -4,6 +4,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
 public class Resizable {
@@ -26,6 +27,9 @@ public class Resizable {
             } else if (node instanceof Rectangle) {
                 ((Rectangle) node).setWidth(w);
                 ((Rectangle) node).setHeight(h);
+            }
+            else if (node instanceof Pane) {
+                ((Pane) node).setPrefSize(w, h);
             }
         }
     };
@@ -126,11 +130,11 @@ public class Resizable {
                 if (state == S.E_RESIZE || state == S.NE_RESIZE || state == S.SE_RESIZE) {
                     newW = mouseX - nodeX;
                 }
-                // Left Resize
-                if (state == S.W_RESIZE || state == S.NW_RESIZE || state == S.SW_RESIZE) {
-                    newX = mouseX;
-                    newW = nodeW + nodeX - newX;
-                }
+//                // Left Resize
+//                if (state == S.W_RESIZE || state == S.NW_RESIZE || state == S.SW_RESIZE) {
+//                    newX = mouseX;
+//                    newW = nodeW + nodeX - newX;
+//                }
 
 //                // Bottom Resize
 //                if (state == S.S_RESIZE || state == S.SE_RESIZE || state == S.SW_RESIZE) {
@@ -145,7 +149,7 @@ public class Resizable {
                 //min valid rect Size Check
                 if (newW < MIN_W) {
                     if (state == S.W_RESIZE || state == S.NW_RESIZE || state == S.SW_RESIZE)
-                        newX = newX - MIN_W + newW;
+                        newX = newX - MIN_W;
                     newW = MIN_W;
                 }
 

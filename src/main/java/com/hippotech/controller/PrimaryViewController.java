@@ -1,5 +1,6 @@
 package com.hippotech.controller;
 
+import com.hippotech.controller.components.TableTitle;
 import com.hippotech.controller.components.WeekTitle;
 import com.hippotech.model.Person;
 import com.hippotech.model.ProjectName;
@@ -10,16 +11,14 @@ import com.hippotech.service.TaskService;
 import com.hippotech.utilities.Constant;
 import com.hippotech.utilities.DateAndColor;
 import com.hippotech.utilities._Dimension;
+import javafx.beans.property.DoubleProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ScrollBar;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -28,6 +27,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -38,9 +38,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 public class PrimaryViewController implements Initializable {
-    final double GRID_PANE_WIDTH = 960;
-    final double SCROLL_MAX_HEIGHT = 200;
+    double GRID_PANE_WIDTH = 960;
     public ScrollPane verticalScrollPane;
+    @FXML
+    TableTitle tableTitle;
     @FXML
     GridPane gridPane;
     @FXML
@@ -62,6 +63,8 @@ public class PrimaryViewController implements Initializable {
     @FXML
     GridPane timeLinePane;
     @FXML
+    Pane nullPane;
+    @FXML
     ScrollBar timeLineScrollbar;
 
     @FXML
@@ -71,6 +74,7 @@ public class PrimaryViewController implements Initializable {
     @FXML
     Button prevYear;
     _Dimension dimension;
+
     int year = LocalDate.now().getYear();
     int numCols = 9;
     int numRows;
@@ -82,6 +86,8 @@ public class PrimaryViewController implements Initializable {
 
     ArrayList<Double> highestHeightPerRow;
     ArrayList<Double> heightListAllTable;
+    ArrayList<DoubleProperty> widthColsTableTitle;
+    ArrayList<Double> defaultWidthGridPane = new ArrayList<>(Arrays.asList(100d, 260d, 90d, 90d, 90d, 90d, 85d, 85d, 70d));
 
     ModalWindowController modalWindowController = new ModalWindowController(this.getClass());
     int selectedRowIndex = -1;
@@ -95,11 +101,37 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void initTable() {
-        highestHeightPerRow = new ArrayList<>();
-        heightListAllTable = new ArrayList<>();
-        gridPane.getChildren().clear();
         numCols = 9;
         numRows = tasks.size();
+        GRID_PANE_WIDTH = 0;
+        widthColsTableTitle = (ArrayList<DoubleProperty>) TableTitle.getWidthList();
+
+        highestHeightPerRow = new ArrayList<>();
+        heightListAllTable = new ArrayList<>();
+
+        gridPane.getChildren().clear();
+        gridPane.getChildren().clear();
+
+        highestHeightPerRow = new ArrayList<>();
+        heightListAllTable = new ArrayList<>();
+
+        for (DoubleProperty width: widthColsTableTitle) {
+            System.out.println(width.get());
+            GRID_PANE_WIDTH+= width.get();
+        }
+        tableTitle.setMinWidth(GRID_PANE_WIDTH);
+
+        for (int i = 0; i < widthColsTableTitle.size(); i++) {
+            int finalI = i;
+            widthColsTableTitle.get(i).addListener((observableValue, number, t1) -> {
+                System.out.println("Col" + finalI+"change from "+ number+"to" + t1);
+                setGridColWidth(finalI, (Double) t1);
+                autosizeNullPane();
+                tableTitle.prefWidthProperty().bind(gridPane.prefWidthProperty());
+            });
+        }
+
+
         for (int i = 0; i < numRows; i++) {
             RowConstraints rowConstraints = new RowConstraints();
             rowConstraints.setMinHeight(35);
@@ -140,7 +172,21 @@ public class PrimaryViewController implements Initializable {
             highestHeightPerRow.add(tempMaxHeight);
         }
         gridPaneItemEventHandler();
+
     }
+
+
+    private void setGridColWidth(int colI, double width) {
+        gridPane.getColumnConstraints().get(colI).setPrefWidth((Double) width);
+        for (int i = 0; i < numRows; i++) {
+            ((Text)((StackPane) gridPane.getChildren().get(colI+i*numCols)).getChildren().get(0)).setWrappingWidth(width);
+        }
+    }
+
+    private void autosizeNullPane() {
+        nullPane.setPrefWidth(gridPane.getWidth());
+    }
+
 
     private ArrayList<String> valuesForTaskRow(Task task) {
         ArrayList<String> arrayList = new ArrayList<>();
@@ -150,7 +196,7 @@ public class PrimaryViewController implements Initializable {
         arrayList.add(task.getName());
         arrayList.add(task.getStartDate());
         arrayList.add(task.getDeadline());
-        arrayList.add(task.getFinishDate());
+        arrayList.add(task.getFinishDate()!=null?task.getFinishDate():"");
         arrayList.add(task.getExpectedTime() + "");
         arrayList.add(task.getFinishTime() + "");
         arrayList.add(task.getProcessed() + "%");
@@ -200,9 +246,11 @@ public class PrimaryViewController implements Initializable {
     private void addPane(int rowIndex, int colIndex, String content, String colorCode) {
         Text text = new Text("  " + content);
         text.setFont(new Font(15));
-        if (colIndex == 1) text.setWrappingWidth(260);
+        if (colIndex == 1) text.setWrappingWidth(defaultWidthGridPane.get(1));
+        if (colIndex == 8) text.setTextAlignment(TextAlignment.CENTER);
 
         StackPane pane = new StackPane();
+        pane.setPrefWidth(defaultWidthGridPane.get(colIndex));
         pane.getChildren().add(text);
         pane.setBorder(new Border(
                 new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID
@@ -220,17 +268,21 @@ public class PrimaryViewController implements Initializable {
             heightListAllTable.add(i.getLayoutBounds().getHeight());
         }
         if (colIndex == 0)
-            text.setWrappingWidth(100);
+            text.setWrappingWidth(defaultWidthGridPane.get(0));
         if (colIndex == 2)
-            text.setWrappingWidth(90);
+            text.setWrappingWidth(defaultWidthGridPane.get(2));
         if (colIndex == 8)
-            text.setWrappingWidth(70);
+            text.setWrappingWidth(defaultWidthGridPane.get(8));
     }
 
     private void colorSelected(Node node) {
-        gridPaneNode = gridPane.getChildren();
         // Init
-        if (selectedRowIndex == -1) selectedRowIndex = GridPane.getRowIndex(node);
+        if (selectedRowIndex == -1)
+            selectedRowIndex = GridPane.getRowIndex(node);
+
+        int dropShadowSpread = 15;
+        gridPaneNode = gridPane.getChildren();
+        Node timeLineNode = timeLinePane.getChildren().get(selectedRowIndex);
         // Deselect previous selected row
         for (int i = 0; i < numCols; i++) {
             if (i != 0 && i != 2 && i != 8) {
@@ -238,6 +290,10 @@ public class PrimaryViewController implements Initializable {
             }
         }
 
+        timeLineNode.setEffect(null);
+        timeLineNode.setViewOrder(0);
+
+        // Paint new row
         selectedRowIndex = GridPane.getRowIndex(node);
         // Paint current row
         for (int i = 0; i < numCols; i++) {
@@ -245,6 +301,10 @@ public class PrimaryViewController implements Initializable {
                 gridPaneNode.get(selectedRowIndex * numCols + i).setStyle("-fx-background-color:#8896DE;");
             }
         }
+        timeLineNode = timeLinePane.getChildren().get(selectedRowIndex);
+
+        timeLineNode.setEffect(new DropShadow(dropShadowSpread, Color.BLUE));
+        timeLineNode.setViewOrder(-1);
     }
 
     private void gridPaneItemEventHandler() {
@@ -270,13 +330,8 @@ public class PrimaryViewController implements Initializable {
             tasks = taskService.getAllTask();
             initTable();
             initTimeline();
-
-//            // TODO
-//            verticalScrollPane.setMaxHeight(dimension.getMaxScreenHeight() - 120);
-//            verticalScrollPane.setClip(new Rectangle(dimension.getMaxScreenWidth(),
-//                    dimension.getMaxScreenHeight() - 120));
-
         });
+
         btnEdit.setOnMouseClicked(mouseEvent -> {
             Node node = (Node) mouseEvent.getSource();
             if (selectedRowIndex == -1) {
@@ -319,7 +374,6 @@ public class PrimaryViewController implements Initializable {
             selectedRowIndex = -1;
         });
         btnPerson.setOnMouseClicked(mouseEvent -> {
-            timeLineScrollbar.setValue(50);
             modalWindowController.showWindowModal(mouseEvent,
                     "/com/hippotech/PersonManagement.fxml",
                     Constant.WindowTitleConstant.PERSON_MANAGEMENT_TITLE);
@@ -369,7 +423,6 @@ public class PrimaryViewController implements Initializable {
         var ref = new Object() {
             double hScrollValue;
             int timeLineTitleWidth = 0;
-
         };
 
         // Get timeline title width
@@ -379,11 +432,13 @@ public class PrimaryViewController implements Initializable {
         });
         timeLineScrollbar.valueProperty().addListener((observableValue, number, newValue) -> {
             if (ref.timeLineTitleWidth == 0) return;
+
             ARHScrollValue.set(newValue.doubleValue());
             ref.hScrollValue = ARHScrollValue.get();
             double translateX;
             double timeLineTitleMaxWidth = (dimension.getMaxScreenWidth() - GRID_PANE_WIDTH);
             translateX = ref.hScrollValue * (ref.timeLineTitleWidth - timeLineTitleMaxWidth) / 100.0;
+
             timeLinePane.setTranslateX(-translateX);
             timeLineTitle.setTranslateX(-translateX);
         });
@@ -409,7 +464,7 @@ public class PrimaryViewController implements Initializable {
         int year = dateTemp.getYear() + 1900;
         LocalDate dateNow = LocalDate.of(year, month, day);
         int weekNumberNow = dateNow.get(weekFields.weekOfWeekBasedYear());
-        double timelineScrollBarValue = (weekNumberNow / 52.0) * 100 + Constant.TIMELINEPANESPECS.OFFSETAUTOSCROLLTIMELINE;
+        double timelineScrollBarValue = (weekNumberNow / 52.0) * 100;// + Constant.TIMELINEPANESPECS.OFFSETAUTOSCROLLTIMELINE;
         double timeLineTitleMaxWidth = (dimension.getMaxScreenWidth() - GRID_PANE_WIDTH);
         double translateX = timelineScrollBarValue * (Constant.TIMELINEPANESPECS.GRIDPANETOTALWIDTH - timeLineTitleMaxWidth) / 100.0;
         timeLineScrollbar.setValue(timelineScrollBarValue);
@@ -427,8 +482,6 @@ public class PrimaryViewController implements Initializable {
         timeLinePane.setMaxWidth(timeLineTitle.getMaxWidth());
         initVerticalScrollBar();
         initScrollBar();
-
         refreshAutoScroll();
-
     }
 }

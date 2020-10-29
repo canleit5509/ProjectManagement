@@ -5,50 +5,6 @@
 <?import javafx.scene.text.*?>
 <fx:root xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" type="javafx.scene.layout.HBox"
          xmlns="http://javafx.com/javafx/11.0.1">
-    <HBox>
-        <StackPane>
-            <Rectangle fx:id="recProject" fill="WHITE" height="40" stroke="BLACK" width="100" strokeType="INSIDE"/>
-            <Text text="Project" textAlignment="CENTER" wrappingWidth="100"/>
-        </StackPane>
-        <StackPane maxWidth="260">
-            <Rectangle fx:id="recTask" fill="WHITE" height="40" stroke="BLACK" width="260" strokeType="INSIDE"
-            />
-            <Text text="Task" textAlignment="CENTER" wrappingWidth="260"/>
-        </StackPane>
-        <StackPane maxWidth="90">
-            <Rectangle fx:id="recEmployee" fill="WHITE" height="40" stroke="BLACK" width="90" strokeType="INSIDE"
-            />
-            <Text text="Employee" textAlignment="CENTER" wrappingWidth="90"/>
-        </StackPane>
-        <StackPane maxWidth="90">
-            <Rectangle fx:id="recStart" fill="WHITE" height="40" stroke="BLACK" width="90" strokeType="INSIDE"
-            />
-            <Text text="Start" textAlignment="CENTER" wrappingWidth="90"/>
-        </StackPane>
-        <StackPane>
-            <Rectangle fx:id="recDeadline" fill="WHITE" height="40" stroke="BLACK" width="90" strokeType="INSIDE"
-            />
-            <Text text="Deadline" textAlignment="CENTER" wrappingWidth="90"/>
-        </StackPane>
-        <StackPane>
-            <Rectangle fx:id="recFinish" fill="WHITE" height="40" stroke="BLACK" width="90" strokeType="INSIDE"
-            />
-            <Text text="Finish" textAlignment="CENTER" wrappingWidth="90"/>
-        </StackPane>
-        <StackPane>
-            <Rectangle fx:id="recExpected" fill="WHITE" height="40" stroke="BLACK" width="85" strokeType="INSIDE"
-            />
-            <Text text="Expected" textAlignment="CENTER" wrappingWidth="85"/>
-        </StackPane>
-        <StackPane>
-            <Rectangle fx:id="recFinishTime" fill="WHITE" height="40" stroke="BLACK" width="85" strokeType="INSIDE"
-            />
-            <Text text="Finish Time" textAlignment="CENTER" wrappingWidth="85"/>
-        </StackPane>
-        <StackPane>
-            <Rectangle fx:id="recProcess" fill="WHITE" height="40" stroke="BLACK" width="70" strokeType="INSIDE"
-            />
-            <Text text="Process" textAlignment="CENTER" wrappingWidth="70"/>
-        </StackPane>
+    <HBox fx:id="box">
     </HBox>
 </fx:root>
