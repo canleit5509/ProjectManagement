@@ -81,9 +81,9 @@ public class PrimaryViewController implements Initializable {
     TaskService taskService;
     PersonService personService;
     ProjectNameService projectNameService;
-    ArrayList<Task> tasks;
-    ObservableList<Node> gridPaneNode;
 
+    ObservableList<Node> gridPaneNode;
+    ArrayList<Task> tasks;
     ArrayList<Double> highestHeightPerRow;
     ArrayList<Double> heightListAllTable;
     ArrayList<DoubleProperty> widthColsTableTitle;
@@ -103,22 +103,17 @@ public class PrimaryViewController implements Initializable {
     private void initTable() {
         numCols = 9;
         numRows = tasks.size();
-        GRID_PANE_WIDTH = 0;
+        GRID_PANE_WIDTH = 960;
         widthColsTableTitle = (ArrayList<DoubleProperty>) TableTitle.getWidthList();
 
         highestHeightPerRow = new ArrayList<>();
         heightListAllTable = new ArrayList<>();
 
         gridPane.getChildren().clear();
-        gridPane.getChildren().clear();
 
         highestHeightPerRow = new ArrayList<>();
         heightListAllTable = new ArrayList<>();
 
-        for (DoubleProperty width: widthColsTableTitle) {
-            System.out.println(width.get());
-            GRID_PANE_WIDTH+= width.get();
-        }
         tableTitle.setMinWidth(GRID_PANE_WIDTH);
 
         for (int i = 0; i < widthColsTableTitle.size(); i++) {
@@ -128,6 +123,7 @@ public class PrimaryViewController implements Initializable {
                 setGridColWidth(finalI, (Double) t1);
                 autosizeNullPane();
                 tableTitle.prefWidthProperty().bind(gridPane.prefWidthProperty());
+                refreshTimeLineHeight();
             });
         }
 
@@ -161,20 +157,24 @@ public class PrimaryViewController implements Initializable {
                 addPane(i, j, taskObj.get(j), color);
             }
         }
-        // Get height of rows
+        findHighestHeightPerRow();
+        gridPaneItemEventHandler();
+    }
+    private void findHighestHeightPerRow() {
+        ObservableList<Node> nodeList = gridPane.getChildren();
+        highestHeightPerRow.clear();
+        double temp;
         for (int i = 0; i < numRows; i++) {
             double tempMaxHeight = 0;
             for (int j = 0; j < numCols; j++) {
-                if (tempMaxHeight < heightListAllTable.get(i * numCols + j)) {
-                    tempMaxHeight = heightListAllTable.get(i * numCols + j);
+                temp = nodeList.get(i * numCols + j).getBoundsInLocal().getHeight();
+                if (tempMaxHeight < temp) {
+                    tempMaxHeight = temp;
                 }
             }
             highestHeightPerRow.add(tempMaxHeight);
         }
-        gridPaneItemEventHandler();
-
     }
-
 
     private void setGridColWidth(int colI, double width) {
         gridPane.getColumnConstraints().get(colI).setPrefWidth((Double) width);
@@ -229,7 +229,6 @@ public class PrimaryViewController implements Initializable {
                 Rectangle rect = new Rectangle(35, height);
                 if (height > 20) {
                     rect.setHeight(Math.ceil(height) + 1);
-
                 } else {
                     rect.setHeight(height + 15);
                 }
@@ -241,6 +240,18 @@ public class PrimaryViewController implements Initializable {
             }
         }
         timeLinePane.add(pane, 0, tasks.indexOf(task));
+    }
+
+    private void refreshTimeLineHeight() {
+        findHighestHeightPerRow();
+        for (int i = 0; i < numRows;i++) {
+            setHeightTimeLineRow(i, highestHeightPerRow.get(i));
+        }
+    };
+    private void setHeightTimeLineRow(int rowI, double height) {
+        for (int i = 0; i < 52*5; i++) {
+            ((Rectangle)((HBox)timeLinePane.getChildren().get(rowI)).getChildren().get(i)).setHeight(height);
+        }
     }
 
     private void addPane(int rowIndex, int colIndex, String content, String colorCode) {
@@ -262,11 +273,6 @@ public class PrimaryViewController implements Initializable {
         } else
             pane.setStyle("-fx-background-color: " + colorCode + ";");
         gridPane.add(pane, colIndex, rowIndex);
-
-        ObservableList<Node> nodeList = pane.getChildren();
-        for (Node i : nodeList) {
-            heightListAllTable.add(i.getLayoutBounds().getHeight());
-        }
         if (colIndex == 0)
             text.setWrappingWidth(defaultWidthGridPane.get(0));
         if (colIndex == 2)
@@ -387,6 +393,31 @@ public class PrimaryViewController implements Initializable {
                     Constant.WindowTitleConstant.PROJECT_MANAGEMENT_TITLE);
             tasks = taskService.getAllTask();
             initTable();
+        });
+
+        var ref = new Object() {
+            double oldX;
+
+        };
+
+        timeLinePane.setOnMousePressed(e->{
+            ref.oldX = e.getX();
+            System.out.println(ref.oldX);
+        });
+
+        timeLinePane.setOnMouseDragged(e->{
+            double xPercentOld = timeLineScrollbar.getValue();
+            double newX = e.getX();
+            double distance = newX - ref.oldX;
+            double percentDistance = 0;
+            if(distance < 0 ){
+                percentDistance = 9*Math.abs(distance)/Constant.TIMELINEPANESPECS.GRIDPANETOTALWIDTH;
+            }else{
+                percentDistance = -9*Math.abs(distance)/Constant.TIMELINEPANESPECS.GRIDPANETOTALWIDTH;
+            }
+            timeLineScrollbar.setValue(percentDistance+xPercentOld);
+//            timeLineScrollbar.setValue((e.getX()/Constant.TIMELINEPANESPECS.GRIDPANETOTALWIDTH)*100);
+
         });
     }
 
