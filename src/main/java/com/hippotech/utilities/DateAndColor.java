@@ -15,41 +15,37 @@ public class DateAndColor {
 
     public static String getColor(LocalDate date, Task task) {
         LocalDate startDate = LocalDate.parse(task.getStartDate());
-        if (date.isBefore(startDate)) return Constant.COLOR.WHITE;
+        if (date.isBefore(startDate)) return Constant.Color.WHITE;
 
         LocalDate deadLine = LocalDate.parse(task.getDeadline());
         if (task.getFinishDate() != null) {
-//            System.out.println("22: " + task.getFinishDate());
-//            if(task.getFinishDate().equals("")){
-//                task.setFinishDate("null");
-//            }
             LocalDate finishDate = LocalDate.parse(task.getFinishDate());
             if (finishDate.isBefore(deadLine)) {
-                if (date.isEqual(finishDate)) return Constant.COLOR.DARK_GREEN;
-                if (date.isEqual(deadLine)) return Constant.COLOR.RED;
+                if (date.isEqual(finishDate)) return Constant.Color.DARK_GREEN;
+                if (date.isEqual(deadLine)) return Constant.Color.RED;
                 if (date.isBefore(finishDate) || date.isEqual(startDate))
-                    return Constant.COLOR.SOFT_GREEN;
+                    return Constant.Color.SOFT_GREEN;
             } else {
-                if (finishDate.isEqual(deadLine) && finishDate.isEqual(date)) return Constant.COLOR.DARK_GREEN;
-                if (date.isEqual(deadLine)) return Constant.COLOR.RED;
-                if (date.isEqual(finishDate)) return Constant.COLOR.YELLOW;
-                if (date.isBefore(deadLine) || date.isEqual(startDate)) return Constant.COLOR.SOFT_GREEN;
-                if (date.isBefore(finishDate)) return Constant.COLOR.ORANGE;
+                if (finishDate.isEqual(deadLine) && finishDate.isEqual(date)) return Constant.Color.DARK_GREEN;
+                if (date.isEqual(deadLine)) return Constant.Color.RED;
+                if (date.isEqual(finishDate)) return Constant.Color.YELLOW;
+                if (date.isBefore(deadLine) || date.isEqual(startDate)) return Constant.Color.SOFT_GREEN;
+                if (date.isBefore(finishDate)) return Constant.Color.ORANGE;
 
             }
         } else {
             LocalDate now = LocalDate.now();
             if (now.isBefore(deadLine)) {
-                if (date.isEqual(deadLine)) return Constant.COLOR.RED;
-                if (date.isBefore(now) || date.isEqual(startDate)) return Constant.COLOR.SOFT_GREEN;
-                if (date.isBefore(deadLine)) return Constant.COLOR.WHITE;
+                if (date.isEqual(deadLine)) return Constant.Color.RED;
+                if (date.isBefore(now) || date.isEqual(startDate)) return Constant.Color.SOFT_GREEN;
+                if (date.isBefore(deadLine)) return Constant.Color.WHITE;
 
             } else {
-                if (date.isEqual(deadLine)) return Constant.COLOR.RED;
-                if (date.isEqual(startDate) || date.isBefore(deadLine)) return Constant.COLOR.SOFT_GREEN;
-                if (date.isBefore(now) || date.equals(now)) return Constant.COLOR.ORANGE;
+                if (date.isEqual(deadLine)) return Constant.Color.RED;
+                if (date.isEqual(startDate) || date.isBefore(deadLine)) return Constant.Color.SOFT_GREEN;
+                if (date.isBefore(now) || date.equals(now)) return Constant.Color.ORANGE;
             }
         }
-        return Constant.COLOR.WHITE;
+        return Constant.Color.WHITE;
     }
 }

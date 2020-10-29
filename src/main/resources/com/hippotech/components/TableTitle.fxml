@@ -8,19 +8,19 @@
     <HBox>
         <StackPane maxWidth="100">
             <Rectangle fill="WHITE" height="40" stroke="BLACK" width="100" strokeType="INSIDE" strokeWidth="0.5"/>
-            <Text text="Project" textAlignment="CENTER" wrappingWidth="100"/>
+            <Text text="Dự án" textAlignment="CENTER" wrappingWidth="100"/>
         </StackPane>
         <StackPane maxWidth="260">
             <Rectangle fill="WHITE" height="40" stroke="BLACK" width="260" strokeType="INSIDE" strokeWidth="0.5"/>
-            <Text text="Task" textAlignment="CENTER" wrappingWidth="260"/>
+            <Text text="Công việc" textAlignment="CENTER" wrappingWidth="260"/>
         </StackPane>
         <StackPane maxWidth="90">
             <Rectangle fill="WHITE" height="40" stroke="BLACK" width="90" strokeType="INSIDE" strokeWidth="0.5" />
-            <Text text="Employee" textAlignment="CENTER" wrappingWidth="90"/>
+            <Text text="Nhân viên" textAlignment="CENTER" wrappingWidth="90"/>
         </StackPane>
         <StackPane maxWidth="90">
             <Rectangle fill="WHITE" height="40" stroke="BLACK" width="90" strokeType="INSIDE" strokeWidth="0.5"/>
-            <Text text="Start" textAlignment="CENTER" wrappingWidth="90"/>
+            <Text text="Ngày bắt đầu" textAlignment="CENTER" wrappingWidth="90"/>
         </StackPane>
         <StackPane>
             <Rectangle fill="WHITE" height="40" stroke="BLACK" width="90" strokeType="INSIDE" strokeWidth="0.5"/>
@@ -28,19 +28,19 @@
         </StackPane>
         <StackPane>
             <Rectangle fill="WHITE" height="40" stroke="BLACK" width="90" strokeType="INSIDE" strokeWidth="0.5"/>
-            <Text text="Finish" textAlignment="CENTER" wrappingWidth="90"/>
+            <Text text="Ngày hoàn thành" textAlignment="CENTER" wrappingWidth="90"/>
         </StackPane>
         <StackPane>
             <Rectangle fill="WHITE" height="40" stroke="BLACK" width="85" strokeType="INSIDE" strokeWidth="0.5"/>
-            <Text text="Expected" textAlignment="CENTER" wrappingWidth="85"/>
+            <Text text="Thời gian dự kiến" textAlignment="CENTER" wrappingWidth="85"/>
         </StackPane>
         <StackPane>
             <Rectangle fill="WHITE" height="40" stroke="BLACK" width="85" strokeType="INSIDE" strokeWidth="0.5"/>
-            <Text text="Finish Time" textAlignment="CENTER" wrappingWidth="85"/>
+            <Text text="Thời gian hoàn thành" textAlignment="CENTER" wrappingWidth="85"/>
         </StackPane>
         <StackPane>
             <Rectangle fill="WHITE" height="40" stroke="BLACK" width="70" strokeType="INSIDE" strokeWidth="0.5"/>
-            <Text text="Process" textAlignment="CENTER" wrappingWidth="70"/>
+            <Text text="Tiến độ" textAlignment="CENTER" wrappingWidth="70"/>
         </StackPane>
     </HBox>
 </fx:root>

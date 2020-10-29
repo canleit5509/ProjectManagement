@@ -1,6 +1,7 @@
 package com.hippotech.controller.components;
 
 import com.hippotech.model.Task;
+import com.hippotech.utilities.Constant;
 import com.hippotech.utilities.DateAndColor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,7 +27,7 @@ public class TaskRow extends HBox {
 
     public TaskRow(Task task, LocalDate date) {
         this.task = task;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/hippotech/components/TaskRow.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(Constant.FXMLPage.TASK_ROW));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
         try {

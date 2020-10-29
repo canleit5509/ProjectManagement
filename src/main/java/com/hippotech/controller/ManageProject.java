@@ -46,7 +46,7 @@ public class ManageProject implements Initializable {
 
     public void btnAdd(ActionEvent e) throws IOException {
         modalWindowController.showWindowModal(e,
-                "/com/hippotech/AddProject.fxml",
+                Constant.FXMLPage.ADD_PROJECT,
                 Constant.WindowTitleConstant.ADD_PROJECT_TITLE);
         RefreshTable(service.getAllDoneProject(0));
         refreshColor();
@@ -58,7 +58,7 @@ public class ManageProject implements Initializable {
         if (projectName == null) {
             _Alert.showWaitInfoNotification(Constant.DialogConstant.CHOOSE_A_PROJECT);
         } else {
-            FXMLLoader loader = modalWindowController.getLoader("/com/hippotech/UpdateProject.fxml");
+            FXMLLoader loader = modalWindowController.getLoader(Constant.FXMLPage.UPDATE_PROJECT);
             Parent parent = modalWindowController.load(loader);
 
             UpdateProject updateProject1 = loader.getController();

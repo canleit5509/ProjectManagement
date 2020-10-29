@@ -11,7 +11,6 @@ public class TaskDAO implements DAO<TaskDTO> {
     private static final String DELETE = "DELETE FROM task WHERE id=?";
     private static final String FIND_ALL = "SELECT * FROM task ORDER BY id";
     private static final String FIND_BY_ID = "SELECT * FROM task WHERE id=?";
-    //    private static final String FIND_BY_NAME = "SELECT * FROM task WHERE name=?";
     private static final String INSERT = "INSERT INTO task(id, projectName, title, name, startDate, deadline, finishDate," +
             "expectTime, finishTime, processed) VALUES(?, ?, ?, ?, ? ,?, ?, ?, ?, ?)";
     private static final String UPDATE = "UPDATE task SET projectName=?, title=?, name=?, startDate=?, deadline=?, " +

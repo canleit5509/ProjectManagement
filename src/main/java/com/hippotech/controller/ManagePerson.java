@@ -49,7 +49,7 @@ public class ManagePerson implements Initializable {
 
     public void btnAdd(ActionEvent e) throws IOException {
         FXMLLoader loader = modalWindowController.getLoader(
-                "/com/hippotech/AddPerson.fxml");
+                Constant.FXMLPage.ADD_PERSON);
         Parent addProject = modalWindowController.load(loader);
 
         AddPerson addPerson = loader.getController();
@@ -69,7 +69,7 @@ public class ManagePerson implements Initializable {
             _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_PERSON);
         } else {
             FXMLLoader loader = modalWindowController.getLoader(
-                    "/com/hippotech/UpdatePerson.fxml");
+                    Constant.FXMLPage.UPDATE_PERSON);
             Parent parent = modalWindowController.load(loader);
 
             UpdatePerson updatePerson = loader.getController();

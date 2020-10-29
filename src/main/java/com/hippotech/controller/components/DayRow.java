@@ -1,5 +1,6 @@
 package com.hippotech.controller.components;
 
+import com.hippotech.utilities.Constant;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.HBox;
@@ -25,7 +26,7 @@ public class DayRow extends HBox {
     Text fri;
 
     public DayRow() {
-        FXMLLoader fxmlLoader =new FXMLLoader(getClass().getResource("/com/hippotech/components/DayRow.fxml"));
+        FXMLLoader fxmlLoader =new FXMLLoader(getClass().getResource(Constant.FXMLPage.DAY_ROW));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
         try {

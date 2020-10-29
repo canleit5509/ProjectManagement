@@ -152,14 +152,14 @@ public class UpdateTaskViewController implements Initializable {
     public void AddProject(ActionEvent e) throws IOException {
         Node node = (Node) e.getSource();
         modalWindowController.showWindowModal(node,
-                "/com/hippotech/AddProject.fxml",
+                Constant.FXMLPage.ADD_PROJECT,
                 Constant.WindowTitleConstant.ADD_PROJECT_TITLE);
 
         setComboBox();
     }
 
     public void AddPerson(ActionEvent e) throws IOException {
-        FXMLLoader loader = modalWindowController.getLoader("/com/hippotech/AddPerson.fxml");
+        FXMLLoader loader = modalWindowController.getLoader(Constant.FXMLPage.ADD_PERSON);
         Parent parent = modalWindowController.load(loader);
         Node node = (Node) e.getSource();
 

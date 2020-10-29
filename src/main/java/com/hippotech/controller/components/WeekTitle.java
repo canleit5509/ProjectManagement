@@ -1,5 +1,6 @@
 package com.hippotech.controller.components;
 
+import com.hippotech.utilities.Constant;
 import com.hippotech.utilities.DateAndColor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,7 +24,7 @@ public class WeekTitle extends VBox {
     DayRow row;
 
     public WeekTitle() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/hippotech/components/WeekTitle.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(Constant.FXMLPage.WEEK_TITLE));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
         try {

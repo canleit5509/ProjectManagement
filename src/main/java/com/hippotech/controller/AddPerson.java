@@ -27,8 +27,6 @@ public class AddPerson implements Initializable {
     private ColorPicker color;
 
     public void setID() {
-//        Random random = new Random();
-//        int id = random.nextInt(899999) + 100000;
         long time = new Date().getTime();
         String id = Long.toString(time).substring(0, 9);
         txtID.setText(id + "");
