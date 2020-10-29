@@ -264,6 +264,13 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void eventHandler() {
+
+        gridPane.setOnMouseClicked(e->{
+            if(e.getClickCount()==2){
+                Node node = (Node) e.getSource();
+                editTask(node);
+            }
+        });
         nextYear.setOnMouseClicked(e -> {
             year++;
             currYear.setText(String.valueOf(year));
@@ -304,25 +311,7 @@ public class PrimaryViewController implements Initializable {
 
         btnEdit.setOnMouseClicked(mouseEvent -> {
             Node node = (Node) mouseEvent.getSource();
-            if (selectedRowIndex == -1) {
-                _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_UPDATE);
-            } else {
-                Task selected = tasks.get(selectedRowIndex);
-                FXMLLoader loader = modalWindowController.getLoader(Constant.FXMLPage.UPDATE_TASK_VIEW);
-                Parent parent = modalWindowController.load(loader);
-                UpdateTaskViewController controller = loader.getController();
-                controller.setTask(selected);
-                controller.setComboBox();
-                modalWindowController.showWindowModal(
-                        node,
-                        parent,
-                        Constant.WindowTitleConstant.UPDATE_TASK_TITLE
-                );
-                tasks = taskService.getAllTask();
-                initTable();
-                initTimeline();
-            }
-            selectedRowIndex = -1;
+            editTask(node);
         });
         btnDel.setOnMouseClicked(mouseEvent -> {
             if (selectedRowIndex == -1) {
@@ -454,6 +443,28 @@ public class PrimaryViewController implements Initializable {
         timeLineTitle.setTranslateX(-translateX);
     }
 
+    public void editTask(Node node){
+        if (selectedRowIndex == -1) {
+            _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_UPDATE);
+        } else {
+            Task selected = tasks.get(selectedRowIndex);
+            FXMLLoader loader = modalWindowController.getLoader(Constant.FXMLPage.UPDATE_TASK_VIEW);
+            Parent parent = modalWindowController.load(loader);
+            UpdateTaskViewController controller = loader.getController();
+            controller.setTask(selected);
+            controller.setComboBox();
+            modalWindowController.showWindowModal(
+                    node,
+                    parent,
+                    Constant.WindowTitleConstant.UPDATE_TASK_TITLE
+            );
+            tasks = taskService.getAllTask();
+            initTable();
+            initTimeline();
+        }
+        selectedRowIndex = -1;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         currYear.setText(String.valueOf(year));
@@ -464,7 +475,6 @@ public class PrimaryViewController implements Initializable {
         timeLinePane.setMaxWidth(timeLineTitle.getMaxWidth());
         initVerticalScrollBar();
         initScrollBar();
-
         refreshAutoScroll();
     }
 }
