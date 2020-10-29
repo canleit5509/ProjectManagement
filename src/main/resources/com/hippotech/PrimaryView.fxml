@@ -20,33 +20,33 @@
     </HBox>
 
     <VBox>
-        <HBox fx:id="titleBox" style="-fx-border-width: 1;-fx-border-style: solid;">
-            <TableTitle />
-            <VBox fx:id="timeLineTitle" maxWidth="600" viewOrder="1"/>
+        <HBox fx:id="titleBox" style="-fx-border-width: 1;-fx-border-style: solid;" alignment="CENTER_LEFT">
+            <TableTitle  fx:id="tableTitle"/>
+            <VBox fx:id="timeLineTitle" viewOrder="1"/>
         </HBox>
         <ScrollPane fx:id="verticalScrollPane">
             <HBox>
-                <GridPane fx:id="gridPane" gridLinesVisible="true" maxWidth="960">
+                <GridPane fx:id="gridPane" gridLinesVisible="true">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="260.0" prefWidth="100.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="90"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="90"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="90"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="90.0" prefWidth="90"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="85.0" prefWidth="85"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="85.0" prefWidth="85"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="70" prefWidth="70"/>
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="100"/>
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="260"/>
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="90"/>
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="90"/>
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="90"/>
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="90"/>
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="85"/>
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="85"/>
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="70"/>
                     </columnConstraints>
                     <rowConstraints>
 
                     </rowConstraints>
                 </GridPane>
-                <GridPane fx:id="timeLinePane" maxWidth="960" viewOrder="1"/>
+                <GridPane fx:id="timeLinePane" viewOrder="1"/>
             </HBox>
         </ScrollPane>
         <HBox>
-            <Pane prefWidth="960"/>
+            <Pane fx:id="nullPane"/>
             <ScrollBar fx:id="timeLineScrollbar" prefWidth="500"/>
         </HBox>
     </VBox>
