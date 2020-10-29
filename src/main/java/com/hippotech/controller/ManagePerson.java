@@ -12,11 +12,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.IOException;
@@ -68,23 +65,20 @@ public class ManagePerson implements Initializable {
         if (person == null) {
             _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_PERSON);
         } else {
-            FXMLLoader loader = modalWindowController.getLoader(
-                    Constant.FXMLPage.UPDATE_PERSON);
+            FXMLLoader loader = modalWindowController.getLoader(Constant.FXMLPage.UPDATE_PERSON);
             Parent parent = modalWindowController.load(loader);
 
             UpdatePerson updatePerson = loader.getController();
             updatePerson.setPerson(person);
 
             Node node = (Node) e.getSource();
-            modalWindowController.showWindowModal(node,
-                    parent, Constant.WindowTitleConstant.UPDATE_PERSON_TITLE);
+            modalWindowController.showWindowModal(node, parent, Constant.WindowTitleConstant.UPDATE_PERSON_TITLE);
 
             RefreshTable(service.getRetiredPeople(0));
             refreshColor();
             checkNow.setSelected(true);
             btnKick.setVisible(true);
         }
-
     }
 
     public void btnKick(ActionEvent actionEvent) {
@@ -96,7 +90,6 @@ public class ManagePerson implements Initializable {
             service.updatePerson(person);
             RefreshTable(service.getRetiredPeople(0));
             refreshColor();
-
         }
     }
 
