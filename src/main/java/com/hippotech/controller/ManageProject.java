@@ -64,7 +64,6 @@ public class ManageProject implements Initializable {
             UpdateProject updateProject1 = loader.getController();
             updateProject1.setProject(projectName);
             updateProject1.oldName = projectName.getProjectName();
-
             Node node = (Node) e.getSource();
             modalWindowController.showWindowModal(node, parent, Constant.WindowTitleConstant.UPDATE_PERSON_TITLE);
 
@@ -81,7 +80,7 @@ public class ManageProject implements Initializable {
             _Alert.showWaitInfoNotification(Constant.DialogConstant.CHOOSE_A_PROJECT);
         } else {
             projectName.setDone(1);
-            service.updateProject(projectName);
+            service.updateProject(projectName, projectName.getProjectName());
             RefreshTable(service.getAllDoneProject(0));
             refreshColor();
         }

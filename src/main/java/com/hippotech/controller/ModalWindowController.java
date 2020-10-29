@@ -46,8 +46,6 @@ public class ModalWindowController{
     public FXMLLoader getLoader(String source) {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(_class.getResource(source));
-        System.out.println(loader);
-
         return loader;
     }
 
