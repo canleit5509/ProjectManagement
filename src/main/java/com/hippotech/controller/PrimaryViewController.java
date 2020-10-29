@@ -60,7 +60,6 @@ public class PrimaryViewController implements Initializable {
     GridPane timeLinePane;
     @FXML
     ScrollBar timeLineScrollbar;
-
     @FXML
     Button currYear;
     @FXML
@@ -363,6 +362,31 @@ public class PrimaryViewController implements Initializable {
                     Constant.WindowTitleConstant.PROJECT_MANAGEMENT_TITLE);
             tasks = taskService.getAllTask();
             initTable();
+        });
+
+        var ref = new Object() {
+            double oldX;
+
+        };
+
+        timeLinePane.setOnMousePressed(e->{
+            ref.oldX = e.getX();
+            System.out.println(ref.oldX);
+        });
+
+        timeLinePane.setOnMouseDragged(e->{
+            double xPercentOld = timeLineScrollbar.getValue();
+            double newX = e.getX();
+            double distance = newX - ref.oldX;
+            double percentDistance = 0;
+            if(distance < 0 ){
+                percentDistance = 9*Math.abs(distance)/Constant.TIMELINEPANESPECS.GRIDPANETOTALWIDTH;
+            }else{
+                percentDistance = -9*Math.abs(distance)/Constant.TIMELINEPANESPECS.GRIDPANETOTALWIDTH;
+            }
+            timeLineScrollbar.setValue(percentDistance+xPercentOld);
+//            timeLineScrollbar.setValue((e.getX()/Constant.TIMELINEPANESPECS.GRIDPANETOTALWIDTH)*100);
+
         });
     }
 
