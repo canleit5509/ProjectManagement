@@ -10,8 +10,6 @@ import javafx.scene.text.Text;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
-import java.util.Date;
 
 public class DayRow extends HBox {
     @FXML
@@ -52,11 +50,10 @@ public class DayRow extends HBox {
         thu.textProperty().setValue(getDayOfMonth(date.plus(3, ChronoUnit.DAYS)));
         fri.textProperty().setValue(getDayOfMonth(date.plus(4, ChronoUnit.DAYS)));
 
-        Date dateTemp = new Date();
-        Calendar cal = Calendar.getInstance();
-        int day = cal.get(Calendar.DAY_OF_MONTH);
-        int month = dateTemp.getMonth() + 1;
-        int year = dateTemp.getYear() + 1900;
+
+        int day = LocalDate.now().getDayOfMonth();
+        int month = LocalDate.now().getMonthValue();
+        int year = LocalDate.now().getYear();
         LocalDate dateNow = LocalDate.of(year, month, day);
         if (isDateInWeek(date, dateNow)) {
             mon.setFill(Color.BLUE);
