@@ -55,14 +55,27 @@ public class TaskService {
         return tasks;
     }
 
+    public ArrayList<Task> getAllTaskBy(int column) {
+        ArrayList<TaskDTO> taskDTOs = dao.getAllBy(column);
+        ArrayList<Task> tasks = new ArrayList<>();
+        for (TaskDTO task :
+                taskDTOs) {
+            tasks.add(convertToTask(task));
+            System.out.println(task.getName());
+        }
+        return tasks;
+    }
+
     public Task getTask(String id) {
         return convertToTask(dao.get(id));
     }
-    public void addTask(Task task){
+
+    public void addTask(Task task) {
         TaskDTO dto = convertToDTO(task);
         dao.add(dto);
     }
-    public void updateTask(Task task){
+
+    public void updateTask(Task task) {
         TaskDTO dto = convertToDTO(task);
         dao.update(dto);
     }

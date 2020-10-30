@@ -2,6 +2,9 @@ package com.hippotech.controller.components;
 
 import com.hippotech.utilities.Resizable;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -10,7 +13,6 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,8 +41,55 @@ public class TableTitle extends HBox {
             85d,
             85d,
             70d));
-
+    public IntegerProperty index = new SimpleIntegerProperty();
     static ArrayList<DoubleProperty> widthList;
+
+    public TableTitle() {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/hippotech/components/TableTitle.fxml"));
+        fxmlLoader.setRoot(this);
+        fxmlLoader.setController(this);
+        try {
+            fxmlLoader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        widthList = new ArrayList<>();
+        initTable();
+        DoubleProperty width_1 = new SimpleDoubleProperty();
+        width_1.setValue(0);
+        for (int i = 0; i < widthList.size() - 1; i++) {
+            width_1.setValue(width_1.doubleValue() + widthList.get(i).doubleValue());
+        }
+        for (int i = 0; i < box.getChildren().size(); i++) {
+            Node node = box.getChildren().get(i);
+            Node previousNode = null;
+            if (i > 0)
+                previousNode = box.getChildren().get(i - 1);
+
+            Resizable.makeResizable(node, previousNode);
+        }
+        box.setOnMouseClicked(event -> {
+            double x = event.getX();
+            int k = 0;
+            double width = 0;
+
+            for (DoubleProperty i : widthList) {
+                if (x < width) {
+                    index.setValue(k);
+                    break;
+                } else {
+                    width += i.doubleValue();
+                    k++;
+                }
+                if (width > width_1.doubleValue()) {
+                    k = 9;
+                    index.setValue(k);
+                }
+            }
+        });
+    }
+
+
     void initTable() {
         Label label;
         Pane pane;
@@ -67,26 +116,9 @@ public class TableTitle extends HBox {
             widthList.add(pane.prefWidthProperty());
         }
     }
-    public TableTitle() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/hippotech/components/TableTitle.fxml"));
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-        try {
-            fxmlLoader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        widthList = new ArrayList<>();
-        initTable();
 
-        for (int i = 0; i < box.getChildren().size(); i++) {
-            Node node = box.getChildren().get(i);
-            Node previousNode = null;
-            if (i > 0)
-                previousNode = box.getChildren().get(i-1);
-
-            Resizable.makeResizable(node, previousNode);
-        }
+    public IntegerProperty getIndex() {
+        return index;
     }
 
     public static List<DoubleProperty> getWidthList() {
