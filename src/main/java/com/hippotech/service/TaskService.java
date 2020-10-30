@@ -1,12 +1,10 @@
 package com.hippotech.service;
 
 
-
 import com.hippotech.dao.TaskDAO;
 import com.hippotech.dto.TaskDTO;
 import com.hippotech.model.Task;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class TaskService {
@@ -56,28 +54,41 @@ public class TaskService {
         return tasks;
     }
 
+    public ArrayList<Task> getAllTaskBy(int column) {
+        ArrayList<TaskDTO> taskDTOs = dao.getAllBy(column);
+        ArrayList<Task> tasks = new ArrayList<>();
+        for (TaskDTO task :
+                taskDTOs) {
+            tasks.add(convertToTask(task));
+            System.out.println(task.getName());
+        }
+        return tasks;
+    }
+
     public Task getTask(String id) {
         return convertToTask(dao.get(id));
     }
 
-    public ArrayList<Task> getAllTaskByPerson(String name){
-        ArrayList<Task> taskList = new ArrayList<>();
-        ArrayList<TaskDTO> taskDTOList = dao.getAllTaskByPerson(name);
-        for(TaskDTO i:taskDTOList){
-            taskList.add(convertToTask(i));
-        }
-        return taskList;
-    }
-
-    public void addTask(Task task){
+    public void addTask(Task task) {
         TaskDTO dto = convertToDTO(task);
         dao.add(dto);
     }
-    public void updateTask(Task task){
+
+    public void updateTask(Task task) {
         TaskDTO dto = convertToDTO(task);
         dao.update(dto);
     }
-    public void deleteTask(Task task){
+
+    public void deleteTask(Task task) {
         dao.delete(convertToDTO(task));
+    }
+
+    public ArrayList<Task> getAllTaskByPerson(String name) {
+        ArrayList<Task> taskList = new ArrayList<>();
+        ArrayList<TaskDTO> taskDTOList = dao.getAllTaskByPerson(name);
+        for (TaskDTO i : taskDTOList) {
+            taskList.add(convertToTask(i));
+        }
+        return taskList;
     }
 }

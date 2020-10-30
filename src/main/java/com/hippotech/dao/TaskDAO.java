@@ -10,6 +10,7 @@ public class TaskDAO implements DAO<TaskDTO> {
 
     private static final String DELETE = "DELETE FROM task WHERE id=?";
     private static final String FIND_ALL = "SELECT * FROM task ORDER BY id";
+
     private static final String FIND_BY_ID = "SELECT * FROM task WHERE id=?";
     private static final String FIND_BY_PERSON = "SELECT * FROM task WHERE name=?";
     private static final String INSERT = "INSERT INTO task(id, projectName, title, name, startDate, deadline, finishDate," +
@@ -55,6 +56,59 @@ public class TaskDAO implements DAO<TaskDTO> {
         }
         return tasks;
     }
+    public ArrayList<TaskDTO> getAllBy(int column) {
+        ArrayList<TaskDTO> tasks = new ArrayList<>();
+        try {
+            connection = getConnection();
+            String FIND_BY = null;
+            switch (column) {
+                case 1:
+                    FIND_BY = "SELECT * FROM task ORDER BY projectName";
+                    break;
+                case 2:
+                    FIND_BY = "SELECT * FROM task ORDER BY title";
+                    break;
+                case 3:
+                    FIND_BY = "SELECT * FROM task ORDER BY name";
+                    break;
+                case 4:
+                    FIND_BY = "SELECT * FROM task ORDER BY startDate";
+                    break;
+                case 5:
+                    FIND_BY = "SELECT * FROM task ORDER BY deadline";
+                    break;
+                case 6:
+                    FIND_BY = "SELECT * FROM task ORDER BY finishDate";
+                    break;
+                case 7:
+                    FIND_BY = "SELECT * FROM task ORDER BY expectTime";
+                    break;
+                case 8:
+                    FIND_BY = "SELECT * FROM task ORDER BY finishTime";
+                    break;
+                case 9:
+                    FIND_BY = "SELECT * FROM task ORDER BY processed";
+                    break;
+                default:
+                    break;
+            }
+            preparedStatement = connection.prepareStatement(FIND_BY);
+            System.out.println(preparedStatement.toString());
+            ResultSet RS = preparedStatement.executeQuery();
+            while (RS.next()) {
+                TaskDTO task = new TaskDTO(RS.getString("id"), RS.getString("projectName"), RS.getString("title"),
+                        RS.getString("name"), RS.getString("startDate"), RS.getString("deadline"),
+                        RS.getString("finishDate"), RS.getInt("expectTime"), RS.getInt("finishTime"),
+                        RS.getInt("processed"));
+                tasks.add(task);
+            }
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        } finally {
+            close(preparedStatement);
+        }
+        return tasks;
+    }
 
     @Override
     public TaskDTO get(String id) {
@@ -83,6 +137,7 @@ public class TaskDAO implements DAO<TaskDTO> {
         } finally {
             close(preparedStatement);
         }
+
     }
 
     public ArrayList<TaskDTO> getAllTaskByPerson(String name) {
@@ -149,7 +204,6 @@ public class TaskDAO implements DAO<TaskDTO> {
             preparedStatement.setInt(7, task.getExpectedTime());
             preparedStatement.setInt(8, task.getFinishTime());
             preparedStatement.setInt(9, task.getProcessed());
-            System.out.println("152: " + preparedStatement.toString());
             preparedStatement.executeUpdate();
 
         } catch (SQLException throwable) {

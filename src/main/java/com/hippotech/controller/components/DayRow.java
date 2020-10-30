@@ -24,7 +24,7 @@ public class DayRow extends HBox {
     Text fri;
 
     public DayRow() {
-        FXMLLoader fxmlLoader =new FXMLLoader(getClass().getResource(Constant.FXMLPage.DAY_ROW));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(Constant.FXMLPage.DAY_ROW));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
         try {

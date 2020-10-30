@@ -36,7 +36,7 @@ public class ManagePerson implements Initializable {
     private TableColumn<Person, String> tcName;
     @FXML
     private Button btnKick;
-    private PersonService service;
+    private final PersonService service;
     private final ModalWindowController modalWindowController = new ModalWindowController(
             this.getClass());
 

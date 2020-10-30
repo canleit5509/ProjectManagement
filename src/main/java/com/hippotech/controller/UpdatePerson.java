@@ -29,8 +29,9 @@ public class UpdatePerson implements Initializable {
     private RadioButton radioNow;
     @FXML
     private RadioButton radioRetired;
-    private PersonService personService;
-    private TaskService taskService;
+    private final PersonService personService;
+    private final TaskService taskService;
+
     public UpdatePerson() {
         personService = new PersonService();
         taskService = new TaskService();
@@ -69,7 +70,7 @@ public class UpdatePerson implements Initializable {
         ArrayList<Task> taskList = taskService.getAllTaskByPerson(oldName);
         System.out.println("old name: " + oldName);
         System.out.println(taskList.size());
-        for(Task i:taskList){
+        for (Task i : taskList) {
             i.setName(name);
             System.out.println(i.toString());
             taskService.updateTask(i);

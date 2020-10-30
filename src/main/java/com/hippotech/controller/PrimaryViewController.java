@@ -18,7 +18,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -65,7 +68,8 @@ public class PrimaryViewController implements Initializable {
     Pane nullPane;
     @FXML
     ScrollBar timeLineScrollbar;
-
+    @FXML
+    Button btnToday;
     @FXML
     Button currYear;
     @FXML
@@ -73,7 +77,7 @@ public class PrimaryViewController implements Initializable {
     @FXML
     Button prevYear;
     _Dimension dimension;
-
+    int sortColumn = 1;
     int year = LocalDate.now().getYear();
     int numRows;
     TaskService taskService;
@@ -95,7 +99,8 @@ public class PrimaryViewController implements Initializable {
         personService = new PersonService();
         projectNameService = new ProjectNameService();
         dimension = new _Dimension();
-        tasks = taskService.getAllTask();
+        tasks = taskService.getAllTaskBy(sortColumn);
+
     }
 
     private void initTable() {
@@ -107,7 +112,7 @@ public class PrimaryViewController implements Initializable {
         heightListAllTable = new ArrayList<>();
 
         gridPane.getChildren().clear();
-
+        gridPane.getRowConstraints().clear();
         tableTitle.setMinWidth(GRID_PANE_WIDTH);
         autosizeNullPane();
         for (int i = 0; i < widthColsTableTitle.size(); i++) {
@@ -178,7 +183,7 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void setGridColWidth(int colI, double width) {
-        gridPane.getColumnConstraints().get(colI).setPrefWidth((Double) width);
+        gridPane.getColumnConstraints().get(colI).setPrefWidth(width);
         for (int i = 0; i < numRows; i++) {
             ((Text) ((StackPane) gridPane.getChildren().get(colI + i * Constant.TimeLinePaneSpecs.NUMCOLS)).getChildren().get(0)).setWrappingWidth(width);
         }
@@ -207,6 +212,7 @@ public class PrimaryViewController implements Initializable {
 
     private void initTimeline() {
         timeLinePane.getColumnConstraints().clear();
+        timeLinePane.getRowConstraints().clear();
         timeLinePane.getChildren().clear();
         LocalDate first = DateAndColor.getMonday(LocalDate.of(year, 1, 1));
         LocalDate last = DateAndColor.getMonday(LocalDate.of(year, 12, 31));
@@ -249,8 +255,6 @@ public class PrimaryViewController implements Initializable {
             setHeightTimeLineRow(i, highestHeightPerRow.get(i));
         }
     }
-
-    ;
 
     private void setHeightTimeLineRow(int rowI, double height) {
         for (int i = 0; i < 52 * 5; i++) {
@@ -344,7 +348,7 @@ public class PrimaryViewController implements Initializable {
             Node node = (Node) mouseEvent.getSource();
             modalWindowController.showWindowModal(node, Constant.FXMLPage.ADD_TASK_VIEW,
                     Constant.WindowTitleConstant.ADD_TASK_TITLE);
-            tasks = taskService.getAllTask();
+            tasks = taskService.getAllTaskBy(sortColumn);
             initTable();
             initTimeline();
         });
@@ -364,7 +368,7 @@ public class PrimaryViewController implements Initializable {
                     if (option.get() == ButtonType.OK) {
                         taskService.deleteTask(tasks.get(selectedRowIndex));
                         _Alert.showInfoNotification(Constant.WindowTitleConstant.DELETE_TASK_TITLE);
-                        tasks = taskService.getAllTask();
+                        tasks = taskService.getAllTaskBy(sortColumn);
                         initTable();
                         initTimeline();
                     }
@@ -376,7 +380,7 @@ public class PrimaryViewController implements Initializable {
             modalWindowController.showWindowModal(mouseEvent,
                     Constant.FXMLPage.PERSON_MANAGEMENT,
                     Constant.WindowTitleConstant.PERSON_MANAGEMENT_TITLE);
-            tasks = taskService.getAllTask();
+            tasks = taskService.getAllTaskBy(sortColumn);
             initTable();
         });
 
@@ -384,14 +388,23 @@ public class PrimaryViewController implements Initializable {
             modalWindowController.showWindowModal(e,
                     Constant.FXMLPage.PROJECT_MANAGEMENT,
                     Constant.WindowTitleConstant.PROJECT_MANAGEMENT_TITLE);
-            tasks = taskService.getAllTask();
+            tasks = taskService.getAllTaskBy(sortColumn);
             initTable();
         });
-
+        btnToday.setOnAction(e -> {
+            year = 2020;
+            switchYear();
+        });
         var ref = new Object() {
             double oldX;
         };
+        tableTitle.getIndex().addListener((observable, oldValue, newValue) -> {
 
+            sortColumn = newValue.intValue();
+            tasks = taskService.getAllTaskBy((Integer) newValue);
+            initTable();
+            initTimeline();
+        });
         timeLinePane.setOnMousePressed(e -> {
             ref.oldX = e.getX();
             System.out.println(ref.oldX);
@@ -480,12 +493,8 @@ public class PrimaryViewController implements Initializable {
     }
 
     public void refreshAutoScroll() {
-        Date dateTemp = new Date();
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
-        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-        int month = dateTemp.getMonth() + 1;
-        int year = dateTemp.getYear() + 1900;
-        LocalDate dateNow = LocalDate.of(year, month, day);
+        LocalDate dateNow = LocalDate.now();
         int weekNumberNow = dateNow.get(weekFields.weekOfWeekBasedYear());
         double timelineScrollBarValue = (weekNumberNow / 52.0) * 100;
         double timeLineTitleMaxWidth = (dimension.getMaxScreenWidth() - Constant.TimeLinePaneSpecs.GRID_PANE_WIDTH);
@@ -522,11 +531,11 @@ public class PrimaryViewController implements Initializable {
         currYear.setText(String.valueOf(year));
         initTable();
         initTimeline();
-        eventHandler();
         initTimelineTitle();
         timeLinePane.setMaxWidth(timeLineTitle.getMaxWidth());
         initVerticalScrollBar();
         initScrollBar();
         refreshAutoScroll();
+        eventHandler();
     }
 }

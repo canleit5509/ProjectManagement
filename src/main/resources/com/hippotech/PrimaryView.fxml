@@ -5,19 +5,20 @@
 <?import javafx.scene.layout.*?>
 <VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.hippotech.controller.PrimaryViewController">
-    <HBox spacing="1000">
-        <MenuBar VBox.vgrow="NEVER">
+    <AnchorPane>
+        <MenuBar VBox.vgrow="NEVER" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0">
             <Menu text="File">
                 <MenuItem text="Import"/>
                 <MenuItem text="Export"/>
             </Menu>
         </MenuBar>
-        <HBox>
+        <Button fx:id="btnToday" text="Today" AnchorPane.leftAnchor="960"/>
+        <HBox AnchorPane.rightAnchor="400" AnchorPane.topAnchor="0">
             <Button text="Prev" fx:id="prevYear"/>
             <Button fx:id="currYear"/>
             <Button text="Next" fx:id="nextYear"/>
         </HBox>
-    </HBox>
+    </AnchorPane>
 
     <VBox>
         <HBox fx:id="titleBox" style="-fx-border-width: 1;-fx-border-style: solid;" alignment="CENTER_LEFT">
