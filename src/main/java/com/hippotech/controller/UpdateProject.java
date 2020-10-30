@@ -55,7 +55,7 @@ public class UpdateProject implements Initializable {
             done = 1;
         ProjectName project = new ProjectName(name, txtColor, done);
         ProjectNameService service = new ProjectNameService();
-        service.updateProject(project);
+        service.updateProject(project, oldName);
         _Alert.showInfoNotification(Constant.DialogConstant.SUCCESS_UPDATE_PROJECT);
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.close();

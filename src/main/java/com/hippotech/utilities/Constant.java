@@ -30,6 +30,7 @@ public interface Constant {
         String CONFIRM_DELETE_TASK = "Bạn có chắc chắn muốn xóa công việc này?";
 
     }
+
     interface WindowTitleConstant {
         String ADD_TASK_TITLE = "Thêm công việc";
         String ADD_PERSON_TITLE = "Thêm nhân sự";
@@ -43,6 +44,7 @@ public interface Constant {
 
 
     interface Color {
+        String NAVY_BLUE = "#8896DE";
         String WHITE = "#FFFFFF";
         String SOFT_GREEN = "#6bfc5b";
         String DARK_GREEN = "#0d8500";
@@ -65,14 +67,10 @@ public interface Constant {
         String PROJECT_MANAGEMENT = "/com/hippotech/ProjectManagement.fxml";
         String DAY_ROW = "/com/hippotech/components/DayRow.fxml";
         String TABLE_TITLE = "/com/hippotech/components/TableTitle.fxml";
-        String TASK_ROW = "/com/hippotech/components/TaskRow.fxml";
         String WEEK_TITLE = "/com/hippotech/components/WeekTitle.fxml";
         String ADD_PROJECT = "/com/hippotech/AddProject.fxml";
         String ADD_PERSON = "/com/hippotech/AddPerson.fxml";
         String UPDATE_PERSON = "/com/hippotech/UpdatePerson.fxml";
-        String UPDATE_PROJECT = "/com/hippotech/UpdateProject.fxml";}
-    interface TIMELINEPANESPECS{
-        double GRIDPANETOTALWIDTH = 9100;
-        double OFFSETAUTOSCROLLTIMELINE = 5.4;
+        String UPDATE_PROJECT = "/com/hippotech/UpdateProject.fxml";
     }
 }

@@ -11,7 +11,7 @@ public class TaskDAO implements DAO<TaskDTO> {
     private static final String DELETE = "DELETE FROM task WHERE id=?";
     private static final String FIND_ALL = "SELECT * FROM task ORDER BY id";
     private static final String FIND_BY_ID = "SELECT * FROM task WHERE id=?";
-    //    private static final String FIND_BY_NAME = "SELECT * FROM task WHERE name=?";
+    private static final String FIND_BY_PERSON = "SELECT * FROM task WHERE name=?";
     private static final String INSERT = "INSERT INTO task(id, projectName, title, name, startDate, deadline, finishDate," +
             "expectTime, finishTime, processed) VALUES(?, ?, ?, ?, ? ,?, ?, ?, ?, ?)";
     private static final String UPDATE = "UPDATE task SET projectName=?, title=?, name=?, startDate=?, deadline=?, " +
@@ -83,7 +83,34 @@ public class TaskDAO implements DAO<TaskDTO> {
         } finally {
             close(preparedStatement);
         }
+    }
 
+    public ArrayList<TaskDTO> getAllTaskByPerson(String name) {
+        try {
+            preparedStatement = connection.prepareStatement(FIND_BY_PERSON);
+            preparedStatement.setString(1, name);
+            ResultSet rs = preparedStatement.executeQuery();
+            ArrayList<TaskDTO> taskList = new ArrayList<>();
+            while (rs.next()) {
+                TaskDTO task = new TaskDTO();
+                task.setId(rs.getString("id"));
+                task.setPrName(rs.getString("projectName"));
+                task.setTitle(rs.getString("title"));
+                task.setName(rs.getString("name"));
+                task.setStartDate(rs.getString("startDate"));
+                task.setDeadline(rs.getString("deadline"));
+                task.setFinishDate(rs.getString("finishDate"));
+                task.setExpectedTime(rs.getInt("expectTime"));
+                task.setFinishTime(rs.getInt("finishTime"));
+                task.setProcessed(rs.getInt("processed"));
+                taskList.add(task);
+            }
+            return taskList;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            close(preparedStatement);
+        }
     }
 
     @Override
@@ -122,6 +149,7 @@ public class TaskDAO implements DAO<TaskDTO> {
             preparedStatement.setInt(7, task.getExpectedTime());
             preparedStatement.setInt(8, task.getFinishTime());
             preparedStatement.setInt(9, task.getProcessed());
+            System.out.println("152: " + preparedStatement.toString());
             preparedStatement.executeUpdate();
 
         } catch (SQLException throwable) {
