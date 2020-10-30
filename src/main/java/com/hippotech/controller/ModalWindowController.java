@@ -25,12 +25,10 @@ public class ModalWindowController{
         Node node = ((Node) e.getSource());
         showWindowModal(node, viewSource, title);
     }
-    //
     // TODO : Add controller in a function
     public void showWindowModal(Node node, String viewSource, String title) {
         FXMLLoader loader = getLoader(viewSource);
         Parent parent = load(loader);
-//        addContentToWindow(parent);
         showWindowModal(node, parent, title);
     }
 
@@ -48,8 +46,6 @@ public class ModalWindowController{
     public FXMLLoader getLoader(String source) {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(_class.getResource(source));
-        System.out.println(loader);
-
         return loader;
     }
 

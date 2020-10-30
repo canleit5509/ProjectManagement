@@ -6,6 +6,7 @@ import com.hippotech.dao.TaskDAO;
 import com.hippotech.dto.TaskDTO;
 import com.hippotech.model.Task;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class TaskService {
@@ -58,6 +59,16 @@ public class TaskService {
     public Task getTask(String id) {
         return convertToTask(dao.get(id));
     }
+
+    public ArrayList<Task> getAllTaskByPerson(String name){
+        ArrayList<Task> taskList = new ArrayList<>();
+        ArrayList<TaskDTO> taskDTOList = dao.getAllTaskByPerson(name);
+        for(TaskDTO i:taskDTOList){
+            taskList.add(convertToTask(i));
+        }
+        return taskList;
+    }
+
     public void addTask(Task task){
         TaskDTO dto = convertToDTO(task);
         dao.add(dto);

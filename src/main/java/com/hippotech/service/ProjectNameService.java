@@ -50,9 +50,9 @@ public class ProjectNameService {
         return projectNames;
     }
 
-    public void updateProject(ProjectName name) {
+    public void updateProject(ProjectName name, String oldName) {
         ProjectNameDTO projectName = convertToDTO(name);
-        dao.update(projectName, projectName.getProjectName());
+        dao.update(projectName, oldName);
     }
 
     public void deleteProject(ProjectName projectName) {
