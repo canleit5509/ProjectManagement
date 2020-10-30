@@ -1,17 +1,6 @@
 package com.hippotech.utilities;
 
 public interface Constant {
-    interface PrimaryConstant {
-        String PROJECT_NAME = "Project";
-        String TASK_NAME = "Task";
-        String EMPLOYEE = "Employee";
-        String DATE_START = "Start";
-        String DEADLINE = "Deadline";
-        String FINISH_DATE = "Finish";
-        String EXPECTED_TIME = "Expected";
-        String FINISH_TIME = "Finish Time";
-        String PROCESS = "Process%";
-    }
 
     interface DialogConstant {
         // Dialog title
@@ -53,8 +42,7 @@ public interface Constant {
     }
 
 
-    interface COLOR {
-        String NAVY_BLUE = "#8896DE";
+    interface Color {
         String WHITE = "#FFFFFF";
         String SOFT_GREEN = "#6bfc5b";
         String DARK_GREEN = "#0d8500";
@@ -64,6 +52,25 @@ public interface Constant {
     }
 
 
+    interface TimeLinePaneSpecs {
+        double GRIDPANE_TOTAL_WIDTH = 9100;
+        double GRID_PANE_WIDTH = 960;
+        int NUMCOLS = 9;
+    }
+
+    interface FXMLPage {
+        String ADD_TASK_VIEW = "/com/hippotech/AddTaskView.fxml";
+        String UPDATE_TASK_VIEW = "/com/hippotech/UpdateTaskView.fxml";
+        String PERSON_MANAGEMENT = "/com/hippotech/PersonManagement.fxml";
+        String PROJECT_MANAGEMENT = "/com/hippotech/ProjectManagement.fxml";
+        String DAY_ROW = "/com/hippotech/components/DayRow.fxml";
+        String TABLE_TITLE = "/com/hippotech/components/TableTitle.fxml";
+        String TASK_ROW = "/com/hippotech/components/TaskRow.fxml";
+        String WEEK_TITLE = "/com/hippotech/components/WeekTitle.fxml";
+        String ADD_PROJECT = "/com/hippotech/AddProject.fxml";
+        String ADD_PERSON = "/com/hippotech/AddPerson.fxml";
+        String UPDATE_PERSON = "/com/hippotech/UpdatePerson.fxml";
+        String UPDATE_PROJECT = "/com/hippotech/UpdateProject.fxml";}
     interface TIMELINEPANESPECS{
         double GRIDPANETOTALWIDTH = 9100;
         double OFFSETAUTOSCROLLTIMELINE = 5.4;

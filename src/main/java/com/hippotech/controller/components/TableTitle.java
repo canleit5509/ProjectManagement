@@ -1,5 +1,6 @@
 package com.hippotech.controller.components;
 
+import com.hippotech.utilities.Constant;
 import com.hippotech.utilities.Resizable;
 import javafx.beans.property.DoubleProperty;
 import javafx.fxml.FXML;
@@ -41,6 +42,7 @@ public class TableTitle extends HBox {
             70d));
 
     static ArrayList<DoubleProperty> widthList;
+
     void initTable() {
         Label label;
         Pane pane;
@@ -67,8 +69,9 @@ public class TableTitle extends HBox {
             widthList.add(pane.prefWidthProperty());
         }
     }
+
     public TableTitle() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/hippotech/components/TableTitle.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(Constant.FXMLPage.TABLE_TITLE));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
         try {
@@ -83,7 +86,7 @@ public class TableTitle extends HBox {
             Node node = box.getChildren().get(i);
             Node previousNode = null;
             if (i > 0)
-                previousNode = box.getChildren().get(i-1);
+                previousNode = box.getChildren().get(i - 1);
 
             Resizable.makeResizable(node, previousNode);
         }

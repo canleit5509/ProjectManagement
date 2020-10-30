@@ -147,7 +147,7 @@ public class PrimaryViewController implements Initializable {
                     Color c = new Color(red, 1, blue, 1);
                     color = "#" + c.toString().substring(2);
                 } else {
-                    color = Constant.COLOR.WHITE;
+                    color = Constant.Color.WHITE;
                 }
                 addPane(i, j, taskObj.get(j), color);
             }
