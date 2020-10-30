@@ -1,7 +1,6 @@
 package com.hippotech.service;
 
 
-
 import com.hippotech.dao.TaskDAO;
 import com.hippotech.dto.TaskDTO;
 import com.hippotech.model.Task;
@@ -79,7 +78,17 @@ public class TaskService {
         TaskDTO dto = convertToDTO(task);
         dao.update(dto);
     }
-    public void deleteTask(Task task){
+
+    public void deleteTask(Task task) {
         dao.delete(convertToDTO(task));
+    }
+
+    public ArrayList<Task> getAllTaskByPerson(String name) {
+        ArrayList<Task> taskList = new ArrayList<>();
+        ArrayList<TaskDTO> taskDTOList = dao.getAllTaskByPerson(name);
+        for (TaskDTO i : taskDTOList) {
+            taskList.add(convertToTask(i));
+        }
+        return taskList;
     }
 }

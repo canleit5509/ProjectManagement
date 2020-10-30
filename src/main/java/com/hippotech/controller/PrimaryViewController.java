@@ -39,7 +39,6 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-
 public class PrimaryViewController implements Initializable {
     double GRID_PANE_WIDTH;
     public ScrollPane verticalScrollPane;
@@ -80,7 +79,6 @@ public class PrimaryViewController implements Initializable {
     _Dimension dimension;
     int sortColumn = 1;
     int year = LocalDate.now().getYear();
-    int numCols = 9;
     int numRows;
     TaskService taskService;
     PersonService personService;
@@ -106,8 +104,6 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void initTable() {
-
-        numCols = 9;
         numRows = tasks.size();
         GRID_PANE_WIDTH = 960;
         widthColsTableTitle = (ArrayList<DoubleProperty>) TableTitle.getWidthList();
@@ -116,7 +112,7 @@ public class PrimaryViewController implements Initializable {
         heightListAllTable = new ArrayList<>();
 
         gridPane.getChildren().clear();
-
+        gridPane.getRowConstraints().clear();
         tableTitle.setMinWidth(GRID_PANE_WIDTH);
         autosizeNullPane();
         for (int i = 0; i < widthColsTableTitle.size(); i++) {
@@ -143,7 +139,7 @@ public class PrimaryViewController implements Initializable {
             ProjectName projectName = projectNameService.getProjectName(task.getPrName());
             Person person = personService.getPersonByName(task.getName());
             String color;
-            for (int j = 0; j < numCols; j++) {
+            for (int j = 0; j < Constant.TimeLinePaneSpecs.NUMCOLS; j++) {
                 if (j == 0) color = projectName.getProjectColor();
                 else if (j == 2) color = person.getColor();
                 else if (j == 8) {
@@ -153,7 +149,7 @@ public class PrimaryViewController implements Initializable {
                     Color c = new Color(red, 1, blue, 1);
                     color = "#" + c.toString().substring(2);
                 } else {
-                    color = Constant.COLOR.WHITE;
+                    color = Constant.Color.WHITE;
                 }
                 addPane(i, j, taskObj.get(j), color);
             }
@@ -176,8 +172,8 @@ public class PrimaryViewController implements Initializable {
         double temp;
         for (int i = 0; i < numRows; i++) {
             double tempMaxHeight = 0;
-            for (int j = 0; j < numCols; j++) {
-                temp = nodeList.get(i * numCols + j).getBoundsInLocal().getHeight();
+            for (int j = 0; j < Constant.TimeLinePaneSpecs.NUMCOLS; j++) {
+                temp = nodeList.get(i * Constant.TimeLinePaneSpecs.NUMCOLS + j).getBoundsInLocal().getHeight();
                 if (tempMaxHeight < temp) {
                     tempMaxHeight = temp;
                 }
@@ -189,7 +185,7 @@ public class PrimaryViewController implements Initializable {
     private void setGridColWidth(int colI, double width) {
         gridPane.getColumnConstraints().get(colI).setPrefWidth(width);
         for (int i = 0; i < numRows; i++) {
-            ((Text) ((StackPane) gridPane.getChildren().get(colI + i * numCols)).getChildren().get(0)).setWrappingWidth(width);
+            ((Text) ((StackPane) gridPane.getChildren().get(colI + i * Constant.TimeLinePaneSpecs.NUMCOLS)).getChildren().get(0)).setWrappingWidth(width);
         }
     }
 
@@ -302,9 +298,9 @@ public class PrimaryViewController implements Initializable {
         gridPaneNode = gridPane.getChildren();
         Node timeLineNode = timeLinePane.getChildren().get(selectedRowIndex);
         // Deselect previous selected row
-        for (int i = 0; i < numCols; i++) {
+        for (int i = 0; i < Constant.TimeLinePaneSpecs.NUMCOLS; i++) {
             if (i != 0 && i != 2 && i != 8) {
-                gridPaneNode.get(selectedRowIndex * numCols + i).setStyle("-fx-background-color:#FFFFFF;");
+                gridPaneNode.get(selectedRowIndex * Constant.TimeLinePaneSpecs.NUMCOLS + i).setStyle("-fx-background-color:#FFFFFF;");
             }
         }
 
@@ -314,9 +310,9 @@ public class PrimaryViewController implements Initializable {
         // Paint new row
         selectedRowIndex = GridPane.getRowIndex(node);
         // Paint current row
-        for (int i = 0; i < numCols; i++) {
+        for (int i = 0; i < Constant.TimeLinePaneSpecs.NUMCOLS; i++) {
             if (i != 0 && i != 2 && i != 8) {
-                gridPaneNode.get(selectedRowIndex * numCols + i).setStyle("-fx-background-color:#8896DE;");
+                gridPaneNode.get(selectedRowIndex * Constant.TimeLinePaneSpecs.NUMCOLS + i).setStyle("-fx-background-color:#8896DE;");
             }
         }
         timeLineNode = timeLinePane.getChildren().get(selectedRowIndex);
@@ -333,6 +329,13 @@ public class PrimaryViewController implements Initializable {
     }
 
     private void eventHandler() {
+
+        gridPane.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+                Node node = (Node) e.getSource();
+                editTask(node);
+            }
+        });
         nextYear.setOnMouseClicked(e -> {
             year++;
             switchYear();
@@ -343,7 +346,7 @@ public class PrimaryViewController implements Initializable {
         });
         btnAdd.setOnMouseClicked(mouseEvent -> {
             Node node = (Node) mouseEvent.getSource();
-            modalWindowController.showWindowModal(node, "/com/hippotech/AddTaskView.fxml",
+            modalWindowController.showWindowModal(node, Constant.FXMLPage.ADD_TASK_VIEW,
                     Constant.WindowTitleConstant.ADD_TASK_TITLE);
             tasks = taskService.getAllTaskBy(sortColumn);
             initTable();
@@ -352,25 +355,7 @@ public class PrimaryViewController implements Initializable {
 
         btnEdit.setOnMouseClicked(mouseEvent -> {
             Node node = (Node) mouseEvent.getSource();
-            if (selectedRowIndex == -1) {
-                _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_UPDATE);
-            } else {
-                Task selected = tasks.get(selectedRowIndex);
-                FXMLLoader loader = modalWindowController.getLoader("/com/hippotech/UpdateTaskView.fxml");
-                Parent parent = modalWindowController.load(loader);
-                UpdateTaskViewController controller = loader.getController();
-                controller.setTask(selected);
-                controller.setComboBox();
-                modalWindowController.showWindowModal(
-                        node,
-                        parent,
-                        Constant.WindowTitleConstant.UPDATE_TASK_TITLE
-                );
-                tasks = taskService.getAllTaskBy(sortColumn);
-                initTable();
-                initTimeline();
-            }
-            selectedRowIndex = -1;
+            editTask(node);
         });
         btnDel.setOnMouseClicked(mouseEvent -> {
             if (selectedRowIndex == -1) {
@@ -393,7 +378,7 @@ public class PrimaryViewController implements Initializable {
         });
         btnPerson.setOnMouseClicked(mouseEvent -> {
             modalWindowController.showWindowModal(mouseEvent,
-                    "/com/hippotech/PersonManagement.fxml",
+                    Constant.FXMLPage.PERSON_MANAGEMENT,
                     Constant.WindowTitleConstant.PERSON_MANAGEMENT_TITLE);
             tasks = taskService.getAllTaskBy(sortColumn);
             initTable();
@@ -401,7 +386,7 @@ public class PrimaryViewController implements Initializable {
 
         btnProject.setOnMouseClicked(e -> {
             modalWindowController.showWindowModal(e,
-                    "/com/hippotech/ProjectManagement.fxml",
+                    Constant.FXMLPage.PROJECT_MANAGEMENT,
                     Constant.WindowTitleConstant.PROJECT_MANAGEMENT_TITLE);
             tasks = taskService.getAllTaskBy(sortColumn);
             initTable();
@@ -412,7 +397,6 @@ public class PrimaryViewController implements Initializable {
         });
         var ref = new Object() {
             double oldX;
-
         };
         tableTitle.getIndex().addListener((observable, oldValue, newValue) -> {
 
@@ -432,15 +416,14 @@ public class PrimaryViewController implements Initializable {
             double distance = newX - ref.oldX;
             double percentDistance = 0;
             if (distance < 0) {
-                percentDistance = 9 * Math.abs(distance) / Constant.TIMELINEPANESPECS.GRIDPANETOTALWIDTH;
+                percentDistance = 9 * Math.abs(distance) / Constant.TimeLinePaneSpecs.GRIDPANE_TOTAL_WIDTH;
             } else {
-                percentDistance = -9 * Math.abs(distance) / Constant.TIMELINEPANESPECS.GRIDPANETOTALWIDTH;
+                percentDistance = -9 * Math.abs(distance) / Constant.TimeLinePaneSpecs.GRIDPANE_TOTAL_WIDTH;
             }
-            timeLineScrollbar.setValue(percentDistance + xPercentOld);
-//            timeLineScrollbar.setValue((e.getX()/Constant.TIMELINEPANESPECS.GRIDPANETOTALWIDTH)*100);
-
+            double xPercentNew = percentDistance + xPercentOld;
+            if (xPercentNew >= 0 && xPercentNew <= 100)
+                timeLineScrollbar.setValue(percentDistance + xPercentOld);
         });
-
     }
 
     private void switchYear() {
@@ -465,11 +448,11 @@ public class PrimaryViewController implements Initializable {
         }
         timeLineTitle.getChildren().clear();
         timeLineTitle.getChildren().add(timeline);
-        timeLineTitle.setMaxWidth(dimension.getMaxScreenWidth() - GRID_PANE_WIDTH);
+        timeLineTitle.setMaxWidth(dimension.getMaxScreenWidth() - Constant.TimeLinePaneSpecs.GRID_PANE_WIDTH);
     }
 
     private void initScrollBar() {
-        timeLineScrollbar.setPrefWidth(dimension.getMaxScreenWidth() - GRID_PANE_WIDTH);
+        timeLineScrollbar.setPrefWidth(dimension.getMaxScreenWidth() - Constant.TimeLinePaneSpecs.GRID_PANE_WIDTH);
         AtomicInteger AITimeLineTitleWidth = new AtomicInteger();
         AtomicReference<Double> ARHScrollValue = new AtomicReference<>((double) 0);
         // Ref object
@@ -489,7 +472,7 @@ public class PrimaryViewController implements Initializable {
             ARHScrollValue.set(newValue.doubleValue());
             ref.hScrollValue = ARHScrollValue.get();
             double translateX;
-            double timeLineTitleMaxWidth = (dimension.getMaxScreenWidth() - GRID_PANE_WIDTH);
+            double timeLineTitleMaxWidth = (dimension.getMaxScreenWidth() - Constant.TimeLinePaneSpecs.GRID_PANE_WIDTH);
             translateX = ref.hScrollValue * (ref.timeLineTitleWidth - timeLineTitleMaxWidth) / 100.0;
 
             timeLinePane.setTranslateX(-translateX);
@@ -513,18 +496,39 @@ public class PrimaryViewController implements Initializable {
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
         LocalDate dateNow = LocalDate.now();
         int weekNumberNow = dateNow.get(weekFields.weekOfWeekBasedYear());
-        double timelineScrollBarValue = (weekNumberNow / 52.0) * 100;// + Constant.TIMELINEPANESPECS.OFFSETAUTOSCROLLTIMELINE;
-        double timeLineTitleMaxWidth = (dimension.getMaxScreenWidth() - GRID_PANE_WIDTH);
-        double translateX = timelineScrollBarValue * (Constant.TIMELINEPANESPECS.GRIDPANETOTALWIDTH - timeLineTitleMaxWidth) / 100.0;
+        double timelineScrollBarValue = (weekNumberNow / 52.0) * 100;
+        double timeLineTitleMaxWidth = (dimension.getMaxScreenWidth() - Constant.TimeLinePaneSpecs.GRID_PANE_WIDTH);
+        double translateX = timelineScrollBarValue * (Constant.TimeLinePaneSpecs.GRIDPANE_TOTAL_WIDTH - timeLineTitleMaxWidth) / 100.0;
         timeLineScrollbar.setValue(timelineScrollBarValue);
         timeLinePane.setTranslateX(-translateX);
         timeLineTitle.setTranslateX(-translateX);
     }
 
+    public void editTask(Node node) {
+        if (selectedRowIndex == -1) {
+            _Alert.showWaitInfoWarning(Constant.DialogConstant.CHOOSE_A_TASK_TO_UPDATE);
+        } else {
+            Task selected = tasks.get(selectedRowIndex);
+            FXMLLoader loader = modalWindowController.getLoader(Constant.FXMLPage.UPDATE_TASK_VIEW);
+            Parent parent = modalWindowController.load(loader);
+            UpdateTaskViewController controller = loader.getController();
+            controller.setTask(selected);
+            controller.setComboBox();
+            modalWindowController.showWindowModal(
+                    node,
+                    parent,
+                    Constant.WindowTitleConstant.UPDATE_TASK_TITLE
+            );
+            tasks = taskService.getAllTask();
+            initTable();
+            initTimeline();
+        }
+        selectedRowIndex = -1;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         currYear.setText(String.valueOf(year));
-
         initTable();
         initTimeline();
         initTimelineTitle();
@@ -533,6 +537,5 @@ public class PrimaryViewController implements Initializable {
         initScrollBar();
         refreshAutoScroll();
         eventHandler();
-
     }
 }

@@ -2,7 +2,9 @@ package com.hippotech.controller;
 
 
 import com.hippotech.model.Person;
+import com.hippotech.model.Task;
 import com.hippotech.service.PersonService;
+import com.hippotech.service.TaskService;
 import com.hippotech.utilities.Constant;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class UpdatePerson implements Initializable {
@@ -26,10 +29,12 @@ public class UpdatePerson implements Initializable {
     private RadioButton radioNow;
     @FXML
     private RadioButton radioRetired;
-    private PersonService service;
+    private final PersonService personService;
+    private final TaskService taskService;
 
     public UpdatePerson() {
-        service = new PersonService();
+        personService = new PersonService();
+        taskService = new TaskService();
     }
 
     @Override
@@ -59,9 +64,17 @@ public class UpdatePerson implements Initializable {
         int retired = 0;
         if (radioRetired.isSelected())
             retired = 1;
-
         Person person = new Person(id, name, txtColor, retired);
-        service.updatePerson(person);
+        String oldName = personService.getPersonByID(id).getName();
+        personService.updatePerson(person);
+        ArrayList<Task> taskList = taskService.getAllTaskByPerson(oldName);
+        System.out.println("old name: " + oldName);
+        System.out.println(taskList.size());
+        for (Task i : taskList) {
+            i.setName(name);
+            System.out.println(i.toString());
+            taskService.updateTask(i);
+        }
         _Alert.showInfoNotification(Constant.DialogConstant.SUCCESS_ADD_PERSON);
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         stage.close();

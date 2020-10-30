@@ -1,7 +1,6 @@
 package com.hippotech.controller;
 
 
-
 import com.hippotech.model.Task;
 import com.hippotech.service.PersonService;
 import com.hippotech.service.ProjectNameService;
@@ -15,9 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -152,14 +149,14 @@ public class UpdateTaskViewController implements Initializable {
     public void AddProject(ActionEvent e) throws IOException {
         Node node = (Node) e.getSource();
         modalWindowController.showWindowModal(node,
-                "/com/hippotech/AddProject.fxml",
+                Constant.FXMLPage.ADD_PROJECT,
                 Constant.WindowTitleConstant.ADD_PROJECT_TITLE);
 
         setComboBox();
     }
 
     public void AddPerson(ActionEvent e) throws IOException {
-        FXMLLoader loader = modalWindowController.getLoader("/com/hippotech/AddPerson.fxml");
+        FXMLLoader loader = modalWindowController.getLoader(Constant.FXMLPage.ADD_PERSON);
         Parent parent = modalWindowController.load(loader);
         Node node = (Node) e.getSource();
 
