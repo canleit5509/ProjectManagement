@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="381.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hippotech.controller.ManageProject">
+   <children>
+      <TableView fx:id="tbData" prefHeight="226.0" prefWidth="600.0">
+        <columns>
+          <TableColumn fx:id="tcName" prefWidth="600.0" text="Tên" />
+        </columns>
+      </TableView>
+      <Button layoutX="115.0" layoutY="298.0" mnemonicParsing="false" onAction="#btnAdd" prefHeight="42.0" prefWidth="46.0" text="Thêm" />
+      <Button layoutX="274.0" layoutY="298.0" mnemonicParsing="false" onAction="#btnUpdate" prefHeight="42.0" prefWidth="64.0" text="Cập nhật" />
+      <Button fx:id="btnDone" layoutX="420.0" layoutY="298.0" mnemonicParsing="false" onAction="#btnKick" prefHeight="42.0" text="Đã hoàn thành" />
+      <RadioButton fx:id="checkNow" layoutX="118.0" layoutY="243.0" mnemonicParsing="false" onAction="#checkNow" text="Đang làm" />
+      <RadioButton fx:id="checkDone" layoutX="219.0" layoutY="243.0" mnemonicParsing="false" onAction="#checkRetire" text="Đã xong" />
+      <RadioButton fx:id="checkAll" layoutX="351.0" layoutY="243.0" mnemonicParsing="false" onAction="#checkAll" text="Tất cả" />
+   </children>
+</AnchorPane>
